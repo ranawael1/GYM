@@ -1,18 +1,3 @@
-<<<<<<< HEAD
-from django.shortcuts import render
-from django.contrib.auth.models import Group, User #User model to access users and admins
-from .serializers import Usererializer
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
-# Create your views here.
-@api_view(['GET'])
-def all(request):
-    all= User.objects.all()
-    st = Usererializer(all, many=True)
-    return Response(st.data)
-
-=======
 from django.shortcuts import redirect, render
 from .models import User
 from .forms import CreateUserForm
@@ -41,5 +26,3 @@ def register(request):
             return redirect('api-users')
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
-
->>>>>>> f457ee587af00c656df43e41c70279c6f78e2d98

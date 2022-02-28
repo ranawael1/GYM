@@ -1,8 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-<<<<<<< HEAD
-from django.contrib.auth.models import User
-=======
 from phonenumber_field.modelfields import PhoneNumberField
 
 GENDER = (
@@ -17,4 +14,3 @@ class User(AbstractUser):
     avatar= models.ImageField(upload_to='avatars/')
 
     REQUIRED_FIELDS = ['age', 'gender']
->>>>>>> f457ee587af00c656df43e41c70279c6f78e2d98
