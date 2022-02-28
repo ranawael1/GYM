@@ -14,9 +14,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+<<<<<<< HEAD
 from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('physioslim/',include('PhysioSlim.urls'))
 ]
+=======
+from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('physio-slim/', include('PhysioSlim.urls'))
+
+]+ static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
+>>>>>>> f457ee587af00c656df43e41c70279c6f78e2d98
