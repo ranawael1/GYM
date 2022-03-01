@@ -80,7 +80,8 @@ def login_2(request):
     if request.method == 'POST':
         username = request.POST.get('username' )
         password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
+        a= request.POST.get('email')
+        user = authenticate(request,username=username  , password=password)
         if user is not None:
             login(request,user)
             return render(request, 'physio-slim/home.html')
