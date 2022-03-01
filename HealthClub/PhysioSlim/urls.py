@@ -6,7 +6,9 @@ urlpatterns = [
     path('login', views.login_2, name='login'),
 
     #rest_framework
-    path('api-users/', views.api_users, name='api-users'),
-    # path('api-user/<user_id>', views.api_user, name='api-user'),
+    path('users/', views.users, name='users'),
+    path('user/<user_id>', views.user, name='user'),
+    #path('add-user/', views.add_user, name='add-user'),
+    path('verify/', views.verify_code, name='verify-code'),  
 ]
 
