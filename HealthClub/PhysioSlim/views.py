@@ -9,13 +9,13 @@ from .forms import CreateUserForm, VerifyForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer
+from .serializers import UserSerializer, BranchSerializers
 from . import verify
 from django.contrib.auth.decorators import login_required
 from .decorators import verification_required  
 from django.contrib.auth import authenticate, login, logout
 
-# @verification_required  
+@verification_required  
 @api_view(['GET'])
 def users(request):
     users = User.objects.all()
@@ -102,8 +102,8 @@ def api_all_branch(request):
 @api_view(['GET'])
 def api_one_branch(request,st_id):
     br = branch.objects.get(id=st_id)
-    br_ser = BranchSerializers(st,many=False)
-    return Response(st_ser.data)
+    br_ser = BranchSerializers(br,many=False)
+    return Response(br_ser.data)
 
 @api_view(['POST'])
 def api_add_branch(request):
@@ -116,7 +116,7 @@ def api_add_branch(request):
 @api_view(['POST'])
 def api_edit_branch(request,st_id):
     br = branch.objects.get(id=st_id)
-    br_ser = BranchSerializers(data=request.data, instance=st)
+    br_ser = BranchSerializers(data=request.data, instance=br)
     if br_ser.is_valid():
         br_ser.save()
         return redirect('api-all')
