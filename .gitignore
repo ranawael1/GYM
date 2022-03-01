@@ -1,8 +1,8 @@
 # created by virtualenv automatically
-env
+venv
 __pycache__
 migrations
 settings.py
 images
 avatars
-.env
+*.env
