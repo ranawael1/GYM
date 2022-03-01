@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 import email
 from importlib.resources import contents
 from multiprocessing import context
-=======
->>>>>>> 3cf2a737495093092deccdbb94701096eb24d7ca
 from django.shortcuts import redirect, render
 # decorators and authentication
 from.decorators import unauthenticated_user
