@@ -1,7 +1,7 @@
 from importlib.resources import contents
 from multiprocessing import context
 from django.shortcuts import redirect, render
-from .models import User
+from .models import User,branch
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 
@@ -89,5 +89,42 @@ def login_2(request):
     else:
       context ={}
       return render(request, 'physio-slim/login.html', context)
+
+
+
+@api_view(['GET'])
+def api_all_branch(request):
+    all_branch = branch.objects.all()
+    br_ser = BranchSerializers(all_branch, many=True)
+    return Response(br_ser.data)
+
+@api_view(['GET'])
+def api_one_branch(request,st_id):
+    br = branch.objects.get(id=st_id)
+    br_ser = BranchSerializers(st,many=False)
+    return Response(st_ser.data)
+
+@api_view(['POST'])
+def api_add_branch(request):
+    br_ser = BranchSerializers(data=request.data)
+    if br_ser.is_valid():
+        br_ser.save()
+        return redirect('api-all')
+        
+
+@api_view(['POST'])
+def api_edit_branch(request,st_id):
+    br = branch.objects.get(id=st_id)
+    br_ser = BranchSerializers(data=request.data, instance=st)
+    if br_ser.is_valid():
+        br_ser.save()
+        return redirect('api-all')
+
+@api_view(['DELETE'])
+def api_del_branch(request,st_id):
+    br = branch.objects.get(id=st_id)
+    br.delete()
+    return Response('branch Deleted Success')
+
 
 

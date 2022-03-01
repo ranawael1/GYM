@@ -19,3 +19,10 @@ class User(AbstractUser):
 # class Check(models.Model):
 #     phone = PhoneNumberField(unique = True, null = False, blank = False)
 #     is_verified = models.BooleanField(default=False)
+
+class branch(models.Model):
+    name = models.CharField(max_length=50, null= True)
+    address = models.CharField(max_length=50, null= True)
+
+    def __str__(self):
+        return self.name 
