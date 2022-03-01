@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login_2, name='login'),
+    path('logout/', views.logoutUser, name='logout'),
     #reset password form
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="password_reset/password_reset.html"), name="reset_password"),
     #notify the user to check their email 

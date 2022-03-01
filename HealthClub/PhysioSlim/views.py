@@ -19,7 +19,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 
 
-
+#logout
+def logoutUser(request):
+    logout(request)
+    # return redirect(request.META.get('HTTP_REFERER'))  #to stay in the same page after logging out
+    
+    return redirect('login')
 
 @login_required(login_url='login')
 @verification_required  
@@ -28,7 +33,7 @@ def users(request):
     users = User.objects.all()
     users_ser = UserSerializer(users, many=True)
     return Response(users_ser.data)
-
+    
 @login_required(login_url='login')
 @api_view(['GET'])
 def user(request, user_id):
