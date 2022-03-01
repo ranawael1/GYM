@@ -11,10 +11,17 @@ urlpatterns = [
     #path('add-user/', views.add_user, name='add-user'),
     path('verify/', views.verify_code, name='verify-code'),
     #api-branch  
-    path('api-all', views.api_all_branch, name='api-all'),
-    path('api-one/<br_id>', views.api_one_branch, name='api-one'),
-    path('api-add', views.api_add_branch, name='api-add'),
-    path('api-edit/<br_id>', views.api_edit_branch, name='api-edit'),
-    path('api-del/<br_id>', views.api_del_branch, name='api-del'),
+    path('branch-all', views.all_branch, name='branch-all'),
+    path('branch-one/<br_id>', views.one_branch, name='branch-one'),
+    path('branch-add', views.add_branch, name='branch-add'),
+    path('branch-edit/<br_id>', views.edit_branch, name='branch-edit'),
+    path('branch-del/<br_id>', views.del_branch, name='branch-del'),
+    #api-Offer  
+    path('Offer-all', views.all_Offer, name='Offer-all'),
+    path('Offer-one/<of_id>', views.one_Offer, name='Offer-one'),
+    path('Offer-add', views.add_Offer, name='Offer-add'),
+    path('Offer-edit/<of_id>', views.edit_Offer, name='Offer-edit'),
+    path('Offer-del/<of_id>', views.del_Offer, name='Offer-del'),
+    
 ]
 

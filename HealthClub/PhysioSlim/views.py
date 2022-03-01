@@ -1,7 +1,7 @@
 from importlib.resources import contents
 from multiprocessing import context
 from django.shortcuts import redirect, render
-from .models import User,branch
+from .models import User,branch,Offer
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 
@@ -9,7 +9,7 @@ from .forms import CreateUserForm, VerifyForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer,BranchSerializers
+from .serializers import UserSerializer,BranchSerializers,OfferSerializers
 from . import verify
 from django.contrib.auth.decorators import login_required
 from .decorators import verification_required  
@@ -91,21 +91,21 @@ def login_2(request):
       return render(request, 'physio-slim/login.html', context)
 
 
-
+#BranchSerializers
 @api_view(['GET'])
-def api_all_branch(request):
+def all_branch(request):
     all_branch = branch.objects.all()
     br_ser = BranchSerializers(all_branch, many=True)
     return Response(br_ser.data)
 
 @api_view(['GET'])
-def api_one_branch(request,br_id):
+def one_branch(request,br_id):
     br = branch.objects.get(id=br_id)
     br_ser = BranchSerializers(br,many=False)
     return Response(br_ser.data)
 
 @api_view(['POST'])
-def api_add_branch(request):
+def add_branch(request):
     br_ser = BranchSerializers(data=request.data)
     if br_ser.is_valid():
         br_ser.save()
@@ -113,7 +113,7 @@ def api_add_branch(request):
         
 
 @api_view(['POST'])
-def api_edit_branch(request,br_id):
+def edit_branch(request,br_id):
     br = branch.objects.get(id=br_id)
     br_ser = BranchSerializers(data=request.data, instance=br)
     if br_ser.is_valid():
@@ -121,10 +121,45 @@ def api_edit_branch(request,br_id):
         return redirect('api-all')
 
 @api_view(['DELETE'])
-def api_del_branch(request,br_id):
+def del_branch(request,br_id):
     br = branch.objects.get(id=br_id)
     br.delete()
     return Response('branch Deleted Success')
 
+
+#OfferSerializers
+@api_view(['GET'])
+def all_Offer(request):
+    all_Offer = Offer.objects.all()
+    of_ser = OfferSerializers(all_Offer, many=True)
+    return Response(of_ser.data)
+
+@api_view(['GET'])
+def one_Offer(request,of_id):
+    of = Offer.objects.get(id=of_id)
+    of_ser = OfferSerializers(of,many=False)
+    return Response(of_ser.data)
+
+@api_view(['POST'])
+def add_Offer(request):
+    of_ser = OfferSerializers(data=request.data)
+    if of_ser.is_valid():
+        of_ser.save()
+        return redirect('api-all')
+        
+
+@api_view(['POST'])
+def edit_Offer(request,of_id):
+    of = Offer.objects.get(id=of_id)
+    of_ser = OfferSerializers(data=request.data, instance=of)
+    if of_ser.is_valid():
+        of_ser.save()
+        return redirect('api-all')
+
+@api_view(['DELETE'])
+def del_Offer(request,of_id):
+    of = Offer.objects.get(id=of_id)
+    of.delete()
+    return Response('Offer Deleted Success')
 
 

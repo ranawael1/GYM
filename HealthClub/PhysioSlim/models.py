@@ -26,3 +26,10 @@ class branch(models.Model):
 
     def __str__(self):
         return self.name 
+
+class Offer(models.Model):
+    name = models.CharField(max_length=50, null= True)
+    num_of_class = models.IntegerField()
+    discount = models.FloatField()
+    def __str__(self):
+        return self.name 
