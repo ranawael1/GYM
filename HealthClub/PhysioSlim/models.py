@@ -14,6 +14,8 @@ class User(AbstractUser):
     gender = models.CharField(choices=GENDER, max_length=20)
     avatar= models.ImageField(upload_to='avatars/')
 
+
+
     REQUIRED_FIELDS = ['age', 'gender']
 
 # class Check(models.Model):

@@ -1,3 +1,4 @@
+import email
 from importlib.resources import contents
 from multiprocessing import context
 from django.shortcuts import redirect, render
@@ -55,33 +56,34 @@ def register(request):
             user.save()
             phone = form.cleaned_data.get('phone')
             login(request, user)  # go to login page later
-            verify.send(phone)
+            # verify.send(phone)
             return redirect('users')
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
 
-def verify_code(request):
-    if request.method == 'POST':
-        form = VerifyForm(request.POST)
-        if form.is_valid():
-            code = form.cleaned_data.get('code')
-            phone = request.user.phone
-            if verify.check(request.user.phone, code):
-                request.user.is_verified = True
-                request.user.save()
-                return redirect('users')
-    else:
-        form = VerifyForm()
-        context = {'form': form}
-    return render(request, 'physio-slim/verify.html', context)
+# def verify_code(request):
+#     if request.method == 'POST':
+#         form = VerifyForm(request.POST)
+#         if form.is_valid():
+#             code = form.cleaned_data.get('code')
+#             phone = request.user.phone
+#             if verify.check(request.user.phone, code):
+#                 request.user.is_verified = True
+#                 request.user.save()
+#                 return redirect('users')
+#     else:
+#         form = VerifyForm()
+#         context = {'form': form}
+#     return render(request, 'physio-slim/verify.html', context)
 
-def login_2(request):
-    print("valid")
+def login_user(request):
     if request.method == 'POST':
         username = request.POST.get('username' )
         password = request.POST.get('password')
-        a= request.POST.get('email')
-        user = authenticate(request,username=username  , password=password)
+        print("valid")
+       
+        print(username)
+        user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request,user)
             return render(request, 'physio-slim/home.html')
@@ -90,6 +92,11 @@ def login_2(request):
     else:
       context ={}
       return render(request, 'physio-slim/login.html', context)
+
+def logoutuser(request):
+    logout(request)
+    
+    return redirect('login')
 
 
 
