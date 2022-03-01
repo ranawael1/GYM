@@ -1,50 +1,53 @@
-from importlib.resources import contents
-from multiprocessing import context
 from django.shortcuts import redirect, render
 from .models import User,branch
-from .forms import CreateUserForm
+# decorators and authentication
+from.decorators import unauthenticated_user
 from django.contrib.auth import authenticate, login, logout
-
+from django.contrib.auth.decorators import login_required
+from .decorators import verification_required  
+#forms
 from .forms import CreateUserForm, VerifyForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
 from .serializers import UserSerializer,BranchSerializers
 from . import verify
-from django.contrib.auth.decorators import login_required
-from .decorators import verification_required  
-from django.contrib.auth import authenticate, login, logout
+
+
+
 
 @verification_required  
+@login_required(login_url='login')
 @api_view(['GET'])
 def users(request):
     users = User.objects.all()
     users_ser = UserSerializer(users, many=True)
     return Response(users_ser.data)
 
+@login_required(login_url='login')
 @api_view(['GET'])
 def user(request, user_id):
     user = User.objects.get(id = user_id)
     user_ser = UserSerializer(user, many=False)
     return Response(user_ser.data)
 
-# @api_view(['POST'])
-# def add_user(request):
-#     print("check1")
 
-#     user_ser = UserSerializer(data=request.data)
-#     print(user_ser)
-#     if user_ser.is_valid():
-#         print("vaild")
-#         user = user_ser.save(commit=False)
-#         phone = user_ser.cleaned_data.get('phone')
-#         user.save()
-#         print(phone)
-#         return Response(user.data)
+@api_view(['POST'])
+def add_user(request):
+    print("check1")
 
-#         return redirect("users")
-    
+    user_ser = UserSerializer(data=request.data)
+    print(user_ser)
+    if user_ser.is_valid():
+        print("vaild")
+        user = user_ser.save(commit=False)
+        phone = user_ser.cleaned_data.get('phone')
+        user.save()
+        print(phone)
+        return Response(user.data)
 
+
+@unauthenticated_user
 def register(request):
     form = CreateUserForm()
     print(form)
@@ -76,6 +79,7 @@ def verify_code(request):
         context = {'form': form}
     return render(request, 'physio-slim/verify.html', context)
 
+@unauthenticated_user
 def login_2(request):
     print("valid")
     if request.method == 'POST':
@@ -92,27 +96,31 @@ def login_2(request):
       return render(request, 'physio-slim/login.html', context)
 
 
-
+@login_required(login_url='login')
 @api_view(['GET'])
 def api_all_branch(request):
     all_branch = branch.objects.all()
     br_ser = BranchSerializers(all_branch, many=True)
     return Response(br_ser.data)
 
+@login_required(login_url='login')
 @api_view(['GET'])
 def api_one_branch(request,br_id):
     br = branch.objects.get(id=br_id)
     br_ser = BranchSerializers(br,many=False)
     return Response(br_ser.data)
 
+@login_required(login_url='login')
 @api_view(['POST'])
 def api_add_branch(request):
     br_ser = BranchSerializers(data=request.data)
     if br_ser.is_valid():
         br_ser.save()
         return redirect('api-all')
-        
 
+
+        
+@login_required(login_url='login')
 @api_view(['POST'])
 def api_edit_branch(request,br_id):
     br = branch.objects.get(id=br_id)
@@ -121,6 +129,9 @@ def api_edit_branch(request,br_id):
         br_ser.save()
         return redirect('api-all')
 
+
+
+@login_required(login_url='login')
 @api_view(['DELETE'])
 def api_del_branch(request,br_id):
     br = branch.objects.get(id=br_id)

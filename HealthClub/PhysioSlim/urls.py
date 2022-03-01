@@ -8,7 +8,7 @@ urlpatterns = [
     #rest_framework
     path('users/', views.users, name='users'),
     path('user/<user_id>', views.user, name='user'),
-    #path('add-user/', views.add_user, name='add-user'),
+    path('add-user/', views.add_user, name='add-user'),
     path('verify/', views.verify_code, name='verify-code'),
     #api-branch  
     path('api-all', views.api_all_branch, name='api-all'),

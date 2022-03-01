@@ -1,12 +1,17 @@
-import imp
 from rest_framework import serializers
 from django.contrib.auth.models import User 
+from rest_framework.validators import UniqueValidator
 from .models import *
 from .models import User
+
+
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','username', 'email', 'password', 'age', 'avatar', 'gender', 'phone']
+
 
 
 class BranchSerializers(serializers.ModelSerializer):
