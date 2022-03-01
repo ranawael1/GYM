@@ -2,6 +2,9 @@ from importlib.resources import contents
 from multiprocessing import context
 from django.shortcuts import redirect, render
 from .models import User
+from .forms import CreateUserForm
+from django.contrib.auth import authenticate, login, logout
+
 from .forms import CreateUserForm, VerifyForm
 #rest_framework imports
 from rest_framework.response import Response # like render
@@ -71,3 +74,20 @@ def verify_code(request):
         form = VerifyForm()
         context = {'form': form}
     return render(request, 'physio-slim/verify.html', context)
+
+def login_2(request):
+    print("valid")
+    if request.method == 'POST':
+        username = request.POST.get('username' )
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request,user)
+            return render(request, 'physio-slim/home.html')
+        else:
+          return render(request, 'physio-slim/register.html')
+    else:
+      context ={}
+      return render(request, 'physio-slim/login.html', context)
+
+
