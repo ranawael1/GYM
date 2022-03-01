@@ -1,5 +1,7 @@
+from enum import unique
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.forms import CharField
 from phonenumber_field.modelfields import PhoneNumberField
 
 GENDER = (
@@ -19,3 +21,5 @@ class User(AbstractUser):
 # class Check(models.Model):
 #     phone = PhoneNumberField(unique = True, null = False, blank = False)
 #     is_verified = models.BooleanField(default=False)
+
+

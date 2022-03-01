@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from .decorators import verification_required  
 from django.contrib.auth import authenticate, login, logout
 
-#@verification_required  
+@verification_required  
 @api_view(['GET'])
 def users(request):
     users = User.objects.all()
