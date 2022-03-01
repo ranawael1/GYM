@@ -1,7 +1,8 @@
 from django.shortcuts import redirect, render
-from .models import User,branch
 # decorators and authentication
 from.decorators import unauthenticated_user
+from .models import User,branch,Offer
+from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .decorators import verification_required  
@@ -10,8 +11,13 @@ from .forms import CreateUserForm, VerifyForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer,BranchSerializers
+from .serializers import UserSerializer,BranchSerializers,OfferSerializers
 from . import verify
+from django.contrib.auth.decorators import login_required
+from .decorators import verification_required  
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.hashers import make_password
+
 
 
 
@@ -31,21 +37,25 @@ def user(request, user_id):
     user_ser = UserSerializer(user, many=False)
     return Response(user_ser.data)
 
-
 @api_view(['POST'])
 def add_user(request):
-    print("check1")
-
+    print("before")
     user_ser = UserSerializer(data=request.data)
-    print(user_ser)
+    print("after")
     if user_ser.is_valid():
-        print("vaild")
-        user = user_ser.save(commit=False)
-        phone = user_ser.cleaned_data.get('phone')
+        valid = user_ser._validated_data
+        user = User.objects.create( email=valid.get('email'),
+        username=valid.get('username'),
+        password = make_password(valid.get('password')),
+        age=valid.get('age'),
+        gender =valid.get('gender'),
+        phone=valid.get('phone')
+        )
         user.save()
-        print(phone)
-        return Response(user.data)
-
+    else:
+        print(user_ser.errors)
+    return redirect("users")
+    
 
 @unauthenticated_user
 def register(request):
@@ -56,9 +66,11 @@ def register(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.save()
+            pp = form.cleaned_data.get('avatar')
+            print(pp)
             phone = form.cleaned_data.get('phone')
             login(request, user)  # go to login page later
-            verify.send(phone)
+            # verify.send(phone)
             return redirect('users')
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
@@ -97,22 +109,23 @@ def login_2(request):
 
 
 @login_required(login_url='login')
+#BranchSerializers
 @api_view(['GET'])
-def api_all_branch(request):
+def all_branch(request):
     all_branch = branch.objects.all()
     br_ser = BranchSerializers(all_branch, many=True)
     return Response(br_ser.data)
 
 @login_required(login_url='login')
 @api_view(['GET'])
-def api_one_branch(request,br_id):
+def one_branch(request,br_id):
     br = branch.objects.get(id=br_id)
     br_ser = BranchSerializers(br,many=False)
     return Response(br_ser.data)
 
 @login_required(login_url='login')
 @api_view(['POST'])
-def api_add_branch(request):
+def add_branch(request):
     br_ser = BranchSerializers(data=request.data)
     if br_ser.is_valid():
         br_ser.save()
@@ -122,7 +135,7 @@ def api_add_branch(request):
         
 @login_required(login_url='login')
 @api_view(['POST'])
-def api_edit_branch(request,br_id):
+def edit_branch(request,br_id):
     br = branch.objects.get(id=br_id)
     br_ser = BranchSerializers(data=request.data, instance=br)
     if br_ser.is_valid():
@@ -133,10 +146,45 @@ def api_edit_branch(request,br_id):
 
 @login_required(login_url='login')
 @api_view(['DELETE'])
-def api_del_branch(request,br_id):
+def del_branch(request,br_id):
     br = branch.objects.get(id=br_id)
     br.delete()
     return Response('branch Deleted Success')
 
+
+#OfferSerializers
+@api_view(['GET'])
+def all_Offer(request):
+    all_Offer = Offer.objects.all()
+    of_ser = OfferSerializers(all_Offer, many=True)
+    return Response(of_ser.data)
+
+@api_view(['GET'])
+def one_Offer(request,of_id):
+    of = Offer.objects.get(id=of_id)
+    of_ser = OfferSerializers(of,many=False)
+    return Response(of_ser.data)
+
+@api_view(['POST'])
+def add_Offer(request):
+    of_ser = OfferSerializers(data=request.data)
+    if of_ser.is_valid():
+        of_ser.save()
+        return redirect('api-all')
+        
+
+@api_view(['POST'])
+def edit_Offer(request,of_id):
+    of = Offer.objects.get(id=of_id)
+    of_ser = OfferSerializers(data=request.data, instance=of)
+    if of_ser.is_valid():
+        of_ser.save()
+        return redirect('api-all')
+
+@api_view(['DELETE'])
+def del_Offer(request,of_id):
+    of = Offer.objects.get(id=of_id)
+    of.delete()
+    return Response('Offer Deleted Success')
 
 
