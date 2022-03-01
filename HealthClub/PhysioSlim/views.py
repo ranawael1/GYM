@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import login_required
 from .decorators import verification_required  
 from django.contrib.auth import authenticate, login, logout
 
-@verification_required  
+# @verification_required  
 @api_view(['GET'])
 def users(request):
     users = User.objects.all()
@@ -59,6 +59,7 @@ def register(request):
             return redirect('users')
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
+
 
 def verify_code(request):
     if request.method == 'POST':
