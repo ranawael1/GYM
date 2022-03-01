@@ -1,9 +1,13 @@
 from rest_framework import serializers
 from .models import User,branch,Offer
-from django.db import models
-from django.contrib.auth.hashers import make_password
+from rest_framework.validators import UniqueValidator
+
 
 class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+            required=True,
+            validators=[UniqueValidator(queryset=User.objects.all())]
+            )
     class Meta:
         model = User
         fields = ('id','username', 'email','password', 'age', 'gender', 'phone',)
