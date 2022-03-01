@@ -21,9 +21,8 @@ from django.contrib.auth.hashers import make_password
 
 
 
-
-@verification_required  
 @login_required(login_url='login')
+@verification_required  
 @api_view(['GET'])
 def users(request):
     users = User.objects.all()
@@ -70,7 +69,7 @@ def register(request):
             print(pp)
             phone = form.cleaned_data.get('phone')
             login(request, user)  # go to login page later
-            # verify.send(phone)
+            verify.send(phone)
             return redirect('users')
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
@@ -89,7 +88,7 @@ def verify_code(request):
     else:
         form = VerifyForm()
         context = {'form': form}
-    return render(request, 'physio-slim/verify.html', context)
+        return render(request, 'physio-slim/verify.html', context)
 
 @unauthenticated_user
 def login_2(request):

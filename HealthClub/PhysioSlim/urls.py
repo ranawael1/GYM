@@ -4,7 +4,6 @@ from . import views
 urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login_2, name='login'),
-
     #rest_framework
     path('users/', views.users, name='users'),
     path('user/<user_id>', views.user, name='user'),
