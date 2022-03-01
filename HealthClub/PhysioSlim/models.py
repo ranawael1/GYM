@@ -27,3 +27,16 @@ class User(AbstractUser):
 #     gender = models.CharField(choices=GENDER, max_length=20)
 #     avatar= models.ImageField(upload_to='avatars/')
 #     username = models.CharField(max_length=50)
+class branch(models.Model):
+    name = models.CharField(max_length=50, null= True)
+    address = models.CharField(max_length=50, null= True)
+
+    def __str__(self):
+        return self.name 
+
+class Offer(models.Model):
+    name = models.CharField(max_length=50, null= True)
+    num_of_class = models.IntegerField()
+    discount = models.FloatField()
+    def __str__(self):
+        return self.name 
