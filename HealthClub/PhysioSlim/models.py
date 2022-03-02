@@ -31,7 +31,7 @@ class User(AbstractUser):
 #     gender = models.CharField(choices=GENDER, max_length=20)
 #     avatar= models.ImageField(upload_to='avatars/')
 #     username = models.CharField(max_length=50)
-class branch(models.Model):
+class Branch(models.Model):
     name = models.CharField(max_length=50, null= True)
     address = models.CharField(max_length=50, null= True)
 
@@ -39,8 +39,17 @@ class branch(models.Model):
         return self.name 
 
 class Offer(models.Model):
-    name = models.CharField(max_length=50, null= True)
+    name = models.CharField(max_length=50, null = True)
     num_of_class = models.IntegerField()
     discount = models.FloatField()
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     def __str__(self):
         return self.name 
+
+class Event(models.Model):
+    event = models.CharField(max_length=50, null = False)
+    description = models.CharField(max_length=500, null = False)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='events/', null = True, blank=True)
+    def __str__(self):
+        return self.event 
