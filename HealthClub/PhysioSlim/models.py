@@ -48,8 +48,17 @@ class Offer(models.Model):
 
 class Event(models.Model):
     event = models.CharField(max_length=50, null = False)
-    description = models.CharField(max_length=500, null = False)
+    description = models.CharField(max_length=1000, null = False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to='events/', null = True, blank=True)
     def __str__(self):
         return self.event 
+
+
+class Clinic(models.Model):
+    clinic = models.CharField(max_length=50, null = False, unique=True)
+    description = models.CharField(max_length=1000, null = False)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='clinics/', null = True, blank=True)
+    def __str__(self):
+        return self.clinic 

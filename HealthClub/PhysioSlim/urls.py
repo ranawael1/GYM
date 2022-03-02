@@ -45,5 +45,7 @@ urlpatterns = [
     path('del-event/<ev_id>', views.delEvent, name='del-event'),
     #add-event-form
     path('add-event-form/', views.addingEvent, name='add-event-form'),
+    #add-clinic-form
+    path('add-clinic-form/', views.addingClinic, name='add-clinic-form'),
 ]
 
