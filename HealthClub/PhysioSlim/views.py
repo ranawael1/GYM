@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-import email
-from importlib.resources import contents
-from multiprocessing import context
-=======
 from django.http import HttpResponse
 from importlib.resources import contents
->>>>>>> 99b6fc756c4cf76802b963126bb66bc30c6f786a
 from django.shortcuts import redirect, render
 from .models import User,Branch,Offer,Event
 # decorators and authentication
@@ -127,7 +121,7 @@ def register(request):
             print(pp)
             phone = form.cleaned_data.get('phone')
             login(request, user)  # go to login page later
-            # verify.send(phone)
+            verify.send(phone)
             return redirect('users')
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
@@ -161,6 +155,7 @@ def register(request):
 #         context = {'form': form}
 #         return render(request, 'physio-slim/verify.html', context)
 
+# login Function 
 @unauthenticated_user
 def login_user(request):
     print("valid")
@@ -179,7 +174,7 @@ def login_user(request):
     else:
       context ={}
       return render(request, 'physio-slim/login.html', context)
-
+# logout users
 def logoutuser(request):
     logout(request)
     
