@@ -45,6 +45,17 @@ class Offer(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     def __str__(self):
         return self.name 
+class Train(models.Model):
+    train = models.CharField(max_length=50, null= True)
+
+class PersonalTrainer(models.Model):
+    name = models.CharField(max_length=50, null= True)
+    bio = models.CharField(max_length=500, null= True)
+    year_of_exprince = models.IntegerField()
+    train_name = models.ForeignKey(Train ,on_delete=models.CASCADE)
+    branch_name = models.ForeignKey(Branch ,on_delete=models.CASCADE)
+    def __str__(self):
+        return self.track_name
 
 class Event(models.Model):
     event = models.CharField(max_length=50, null = False)

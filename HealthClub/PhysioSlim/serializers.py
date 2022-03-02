@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Clinic, User, Branch, Offer, Event
+from .models import Clinic, User, Branch, Offer, Event,PersonalTrainer
 from rest_framework.validators import UniqueValidator
 
 
@@ -26,6 +26,14 @@ class OfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = Offer
         fields = ('__all__')
+
+
+
+class PersonalTrainerSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = PersonalTrainer
+        fields = ('__all__')
+
 
 
 

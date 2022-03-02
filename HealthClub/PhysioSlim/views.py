@@ -4,6 +4,11 @@ from django.shortcuts import redirect, render
 from .models import User,Branch,Offer,Event, Clinic
 # decorators and authentication
 from.decorators import unauthenticated_user
+<<<<<<< HEAD
+from .models import User,Branch,Offer,PersonalTrainer
+from .forms import CreateUserForm
+=======
+>>>>>>> 99b6fc756c4cf76802b963126bb66bc30c6f786a
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
@@ -13,7 +18,11 @@ from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
+<<<<<<< HEAD
+from .serializers import UserSerializer,VerifySerializer,BranchSerializers,OfferSerializers,PersonalTrainerSerializers
+=======
 from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer
+>>>>>>> 99b6fc756c4cf76802b963126bb66bc30c6f786a
 from . import verify
 
 
@@ -260,6 +269,40 @@ def del_Offer(request,of_id):
     return Response('Offer Deleted Success')
 
 
+#Personal Trainer Serializers
+@api_view(['GET'])
+def all_PersonalTrainer(request):
+    all_PersonalTrainer = PersonalTrainer.objects.all()
+    pt_ser = PersonalTrainerSerializers(all_PersonalTrainer, many=True)
+    return Response(pt_ser.data)
+
+@api_view(['GET'])
+def one_PersonalTrainer(request,pt_id):
+    pt = PersonalTrainer.objects.get(id=pt_id)
+    pt_ser = PersonalTrainerSerializers(pt,many=False)
+    return Response(pt_ser.data)
+
+@api_view(['POST'])
+def add_PersonalTrainer(request):
+    pt_ser = PersonalTrainerSerializers(data=request.data)
+    if pt_ser.is_valid():
+        pt_ser.save()
+        return redirect('api-all')
+        
+
+@api_view(['POST'])
+def edit_PersonalTrainer(request,pt_id):
+    pt = PersonalTrainer.objects.get(id=pt_id)
+    pt_ser = PersonalTrainerSerializers(data=request.data, instance=pt)
+    if pt_ser.is_valid():
+        pt_ser.save()
+        return redirect('api-all')
+
+@api_view(['DELETE'])
+def del_PersonalTrainer(request,pt_id):
+    pt = PersonalTrainer.objects.get(id=pt_id)
+    pt.delete()
+    return Response('PersonalTrainer Deleted Success')
 
 # Events API
 #display all events
