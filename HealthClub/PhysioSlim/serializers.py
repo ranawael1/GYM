@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User,Branch,Offer,PersonalTrainer
+from .models import User,Branch,Offer,PersonalTrainer,Event
 from rest_framework.validators import UniqueValidator
 
 
@@ -17,12 +17,12 @@ class VerifySerializer(serializers.Serializer):
     code = serializers.CharField()
 
 
-class BranchSerializers(serializers.ModelSerializer):
+class BranchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
         fields = ('__all__')
 
-class OfferSerializers(serializers.ModelSerializer):
+class OfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = Offer
         fields = ('__all__')
@@ -37,6 +37,10 @@ class PersonalTrainerSerializers(serializers.ModelSerializer):
 
 
 
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
 
 # class CheckSerializer(serializers.ModelSerializer):
 #     class Meta:

@@ -1,24 +1,31 @@
-
+from django.http import HttpResponse
 from importlib.resources import contents
 from django.shortcuts import redirect, render
+from .models import User,Branch,Offer,Event
 # decorators and authentication
 from.decorators import unauthenticated_user
+<<<<<<< HEAD
 from .models import User,Branch,Offer,PersonalTrainer
 from .forms import CreateUserForm
+=======
+>>>>>>> 99b6fc756c4cf76802b963126bb66bc30c6f786a
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .decorators import verification_required  
+from django.contrib.auth.hashers import make_password
+# from .decorators import verification_required  
 #forms
-from .forms import CreateUserForm, VerifyForm
+from .forms import CreateUserForm, VerifyForm, EventForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
+<<<<<<< HEAD
 from .serializers import UserSerializer,VerifySerializer,BranchSerializers,OfferSerializers,PersonalTrainerSerializers
+=======
+from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer
+>>>>>>> 99b6fc756c4cf76802b963126bb66bc30c6f786a
 from . import verify
-from django.contrib.auth.decorators import login_required
-from .decorators import verification_required  
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.hashers import make_password
+
+
 
 from rest_framework.views import exception_handler
 from rest_framework import status
@@ -32,7 +39,7 @@ def logoutUser(request):
     return redirect('login')
 
 @login_required(login_url='login')
-@verification_required  
+# @verification_required  
 @api_view(['GET'])
 def users(request):
     users = User.objects.all()
@@ -123,7 +130,7 @@ def register(request):
             print(pp)
             phone = form.cleaned_data.get('phone')
             login(request, user)  # go to login page later
-            verify.send(phone)
+            # verify.send(phone)
             return redirect('users')
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
@@ -187,20 +194,20 @@ def logoutuser(request):
 @api_view(['GET'])
 def all_branch(request):
     all_branch = Branch.objects.all()
-    br_ser = BranchSerializers(all_branch, many=True)
+    br_ser = BranchSerializer(all_branch, many=True)
     return Response(br_ser.data)
 
 @login_required(login_url='login')
 @api_view(['GET'])
 def one_branch(request,br_id):
     br = Branch.objects.get(id=br_id)
-    br_ser = BranchSerializers(br,many=False)
+    br_ser = BranchSerializer(br,many=False)
     return Response(br_ser.data)
 
 @login_required(login_url='login')
 @api_view(['POST'])
 def add_branch(request):
-    br_ser = BranchSerializers(data=request.data)
+    br_ser = BranchSerializer(data=request.data)
     if br_ser.is_valid():
         br_ser.save()
         return redirect('api-all')
@@ -211,7 +218,7 @@ def add_branch(request):
 @api_view(['POST'])
 def edit_branch(request,br_id):
     br = Branch.objects.get(id=br_id)
-    br_ser = BranchSerializers(data=request.data, instance=br)
+    br_ser = BranchSerializer(data=request.data, instance=br)
     if br_ser.is_valid():
         br_ser.save()
         return redirect('api-all')
@@ -230,18 +237,18 @@ def del_branch(request,br_id):
 @api_view(['GET'])
 def all_Offer(request):
     all_Offer = Offer.objects.all()
-    of_ser = OfferSerializers(all_Offer, many=True)
+    of_ser = OfferSerializer(all_Offer, many=True)
     return Response(of_ser.data)
 
 @api_view(['GET'])
 def one_Offer(request,of_id):
     of = Offer.objects.get(id=of_id)
-    of_ser = OfferSerializers(of,many=False)
+    of_ser = OfferSerializer(of,many=False)
     return Response(of_ser.data)
 
 @api_view(['POST'])
 def add_Offer(request):
-    of_ser = OfferSerializers(data=request.data)
+    of_ser = OfferSerializer(data=request.data)
     if of_ser.is_valid():
         of_ser.save()
         return redirect('api-all')
@@ -250,7 +257,7 @@ def add_Offer(request):
 @api_view(['POST'])
 def edit_Offer(request,of_id):
     of = Offer.objects.get(id=of_id)
-    of_ser = OfferSerializers(data=request.data, instance=of)
+    of_ser = OfferSerializer(data=request.data, instance=of)
     if of_ser.is_valid():
         of_ser.save()
         return redirect('api-all')
@@ -296,3 +303,59 @@ def del_PersonalTrainer(request,pt_id):
     pt = PersonalTrainer.objects.get(id=pt_id)
     pt.delete()
     return Response('PersonalTrainer Deleted Success')
+
+# Events API
+#display all events
+@api_view(['GET'])
+def allEvents(request):
+    all_ev = Event.objects.all()
+    all_events = EventSerializer(all_ev, many=True)
+    return Response(all_events.data)
+
+
+# displaying the events of a certain branch
+@api_view(['GET'])
+def showBranchEvents(request, br_id):
+    branch_ev = Event.objects.filter(branch_id=br_id)
+    branch_events = EventSerializer(branch_ev, many=True)
+    return Response(branch_events.data)
+
+#adding an event to a certain branch
+@api_view(['POST'])
+def addEvent(request):
+    added_event = EventSerializer(data=request.data)
+    if added_event.is_valid():
+        added_event.save()
+        return redirect ('all-events')
+
+
+#edit event
+@api_view(['POST'])
+def editEvent(request, ev_id):
+    event = Event.objects.get(id=ev_id)
+    event_ser = EventSerializer(data=request.data, instance=event)
+    if event_ser.is_valid():
+        event_ser.save()
+        return redirect ('all-events')
+
+#delete event
+@api_view(['DELETE'])
+def delEvent(request,ev_id):
+    event = Event.objects.get(id=ev_id)
+    event.delete()
+    return HttpResponse ('Event deleted')
+
+#add event form for testing
+def addingEvent(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('all-events')
+    else:
+        form = EventForm()
+        return render(request, 'physio-slim/addeventform.html', {'form' : form})
+
+
+
+

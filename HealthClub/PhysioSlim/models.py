@@ -39,9 +39,10 @@ class Branch(models.Model):
         return self.name 
 
 class Offer(models.Model):
-    name = models.CharField(max_length=50, null= True)
+    name = models.CharField(max_length=50, null = True)
     num_of_class = models.IntegerField()
     discount = models.FloatField()
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     def __str__(self):
         return self.name 
 class Train(models.Model):
@@ -55,3 +56,11 @@ class PersonalTrainer(models.Model):
     branch_name = models.ForeignKey(Branch ,on_delete=models.CASCADE)
     def __str__(self):
         return self.track_name
+
+class Event(models.Model):
+    event = models.CharField(max_length=50, null = False)
+    description = models.CharField(max_length=500, null = False)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='events/', null = True, blank=True)
+    def __str__(self):
+        return self.event 

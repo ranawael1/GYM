@@ -19,24 +19,25 @@ urlpatterns = [
     path('users/', views.users, name='users'),
     path('user/<user_id>', views.user, name='user'),
     path('add-user/', views.add_user, name='add-user'),
+    # path('verify/', views.verify_code, name='verify-code'),  
     path('verify/', views.verify_code, name='verify-code'),  
     path('api-verify/<user>', views.verify_code_api, name='verify-code-api'),  
     path('edit-user/<user_id>', views.edit_user, name='edit-user'),  
     path('delete-user/<user_id>', views.del_user, name='delete-user'),  
 
     #api-branch  
-    path('branch-all', views.all_branch, name='branch-all'),
+    path('branch-all/', views.all_branch, name='branch-all'),
     path('branch-one/<br_id>', views.one_branch, name='branch-one'),
     path('branch-add', views.add_branch, name='branch-add'),
     path('branch-edit/<br_id>', views.edit_branch, name='branch-edit'),
     path('branch-del/<br_id>', views.del_branch, name='branch-del'),
     #api-Offer  
-    path('Offer-all', views.all_Offer, name='Offer-all'),
+    path('Offer-all/', views.all_Offer, name='Offer-all'),
     path('Offer-one/<of_id>', views.one_Offer, name='Offer-one'),
     path('Offer-add', views.add_Offer, name='Offer-add'),
     path('Offer-edit/<of_id>', views.edit_Offer, name='Offer-edit'),
     path('Offer-del/<of_id>', views.del_Offer, name='Offer-del'),
-    #api-Offer  
+    #api-PersonalTrainer  
     path('PersonalTrainer-all', views.all_PersonalTrainer, name='PersonalTrainer-all'),
     path('PersonalTrainer-one/<pt_id>', views.one_PersonalTrainer, name='PersonalTrainer-one'),
     path('PersonalTrainer-add', views.add_PersonalTrainer, name='PersonalTrainer-add'),
@@ -44,5 +45,13 @@ urlpatterns = [
     path('PersonalTrainer-del/<pt_id>', views.del_PersonalTrainer, name='PersonalTrainer-del'),
     
     
+    #api-event  
+    path('all-events/', views.allEvents, name='all-events'),
+    path('branch-events/<br_id>', views.showBranchEvents, name='branch-events'),
+    path('add-event/', views.addEvent, name='add-event'),
+    path('edit-event/<ev_id>', views.editEvent, name='edit-event'),
+    path('del-event/<ev_id>', views.delEvent, name='del-event'),
+    #add-event-form
+    path('add-event-form/', views.addingEvent, name='add-event-form'),
 ]
 
