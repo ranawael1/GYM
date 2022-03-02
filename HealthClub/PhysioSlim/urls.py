@@ -20,14 +20,11 @@ urlpatterns = [
     path('user/<user_id>', views.user, name='user'),
     path('add-user/', views.add_user, name='add-user'),
     # path('verify/', views.verify_code, name='verify-code'),  
-<<<<<<< HEAD
-=======
     path('verify/', views.verify_code, name='verify-code'),  
     path('api-verify/<user>', views.verify_code_api, name='verify-code-api'),  
     path('edit-user/<user_id>', views.edit_user, name='edit-user'),  
     path('delete-user/<user_id>', views.del_user, name='delete-user'),  
 
->>>>>>> 99b6fc756c4cf76802b963126bb66bc30c6f786a
     #api-branch  
     path('branch-all/', views.all_branch, name='branch-all'),
     path('branch-one/<br_id>', views.one_branch, name='branch-one'),
