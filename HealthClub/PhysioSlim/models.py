@@ -1,4 +1,3 @@
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.forms import CharField
@@ -9,6 +8,8 @@ GENDER = (
 ('male', 'male'),
 ('female', 'female')
 )
+
+
 class User(AbstractUser):
     phone = PhoneNumberField(unique = True, null = False, blank = False)
     is_verified = models.BooleanField(default=False)
@@ -48,8 +49,9 @@ class Offer(models.Model):
     
 POSITION = (
 (None, 'Position'),
-('PT', 'pt'),
-('floor&pt', 'floor&pt')
+('PT', 'PT'),
+('floor', 'Floor'),
+('floor&PT', 'Floor & PT')
 )
 class PersonalTrainer(models.Model):
     name = models.CharField(max_length=50, null= True)
@@ -58,11 +60,11 @@ class PersonalTrainer(models.Model):
     position = models.CharField(choices=GENDER, max_length=20)
     branch_name = models.ForeignKey(Branch ,on_delete=models.CASCADE)
     def __str__(self):
-        return self.track_name
+        return self.name
 
 class Event(models.Model):
     event = models.CharField(max_length=50, null = False)
-    description = models.CharField(max_length=500, null = False)
+    description = models.CharField(max_length=1000, null = False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to='events/', null = True, blank=True)
     def __str__(self):
@@ -75,3 +77,11 @@ class Class(models.Model):
     photo = models.ImageField(upload_to='Classes/', null = True, blank=True)
     def __str__(self):
         return self.Class 
+
+class Clinic(models.Model):
+    clinic = models.CharField(max_length=50, null = False, unique=True)
+    description = models.CharField(max_length=1000, null = False)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='clinics/', null = True, blank=True)
+    def __str__(self):
+        return self.clinic 

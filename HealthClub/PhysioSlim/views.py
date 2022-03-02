@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from importlib.resources import contents
 from django.shortcuts import redirect, render
-from .models import User,Branch,Offer,Event,Class
+from .models import User,Branch,Offer,Event,Class, Clinic
 # decorators and authentication
 from.decorators import unauthenticated_user
 from .models import User,Branch,Offer,PersonalTrainer
@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 # from .decorators import verification_required  
 #forms
-from .forms import CreateUserForm, VerifyForm, EventForm
+from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
@@ -303,6 +303,8 @@ def del_PersonalTrainer(request,pt_id):
     pt.delete()
     return Response('PersonalTrainer Deleted Success')
 
+
+
 # Events API
 #display all events
 @api_view(['GET'])
@@ -400,3 +402,13 @@ def delClass(request,ev_id):
 
 
 
+#add event form for testing
+def addingClinic(request):
+    if request.method == 'POST':
+        form = ClinicForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('all-events')
+    else:
+        form = ClinicForm()
+        return render(request, 'physio-slim/addClinicForm.html', {'form' : form})
