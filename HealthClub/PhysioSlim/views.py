@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from importlib.resources import contents
 from django.shortcuts import redirect, render
-from .models import User,Branch,Offer,Event, Clinic
+from .models import User,Branch,Offer,Event,Class, Clinic
 # decorators and authentication
 from.decorators import unauthenticated_user
 from .models import User,Branch,Offer,PersonalTrainer
@@ -15,7 +15,7 @@ from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer,BranchSerializer,OfferSerializer,VerifySerializer,PersonalTrainerSerializers,EventSerializer
+from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer
 from . import verify
 
 
@@ -356,6 +356,48 @@ def addingEvent(request):
     else:
         form = EventForm()
         return render(request, 'physio-slim/addeventform.html', {'form' : form})
+
+# Classes API
+#display all classes
+@api_view(['GET'])
+def allClasses(request):
+    all_cl = Class.objects.all()
+    all_classes = ClassSerializer(all_cl, many=True)
+    return Response(all_classes.data)
+
+
+# displaying the events of a certain branch
+@api_view(['GET'])
+def showBranchClasses(request, br_id):
+    branch_cl = Class.objects.filter(branch_id=br_id)
+    branch_classes = ClassSerializer(branch_cl, many=True)
+    return Response(branch_classes.data)
+
+#adding an event to a certain branch
+@api_view(['POST'])
+def addClass(request):
+    added_class = ClassSerializer(data=request.data)
+    if added_class.is_valid():
+        added_class.save()
+        return redirect ('all-classes')
+
+
+#edit event
+@api_view(['POST'])
+def editClass(request, cl_id):
+    classes = Class.objects.get(id=cl_id)
+    classes_ser = ClassSerializer(data=request.data, instance=classes)
+    if classes_ser.is_valid():
+        classes_ser.save()
+        return redirect ('all-classes')
+
+#delete event
+@api_view(['DELETE'])
+def delClass(request,ev_id):
+    event = Class.objects.get(id=ev_id)
+    event.delete()
+    return HttpResponse ('Class deleted')
+
 
 
 
