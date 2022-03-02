@@ -1,9 +1,14 @@
-import json
+
+from importlib.resources import contents
 from django.shortcuts import redirect, render
+# decorators and authentication
+from.decorators import unauthenticated_user
 from .models import User,branch,Offer
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
-
+from django.contrib.auth.decorators import login_required
+from .decorators import verification_required  
+#forms
 from .forms import CreateUserForm, VerifyForm
 #rest_framework imports
 from rest_framework.response import Response # like render
@@ -19,13 +24,22 @@ from rest_framework.views import exception_handler
 from rest_framework import status
 
 
-#@verification_required  
+#logout
+def logoutUser(request):
+    logout(request)
+    # return redirect(request.META.get('HTTP_REFERER'))  #to stay in the same page after logging out
+    
+    return redirect('login')
+
+@login_required(login_url='login')
+@verification_required  
 @api_view(['GET'])
 def users(request):
     users = User.objects.all()
     users_ser = UserSerializer(users, many=True)
     return Response(users_ser.data)
-
+    
+@login_required(login_url='login')
 @api_view(['GET'])
 def user(request, user_id):
     user = User.objects.get(id = user_id)
@@ -96,6 +110,7 @@ def del_user(request, user_id):
     return redirect("users")
 
 
+@unauthenticated_user
 def register(request):
     form = CreateUserForm()
     print(form)
@@ -113,6 +128,20 @@ def register(request):
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
 
+# def verify_code(request):
+#     if request.method == 'POST':
+#         form = VerifyForm(request.POST)
+#         if form.is_valid():
+#             code = form.cleaned_data.get('code')
+#             phone = request.user.phone
+#             if verify.check(request.user.phone, code):
+#                 request.user.is_verified = True
+#                 request.user.save()
+#                 return redirect('users')
+#     else:
+#         form = VerifyForm()
+#         context = {'form': form}
+#     return render(request, 'physio-slim/verify.html', context)
 def verify_code(request):
     if request.method == 'POST':
         form = VerifyForm(request.POST)
@@ -126,13 +155,17 @@ def verify_code(request):
     else:
         form = VerifyForm()
         context = {'form': form}
-    return render(request, 'physio-slim/verify.html', context)
+        return render(request, 'physio-slim/verify.html', context)
 
-def login_2(request):
+@unauthenticated_user
+def login_user(request):
     print("valid")
     if request.method == 'POST':
         username = request.POST.get('username' )
         password = request.POST.get('password')
+        print("valid")
+       
+        print(username)
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request,user)
@@ -143,7 +176,13 @@ def login_2(request):
       context ={}
       return render(request, 'physio-slim/login.html', context)
 
+def logoutuser(request):
+    logout(request)
+    
+    return redirect('login')
 
+
+@login_required(login_url='login')
 #BranchSerializers
 @api_view(['GET'])
 def all_branch(request):
@@ -151,20 +190,24 @@ def all_branch(request):
     br_ser = BranchSerializers(all_branch, many=True)
     return Response(br_ser.data)
 
+@login_required(login_url='login')
 @api_view(['GET'])
 def one_branch(request,br_id):
     br = branch.objects.get(id=br_id)
     br_ser = BranchSerializers(br,many=False)
     return Response(br_ser.data)
 
+@login_required(login_url='login')
 @api_view(['POST'])
 def add_branch(request):
     br_ser = BranchSerializers(data=request.data)
     if br_ser.is_valid():
         br_ser.save()
         return redirect('api-all')
-        
 
+
+        
+@login_required(login_url='login')
 @api_view(['POST'])
 def edit_branch(request,br_id):
     br = branch.objects.get(id=br_id)
@@ -173,6 +216,9 @@ def edit_branch(request,br_id):
         br_ser.save()
         return redirect('api-all')
 
+
+
+@login_required(login_url='login')
 @api_view(['DELETE'])
 def del_branch(request,br_id):
     br = branch.objects.get(id=br_id)

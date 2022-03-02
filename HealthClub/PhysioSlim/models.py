@@ -1,5 +1,7 @@
+from enum import unique
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.forms import CharField
 from phonenumber_field.modelfields import PhoneNumberField
 
 GENDER = (
@@ -13,6 +15,8 @@ class User(AbstractUser):
     age = models.IntegerField()
     gender = models.CharField(choices=GENDER, max_length=20)
     #avatar= models.ImageField(upload_to='avatars/')
+
+
 
     REQUIRED_FIELDS = ['age', 'gender']
 
