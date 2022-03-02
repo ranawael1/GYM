@@ -4,11 +4,8 @@ from django.shortcuts import redirect, render
 from .models import User,Branch,Offer,Event
 # decorators and authentication
 from.decorators import unauthenticated_user
-<<<<<<< HEAD
 from .models import User,Branch,Offer,PersonalTrainer
 from .forms import CreateUserForm
-=======
->>>>>>> 99b6fc756c4cf76802b963126bb66bc30c6f786a
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
@@ -18,11 +15,7 @@ from .forms import CreateUserForm, VerifyForm, EventForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
-<<<<<<< HEAD
-from .serializers import UserSerializer,VerifySerializer,BranchSerializers,OfferSerializers,PersonalTrainerSerializers
-=======
-from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer
->>>>>>> 99b6fc756c4cf76802b963126bb66bc30c6f786a
+from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers
 from . import verify
 
 
