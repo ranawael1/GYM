@@ -17,5 +17,15 @@ def check(phone, code):
         print(result)
     except TwilioRestException:
         print('no')
+        result.status = "canceled"
         return False
     return result.status == 'approved'
+# def check(phone, code):
+#     try:
+#         print(phone, code)
+#         result = verify.verification_checks.create(to=str(phone), code=str(code))
+#         print(result)
+#     except TwilioRestException:
+#         print('no')
+#         return False
+#     return result.status == 'approved'
