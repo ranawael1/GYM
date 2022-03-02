@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User,branch,Offer
+from .models import User,Branch,Offer,Event
 from rest_framework.validators import UniqueValidator
 
 
@@ -14,19 +14,22 @@ class UserSerializer(serializers.ModelSerializer):
         
 
 
-class BranchSerializers(serializers.ModelSerializer):
+class BranchSerializer(serializers.ModelSerializer):
     class Meta:
-        model = branch
+        model = Branch
         fields = ('__all__')
 
-class OfferSerializers(serializers.ModelSerializer):
+class OfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = Offer
         fields = ('__all__')
 
 
 
-
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
 
 # class CheckSerializer(serializers.ModelSerializer):
 #     class Meta:
