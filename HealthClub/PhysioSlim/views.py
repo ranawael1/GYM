@@ -264,6 +264,12 @@ def del_Offer(request,of_id):
 
 #Personal Trainer Serializers
 @api_view(['GET'])
+def showBranchTrainer(request, br_id):
+    branch_pt = PersonalTrainer.objects.filter(branch_id=br_id)
+    branch_Trainers = PersonalTrainerSerializers(branch_pt, many=True)
+    return Response(branch_Trainers.data) 
+
+@api_view(['GET'])
 def all_PersonalTrainer(request):
     all_PersonalTrainer = PersonalTrainer.objects.all()
     pt_ser = PersonalTrainerSerializers(all_PersonalTrainer, many=True)
