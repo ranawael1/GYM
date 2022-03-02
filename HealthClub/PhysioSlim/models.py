@@ -31,7 +31,7 @@ class User(AbstractUser):
 #     gender = models.CharField(choices=GENDER, max_length=20)
 #     avatar= models.ImageField(upload_to='avatars/')
 #     username = models.CharField(max_length=50)
-class branch(models.Model):
+class Branch(models.Model):
     name = models.CharField(max_length=50, null= True)
     address = models.CharField(max_length=50, null= True)
 
@@ -44,3 +44,14 @@ class Offer(models.Model):
     discount = models.FloatField()
     def __str__(self):
         return self.name 
+class Train(models.Model):
+    train = models.CharField(max_length=50, null= True)
+
+class PersonalTrainer(models.Model):
+    name = models.CharField(max_length=50, null= True)
+    bio = models.CharField(max_length=500, null= True)
+    year_of_exprince = models.IntegerField()
+    train_name = models.ForeignKey(Train ,on_delete=models.CASCADE)
+    branch_name = models.ForeignKey(Branch ,on_delete=models.CASCADE)
+    def __str__(self):
+        return self.track_name

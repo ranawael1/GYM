@@ -3,7 +3,7 @@ from importlib.resources import contents
 from django.shortcuts import redirect, render
 # decorators and authentication
 from.decorators import unauthenticated_user
-from .models import User,branch,Offer
+from .models import User,Branch,Offer,PersonalTrainer
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -13,7 +13,7 @@ from .forms import CreateUserForm, VerifyForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer,VerifySerializer,BranchSerializers,OfferSerializers
+from .serializers import UserSerializer,VerifySerializer,BranchSerializers,OfferSerializers,PersonalTrainerSerializers
 from . import verify
 from django.contrib.auth.decorators import login_required
 from .decorators import verification_required  
@@ -186,14 +186,14 @@ def logoutuser(request):
 #BranchSerializers
 @api_view(['GET'])
 def all_branch(request):
-    all_branch = branch.objects.all()
+    all_branch = Branch.objects.all()
     br_ser = BranchSerializers(all_branch, many=True)
     return Response(br_ser.data)
 
 @login_required(login_url='login')
 @api_view(['GET'])
 def one_branch(request,br_id):
-    br = branch.objects.get(id=br_id)
+    br = Branch.objects.get(id=br_id)
     br_ser = BranchSerializers(br,many=False)
     return Response(br_ser.data)
 
@@ -210,7 +210,7 @@ def add_branch(request):
 @login_required(login_url='login')
 @api_view(['POST'])
 def edit_branch(request,br_id):
-    br = branch.objects.get(id=br_id)
+    br = Branch.objects.get(id=br_id)
     br_ser = BranchSerializers(data=request.data, instance=br)
     if br_ser.is_valid():
         br_ser.save()
@@ -221,7 +221,7 @@ def edit_branch(request,br_id):
 @login_required(login_url='login')
 @api_view(['DELETE'])
 def del_branch(request,br_id):
-    br = branch.objects.get(id=br_id)
+    br = Branch.objects.get(id=br_id)
     br.delete()
     return Response('branch Deleted Success')
 
@@ -262,3 +262,37 @@ def del_Offer(request,of_id):
     return Response('Offer Deleted Success')
 
 
+#Personal Trainer Serializers
+@api_view(['GET'])
+def all_PersonalTrainer(request):
+    all_PersonalTrainer = PersonalTrainer.objects.all()
+    pt_ser = PersonalTrainerSerializers(all_PersonalTrainer, many=True)
+    return Response(pt_ser.data)
+
+@api_view(['GET'])
+def one_PersonalTrainer(request,pt_id):
+    pt = PersonalTrainer.objects.get(id=pt_id)
+    pt_ser = PersonalTrainerSerializers(pt,many=False)
+    return Response(pt_ser.data)
+
+@api_view(['POST'])
+def add_PersonalTrainer(request):
+    pt_ser = PersonalTrainerSerializers(data=request.data)
+    if pt_ser.is_valid():
+        pt_ser.save()
+        return redirect('api-all')
+        
+
+@api_view(['POST'])
+def edit_PersonalTrainer(request,pt_id):
+    pt = PersonalTrainer.objects.get(id=pt_id)
+    pt_ser = PersonalTrainerSerializers(data=request.data, instance=pt)
+    if pt_ser.is_valid():
+        pt_ser.save()
+        return redirect('api-all')
+
+@api_view(['DELETE'])
+def del_PersonalTrainer(request,pt_id):
+    pt = PersonalTrainer.objects.get(id=pt_id)
+    pt.delete()
+    return Response('PersonalTrainer Deleted Success')

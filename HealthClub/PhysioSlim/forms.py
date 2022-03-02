@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import User,branch,Offer
+from .models import User,Branch,Offer
 #a modified UserCreationForm so we can add a new field(email)
 class CreateUserForm(UserCreationForm):
     class Meta:
@@ -16,7 +16,7 @@ class VerifyForm(forms.Form):
 #         fields = ('phone',)
 class BranchForm(forms.ModelForm):
     class Meta:
-        model = branch
+        model = Branch
         fields = ('name', 'address')
         widgets = { 'name': forms.TextInput(attrs={'class': 'form-control'}), 'address': forms.TextInput(attrs={'class': 'form-control'})}
 
