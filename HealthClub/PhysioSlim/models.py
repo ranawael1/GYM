@@ -1,5 +1,4 @@
-from enum import unique
-from turtle import position
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.forms import CharField
@@ -19,7 +18,7 @@ class User(AbstractUser):
 
 
 
-    REQUIRED_FIELDS = ['age', 'gender']
+    REQUIRED_FIELDS = ['age', 'gender','phone']
 
 # class Check(models.Model):
 #     phone = PhoneNumberField(unique = True, null = False, blank = False)
@@ -68,3 +67,11 @@ class Event(models.Model):
     photo = models.ImageField(upload_to='events/', null = True, blank=True)
     def __str__(self):
         return self.event 
+
+class Class(models.Model):
+    Class = models.CharField(max_length=50, null = False)
+    description = models.CharField(max_length=500, null = False)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='Classes/', null = True, blank=True)
+    def __str__(self):
+        return self.Class 

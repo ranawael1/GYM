@@ -51,6 +51,12 @@ urlpatterns = [
     path('add-event/', views.addEvent, name='add-event'),
     path('edit-event/<ev_id>', views.editEvent, name='edit-event'),
     path('del-event/<ev_id>', views.delEvent, name='del-event'),
+    #api-Class  
+    path('all-classes/', views.allClasses, name='all-classes'),
+    path('branch-classes/<br_id>', views.showBranchClasses, name='branch-classes'),
+    path('add-class/', views.addClass, name='add-class'),
+    path('edit-class/<ev_id>', views.editClass, name='edit-class'),
+    path('del-class/<ev_id>', views.delClass, name='del-class'),
     #add-event-form
     path('add-event-form/', views.addingEvent, name='add-event-form'),
 ]
