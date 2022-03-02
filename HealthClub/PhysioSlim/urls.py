@@ -4,8 +4,8 @@ from . import views
 
 urlpatterns = [
     path('register/', views.register, name='register'),
-    path('login/', views.login_2, name='login'),
-    path('logout/', views.logoutUser, name='logout'),
+    path('login/', views.login_user, name='login'),
+    path('logout/', views.logoutuser, name='logout'),
     #reset password form
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="password_reset/password_reset.html"), name="reset_password"),
     #notify the user to check their email 
@@ -20,6 +20,11 @@ urlpatterns = [
     path('user/<user_id>', views.user, name='user'),
     path('add-user/', views.add_user, name='add-user'),
     # path('verify/', views.verify_code, name='verify-code'),  
+    path('verify/', views.verify_code, name='verify-code'),  
+    path('api-verify/<user>', views.verify_code_api, name='verify-code-api'),  
+    path('edit-user/<user_id>', views.edit_user, name='edit-user'),  
+    path('delete-user/<user_id>', views.del_user, name='delete-user'),  
+
     #api-branch  
     path('branch-all/', views.all_branch, name='branch-all'),
     path('branch-one/<br_id>', views.one_branch, name='branch-one'),

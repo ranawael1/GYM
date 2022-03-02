@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from importlib.resources import contents
 from django.shortcuts import redirect, render
 from .models import User,Branch,Offer,Event
 # decorators and authentication
@@ -12,10 +13,13 @@ from .forms import CreateUserForm, VerifyForm, EventForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer
+from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer
 from . import verify
 
 
+
+from rest_framework.views import exception_handler
+from rest_framework import status
 
 
 #logout
@@ -42,23 +46,67 @@ def user(request, user_id):
 
 @api_view(['POST'])
 def add_user(request):
-    print("before")
     user_ser = UserSerializer(data=request.data)
-    print("after")
     if user_ser.is_valid():
         valid = user_ser._validated_data
-        user = User.objects.create( email=valid.get('email'),
-        username=valid.get('username'),
-        password = make_password(valid.get('password')),
-        age=valid.get('age'),
-        gender =valid.get('gender'),
+        username= valid.get('username')
         phone=valid.get('phone')
-        )
-        user.save()
-    else:
-        print(user_ser.errors)
+        email = valid.get('email')
+        password = make_password(valid.get('password'))
+        age = valid.get('age')
+        gender = gender =valid.get('gender')
+        user_data = {'username': username,'email': email,'password': password, 'phone': phone, 'age': age, 'gender': gender}
+        try:
+            verify.send(phone)
+        except:
+            error = {
+                    "error":{
+                    "statusCode": 429,
+                        "message": "Rate limit is exceeded. Try again later" 
+                    }
+                }
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        return redirect("verify-code-api", user=user_data)
+    return Response(user_ser.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(["POST"])   
+def verify_code_api(request, user):
+    if request.method == 'POST':
+        user = eval(str(user))
+        form = VerifySerializer(data=request.data)
+        if form.is_valid():
+            valid = form._validated_data
+            code = valid.get('code')
+            phone = user['phone']
+            try:
+                x = verify.check(phone, code)
+                new_user = User.objects.create( email=user['email'],
+                username=user['username'],
+                age=user['age'],
+                gender =user['age'],
+                phone=user['phone'],
+                is_verified=True)
+                new_user.save()
+                return redirect('users')
+            except:
+                return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+def edit_user(request, user_id):
+    user = User.objects.get(id=user_id)
+    user_ser = UserSerializer(data=request.data, instance=user)
+    if user_ser.is_valid():
+        user_ser.save()
+        return redirect("users")
+    return Response(user_ser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["DELETE"])
+def del_user(request, user_id):
+    user = User.objects.get(id=user_id)
+    user.delete()
     return redirect("users")
-    
+
 
 @unauthenticated_user
 def register(request):
@@ -78,7 +126,6 @@ def register(request):
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
 
-
 # def verify_code(request):
 #     if request.method == 'POST':
 #         form = VerifyForm(request.POST)
@@ -92,14 +139,31 @@ def register(request):
 #     else:
 #         form = VerifyForm()
 #         context = {'form': form}
-#         return render(request, 'physio-slim/verify.html', context)
+#     return render(request, 'physio-slim/verify.html', context)
+def verify_code(request):
+    if request.method == 'POST':
+        form = VerifyForm(request.POST)
+        if form.is_valid():
+            code = form.cleaned_data.get('code')
+            phone = request.user.phone
+            if verify.check(request.user.phone, code):
+                request.user.is_verified = True
+                request.user.save()
+                return redirect('users')
+    else:
+        form = VerifyForm()
+        context = {'form': form}
+        return render(request, 'physio-slim/verify.html', context)
 
 @unauthenticated_user
-def login_2(request):
+def login_user(request):
     print("valid")
     if request.method == 'POST':
         username = request.POST.get('username' )
         password = request.POST.get('password')
+        print("valid")
+       
+        print(username)
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request,user)
@@ -109,6 +173,11 @@ def login_2(request):
     else:
       context ={}
       return render(request, 'physio-slim/login.html', context)
+
+def logoutuser(request):
+    logout(request)
+    
+    return redirect('login')
 
 
 @login_required(login_url='login')

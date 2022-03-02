@@ -13,6 +13,9 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id','username', 'email','password', 'age', 'gender', 'phone',)
         
 
+class VerifySerializer(serializers.Serializer):
+    code = serializers.CharField()
+
 
 class BranchSerializer(serializers.ModelSerializer):
     class Meta:
