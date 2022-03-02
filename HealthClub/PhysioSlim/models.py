@@ -1,5 +1,3 @@
-from enum import unique
-from turtle import position
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.forms import CharField
