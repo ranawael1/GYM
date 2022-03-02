@@ -5,4 +5,4 @@ migrations
 settings.py
 images
 avatars
-.env
+*.env
