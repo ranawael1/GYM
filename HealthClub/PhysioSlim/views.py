@@ -30,7 +30,7 @@ def logoutUser(request):
     return redirect('login')
 
 @login_required(login_url='login')
-@verification_required  
+# @verification_required  
 @api_view(['GET'])
 def users(request):
     users = User.objects.all()
@@ -96,20 +96,20 @@ def register(request):
 #         form = VerifyForm()
 #         context = {'form': form}
 #     return render(request, 'physio-slim/verify.html', context)
-def verify_code(request):
-    if request.method == 'POST':
-        form = VerifyForm(request.POST)
-        if form.is_valid():
-            code = form.cleaned_data.get('code')
-            phone = request.user.phone
-            if verify.check(request.user.phone, code):
-                request.user.is_verified = True
-                request.user.save()
-                return redirect('users')
-    else:
-        form = VerifyForm()
-        context = {'form': form}
-        return render(request, 'physio-slim/verify.html', context)
+# def verify_code(request):
+#     if request.method == 'POST':
+#         form = VerifyForm(request.POST)
+#         if form.is_valid():
+#             code = form.cleaned_data.get('code')
+#             phone = request.user.phone
+#             if verify.check(request.user.phone, code):
+#                 request.user.is_verified = True
+#                 request.user.save()
+#                 return redirect('users')
+#     else:
+#         form = VerifyForm()
+#         context = {'form': form}
+#         return render(request, 'physio-slim/verify.html', context)
 
 @unauthenticated_user
 def login_user(request):

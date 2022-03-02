@@ -19,7 +19,7 @@ urlpatterns = [
     path('users/', views.users, name='users'),
     path('user/<user_id>', views.user, name='user'),
     path('add-user/', views.add_user, name='add-user'),
-    path('verify/', views.verify_code, name='verify-code'),  
+    # path('verify/', views.verify_code, name='verify-code'),  
     #api-branch  
     path('branch-all', views.all_branch, name='branch-all'),
     path('branch-one/<br_id>', views.one_branch, name='branch-one'),
