@@ -37,13 +37,28 @@ urlpatterns = [
     path('Offer-add', views.add_Offer, name='Offer-add'),
     path('Offer-edit/<of_id>', views.edit_Offer, name='Offer-edit'),
     path('Offer-del/<of_id>', views.del_Offer, name='Offer-del'),
+    #api-PersonalTrainer  
+    path('PersonalTrainer-all', views.all_PersonalTrainer, name='PersonalTrainer-all'),
+    path('branch-trainers/<br_id>', views.showBranchTrainer, name='branch-trainers'),
+    path('PersonalTrainer-one/<pt_id>', views.one_PersonalTrainer, name='PersonalTrainer-one'),
+    path('PersonalTrainer-add', views.add_PersonalTrainer, name='PersonalTrainer-add'),
+    path('PersonalTrainer-edit/<pt_id>', views.edit_PersonalTrainer, name='PersonalTrainer-edit'),
+    path('PersonalTrainer-del/<pt_id>', views.del_PersonalTrainer, name='PersonalTrainer-del'),
     #api-event  
     path('all-events/', views.allEvents, name='all-events'),
     path('branch-events/<br_id>', views.showBranchEvents, name='branch-events'),
     path('add-event/', views.addEvent, name='add-event'),
     path('edit-event/<ev_id>', views.editEvent, name='edit-event'),
     path('del-event/<ev_id>', views.delEvent, name='del-event'),
+    #api-Class  
+    path('all-classes/', views.allClasses, name='all-classes'),
+    path('branch-classes/<br_id>', views.showBranchClasses, name='branch-classes'),
+    path('add-class/', views.addClass, name='add-class'),
+    path('edit-class/<ev_id>', views.editClass, name='edit-class'),
+    path('del-class/<ev_id>', views.delClass, name='del-class'),
     #add-event-form
     path('add-event-form/', views.addingEvent, name='add-event-form'),
+    #add-clinic-form
+    path('add-clinic-form/', views.addingClinic, name='add-clinic-form'),
 ]
 

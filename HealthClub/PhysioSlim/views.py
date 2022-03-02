@@ -1,19 +1,21 @@
 from django.http import HttpResponse
 from importlib.resources import contents
 from django.shortcuts import redirect, render
-from .models import User,Branch,Offer,Event
+from .models import User,Branch,Offer,Event,Class, Clinic
 # decorators and authentication
 from.decorators import unauthenticated_user
+from .models import User,Branch,Offer,PersonalTrainer
+from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 # from .decorators import verification_required  
 #forms
-from .forms import CreateUserForm, VerifyForm, EventForm
+from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer
+from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer
 from . import verify
 
 
@@ -261,6 +263,48 @@ def del_Offer(request,of_id):
     return Response('Offer Deleted Success')
 
 
+#Personal Trainer Serializers
+@api_view(['GET'])
+def showBranchTrainer(request, br_id):
+    branch_pt = PersonalTrainer.objects.filter(branch_id=br_id)
+    branch_Trainers = PersonalTrainerSerializers(branch_pt, many=True)
+    return Response(branch_Trainers.data) 
+
+@api_view(['GET'])
+def all_PersonalTrainer(request):
+    all_PersonalTrainer = PersonalTrainer.objects.all()
+    pt_ser = PersonalTrainerSerializers(all_PersonalTrainer, many=True)
+    return Response(pt_ser.data)
+
+@api_view(['GET'])
+def one_PersonalTrainer(request,pt_id):
+    pt = PersonalTrainer.objects.get(id=pt_id)
+    pt_ser = PersonalTrainerSerializers(pt,many=False)
+    return Response(pt_ser.data)
+
+@api_view(['POST'])
+def add_PersonalTrainer(request):
+    pt_ser = PersonalTrainerSerializers(data=request.data)
+    if pt_ser.is_valid():
+        pt_ser.save()
+        return redirect('api-all')
+        
+
+@api_view(['POST'])
+def edit_PersonalTrainer(request,pt_id):
+    pt = PersonalTrainer.objects.get(id=pt_id)
+    pt_ser = PersonalTrainerSerializers(data=request.data, instance=pt)
+    if pt_ser.is_valid():
+        pt_ser.save()
+        return redirect('api-all')
+
+@api_view(['DELETE'])
+def del_PersonalTrainer(request,pt_id):
+    pt = PersonalTrainer.objects.get(id=pt_id)
+    pt.delete()
+    return Response('PersonalTrainer Deleted Success')
+
+
 
 # Events API
 #display all events
@@ -314,6 +358,58 @@ def addingEvent(request):
         form = EventForm()
         return render(request, 'physio-slim/addeventform.html', {'form' : form})
 
+# Classes API
+#display all classes
+@api_view(['GET'])
+def allClasses(request):
+    all_cl = Class.objects.all()
+    all_classes = ClassSerializer(all_cl, many=True)
+    return Response(all_classes.data)
+
+
+# displaying the events of a certain branch
+@api_view(['GET'])
+def showBranchClasses(request, br_id):
+    branch_cl = Class.objects.filter(branch_id=br_id)
+    branch_classes = ClassSerializer(branch_cl, many=True)
+    return Response(branch_classes.data)
+
+#adding an event to a certain branch
+@api_view(['POST'])
+def addClass(request):
+    added_class = ClassSerializer(data=request.data)
+    if added_class.is_valid():
+        added_class.save()
+        return redirect ('all-classes')
+
+
+#edit event
+@api_view(['POST'])
+def editClass(request, cl_id):
+    classes = Class.objects.get(id=cl_id)
+    classes_ser = ClassSerializer(data=request.data, instance=classes)
+    if classes_ser.is_valid():
+        classes_ser.save()
+        return redirect ('all-classes')
+
+#delete event
+@api_view(['DELETE'])
+def delClass(request,ev_id):
+    event = Class.objects.get(id=ev_id)
+    event.delete()
+    return HttpResponse ('Class deleted')
 
 
 
+
+
+#add event form for testing
+def addingClinic(request):
+    if request.method == 'POST':
+        form = ClinicForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('all-events')
+    else:
+        form = ClinicForm()
+        return render(request, 'physio-slim/addClinicForm.html', {'form' : form})

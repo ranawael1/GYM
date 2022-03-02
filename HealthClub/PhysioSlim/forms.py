@@ -1,7 +1,7 @@
 from dataclasses import Field
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import User,Branch,Offer, Event
+from .models import User, Branch, Offer, Event, Clinic
 #a modified UserCreationForm so we can add a new field(email)
 class CreateUserForm(UserCreationForm):
     class Meta:
@@ -31,4 +31,10 @@ class OfferForm(forms.ModelForm):
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
+        fields = ('__all__')
+
+
+class ClinicForm(forms.ModelForm):
+    class Meta:
+        model = Clinic
         fields = ('__all__')
