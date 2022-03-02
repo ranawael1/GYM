@@ -1,5 +1,3 @@
-from enum import unique
-from turtle import position
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.forms import CharField
@@ -51,8 +49,9 @@ class Offer(models.Model):
     
 POSITION = (
 (None, 'Position'),
-('PT', 'pt'),
-('floor&pt', 'floor&pt')
+('PT', 'PT'),
+('floor', 'Floor'),
+('floor&PT', 'Floor & PT')
 )
 class PersonalTrainer(models.Model):
     name = models.CharField(max_length=50, null= True)
@@ -61,7 +60,7 @@ class PersonalTrainer(models.Model):
     position = models.CharField(choices=POSITION, max_length=20)
     branch_name = models.ForeignKey(Branch ,on_delete=models.CASCADE)
     def __str__(self):
-        return self.track_name
+        return self.name
 
 class Event(models.Model):
     event = models.CharField(max_length=50, null = False)

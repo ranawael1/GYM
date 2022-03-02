@@ -5,11 +5,13 @@ from .models import User,Branch,Offer,PersonalTrainer,Event,Clinic
 class ClinicAdmin(admin.ModelAdmin):
     list_display = ('clinic', 'branch')
 
+class TrainerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'branch_name','year_of_exprince','position')
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Branch)
 admin.site.register(Offer)
 admin.site.register(Event)
 admin.site.register(Clinic,ClinicAdmin)
-admin.site.register(PersonalTrainer)
+admin.site.register(PersonalTrainer,TrainerAdmin)
 
