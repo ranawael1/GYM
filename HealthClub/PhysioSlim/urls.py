@@ -44,7 +44,6 @@ urlpatterns = [
     path('PersonalTrainer-edit/<pt_id>', views.edit_PersonalTrainer, name='PersonalTrainer-edit'),
     path('PersonalTrainer-del/<pt_id>', views.del_PersonalTrainer, name='PersonalTrainer-del'),
     
-    
     #api-event  
     path('all-events/', views.allEvents, name='all-events'),
     path('branch-events/<br_id>', views.showBranchEvents, name='branch-events'),

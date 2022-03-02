@@ -297,6 +297,8 @@ def del_PersonalTrainer(request,pt_id):
     pt.delete()
     return Response('PersonalTrainer Deleted Success')
 
+
+
 # Events API
 #display all events
 @api_view(['GET'])
