@@ -17,5 +17,6 @@ def check(phone, code):
         print(result)
     except TwilioRestException:
         print('no')
+        result.status = "canceled"
         return False
     return result.status == 'approved'

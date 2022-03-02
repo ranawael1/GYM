@@ -1,5 +1,4 @@
-from importlib.resources import contents
-from multiprocessing import context
+import json
 from django.shortcuts import redirect, render
 from .models import User,branch,Offer
 from .forms import CreateUserForm
@@ -9,12 +8,15 @@ from .forms import CreateUserForm, VerifyForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer,BranchSerializers,OfferSerializers
+from .serializers import UserSerializer,VerifySerializer,BranchSerializers,OfferSerializers
 from . import verify
 from django.contrib.auth.decorators import login_required
 from .decorators import verification_required  
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
+
+from rest_framework.views import exception_handler
+from rest_framework import status
 
 
 #@verification_required  
@@ -32,23 +34,67 @@ def user(request, user_id):
 
 @api_view(['POST'])
 def add_user(request):
-    print("before")
     user_ser = UserSerializer(data=request.data)
-    print("after")
     if user_ser.is_valid():
         valid = user_ser._validated_data
-        user = User.objects.create( email=valid.get('email'),
-        username=valid.get('username'),
-        password = make_password(valid.get('password')),
-        age=valid.get('age'),
-        gender =valid.get('gender'),
+        username= valid.get('username')
         phone=valid.get('phone')
-        )
-        user.save()
-    else:
-        print(user_ser.errors)
+        email = valid.get('email')
+        password = make_password(valid.get('password'))
+        age = valid.get('age')
+        gender = gender =valid.get('gender')
+        user_data = {'username': username,'email': email,'password': password, 'phone': phone, 'age': age, 'gender': gender}
+        try:
+            verify.send(phone)
+        except:
+            error = {
+                    "error":{
+                    "statusCode": 429,
+                        "message": "Rate limit is exceeded. Try again later" 
+                    }
+                }
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        return redirect("verify-code-api", user=user_data)
+    return Response(user_ser.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(["POST"])   
+def verify_code_api(request, user):
+    if request.method == 'POST':
+        user = eval(str(user))
+        form = VerifySerializer(data=request.data)
+        if form.is_valid():
+            valid = form._validated_data
+            code = valid.get('code')
+            phone = user['phone']
+            try:
+                x = verify.check(phone, code)
+                new_user = User.objects.create( email=user['email'],
+                username=user['username'],
+                age=user['age'],
+                gender =user['age'],
+                phone=user['phone'],
+                is_verified=True)
+                new_user.save()
+                return redirect('users')
+            except:
+                return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+def edit_user(request, user_id):
+    user = User.objects.get(id=user_id)
+    user_ser = UserSerializer(data=request.data, instance=user)
+    if user_ser.is_valid():
+        user_ser.save()
+        return redirect("users")
+    return Response(user_ser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["DELETE"])
+def del_user(request, user_id):
+    user = User.objects.get(id=user_id)
+    user.delete()
     return redirect("users")
-    
+
 
 def register(request):
     form = CreateUserForm()
@@ -62,7 +108,7 @@ def register(request):
             print(pp)
             phone = form.cleaned_data.get('phone')
             login(request, user)  # go to login page later
-            # verify.send(phone)
+            verify.send(phone)
             return redirect('users')
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
