@@ -8,6 +8,12 @@ GENDER = (
 ('male', 'male'),
 ('female', 'female')
 )
+class Branch(models.Model):
+    name = models.CharField(max_length=50, null= True)
+    address = models.CharField(max_length=50, null= True)
+
+    def __str__(self):
+        return self.name 
 
 
 class User(AbstractUser):
@@ -15,10 +21,10 @@ class User(AbstractUser):
     is_verified = models.BooleanField(default=False)
     age = models.IntegerField()
     gender = models.CharField(choices=GENDER, max_length=20)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True)
+    membership_num = models.CharField(max_length=50, null= True)
+    
     #avatar= models.ImageField(upload_to='avatars/')
-
-
-
     REQUIRED_FIELDS = ['age', 'gender','phone']
 
 # class Check(models.Model):
@@ -32,12 +38,7 @@ class User(AbstractUser):
 #     gender = models.CharField(choices=GENDER, max_length=20)
 #     avatar= models.ImageField(upload_to='avatars/')
 #     username = models.CharField(max_length=50)
-class Branch(models.Model):
-    name = models.CharField(max_length=50, null= True)
-    address = models.CharField(max_length=50, null= True)
 
-    def __str__(self):
-        return self.name 
 
 class Offer(models.Model):
     name = models.CharField(max_length=50, null = True)

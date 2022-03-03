@@ -20,8 +20,8 @@ urlpatterns = [
     path('user/<user_id>', views.user, name='user'),
     path('add-user/', views.add_user, name='add-user'),
     # path('verify/', views.verify_code, name='verify-code'),  
-    # path('verify/', views.verify_code, name='verify-code'),  
-    path('api-verify/<user>', views.verify_code_api, name='verify-code-api'),  
+    path('verify/', views.verify_code, name='verify-code'),  
+    path('api-verify/', views.verify_code_api, name='verify-code-api'),  
     path('edit-user/<user_id>', views.edit_user, name='edit-user'),  
     path('delete-user/<user_id>', views.del_user, name='delete-user'),  
 

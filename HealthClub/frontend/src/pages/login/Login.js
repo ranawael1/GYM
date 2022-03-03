@@ -4,8 +4,7 @@ import *
 function Login(props) {
     return (
         <div>
-            <h2> LOGIN </h2>
-
+            <h1>Login page check</h1>
         </div>
     );
 }
