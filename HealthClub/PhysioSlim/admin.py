@@ -6,7 +6,7 @@ class ClinicAdmin(admin.ModelAdmin):
     list_display = ('clinic', 'branch')
 
 class TrainerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'branch','year_of_exprince','position')
+    list_display = ('name','year_of_exprince','position')
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Branch)
