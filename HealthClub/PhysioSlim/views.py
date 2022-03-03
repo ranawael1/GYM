@@ -1,3 +1,4 @@
+import imp
 from django.http import HttpResponse
 from importlib.resources import contents
 from django.shortcuts import redirect, render
@@ -9,6 +10,8 @@ from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
+from urllib.parse import urlparse
+from urllib import parse
 # from .decorators import verification_required  
 #forms
 from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
@@ -31,7 +34,7 @@ def logoutUser(request):
     
     return redirect('login')
 
-@login_required(login_url='login')
+
 # @verification_required  
 @api_view(['GET'])
 def users(request):
@@ -68,14 +71,17 @@ def add_user(request):
                     }
                 }
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
-        return redirect("verify-code-api", user=user_data)
+        return Response(user_ser.data)
     return Response(user_ser.errors, status=status.HTTP_400_BAD_REQUEST)
 @api_view(["POST"])   
-def verify_code_api(request, user):
+def verify_code_api(request):
     if request.method == 'POST':
-        user = eval(str(user))
+        params =request.GET.urlencode()
+        # print(params)
+        user= dict(parse.parse_qsl(params))
         form = VerifySerializer(data=request.data)
         if form.is_valid():
+            print("ok")
             valid = form._validated_data
             code = valid.get('code')
             phone = user['phone']
@@ -88,10 +94,11 @@ def verify_code_api(request, user):
                 phone=user['phone'],
                 is_verified=True)
                 new_user.save()
-                return redirect('users')
+                return Response({"message": "Success!"})
             except:
-                return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error":"Wrong code!"}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["POST"])
