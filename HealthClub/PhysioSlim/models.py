@@ -59,7 +59,7 @@ class PersonalTrainer(models.Model):
     bio = models.CharField(max_length=500, null= True)
     year_of_exprince = models.IntegerField()
     position = models.CharField(choices=GENDER, max_length=20)
-    branch_name = models.ForeignKey(Branch ,on_delete=models.CASCADE)
+    branch = models.ForeignKey(Branch ,on_delete=models.CASCADE)
     def __str__(self):
         return self.name
 
