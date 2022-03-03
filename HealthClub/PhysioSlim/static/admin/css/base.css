@@ -30,7 +30,7 @@
   --link-selected-fg: #ff9f1a;
 
   --hairline-color: #fc9c1615;
-  --border-color: #ccc;
+  --border-color: #ffa01a79;
 
   --error-fg: #ba2121;
 
@@ -39,7 +39,7 @@
   --message-error-bg: #121212;
 
    /* A bit darker than --body-bg */
-  /* --darkened-bg: #ff9f1a; */
+  --darkened-bg: #121212;
 
   /* --selected-row: #ffc; */
 
