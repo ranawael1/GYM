@@ -5,14 +5,15 @@ import { useHistory, useLocation } from 'react-router-dom';
 function Verify(props) {
     axios.defaults.xsrfHeaderName = "X-CSRFToken";
     axios.defaults.xsrfCookieName = 'csrftoken';
-
     axios.defaults.withCredentials = true
+    let history = useHistory()
     const location = useLocation()
     const user = location.state.detail
     console.log(user)
     const [verify, setVerify] = useState({
         verify: null
     })
+    const [errResponse, setErrResponse] = useState()
     const onChange = (e) => {
         setVerify({
             code: e.target.value
@@ -23,18 +24,23 @@ function Verify(props) {
             axios.post(`physio-slim/api-verify/`,verify,{
                 params: user
             })
-            .then((res)=>{console.log(res.data)})
-            .catch((err)=>{console.log(err)}) 
+            .then((res)=>{console.log(res.data)
+                history.push({
+                    pathname: '/login',
+                    search: { detail: res.data}
+                })
+            })
+            .catch((err) => { setErrResponse(err.response.data); 
+                console.log(err.response.data);
+            })
     }
     return (
         <>
             <form className=" loginForm col-10 col-md-5" onSubmit={(e) => onSubmit(e)}>
                 <div className="form-group input-div my-2">
-                    <div className="row g-2 d-flex justify-content-between">
-                        <div className="col-3 ">
+                  
                             <label className="col-form-label">Verify</label>
-                        </div>
-                        <div className="col-9">
+                     
                             <div className="parent">
                                 <input type="text"
                                     className={`form-control input-field ${props.errors && ("border-danger")}`}
@@ -44,8 +50,7 @@ function Verify(props) {
                                 />
                             </div>
                         </div>
-                    </div>
-                </div>
+                <p>{errResponse}</p>
                 <br></br>
                 <button type="submit" className="btn btn-success " name="button"
                 >Submit</button>
