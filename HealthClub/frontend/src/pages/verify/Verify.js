@@ -13,6 +13,7 @@ function Verify(props) {
     const [verify, setVerify] = useState({
         verify: null
     })
+    const [errResponse, setErrResponse] = useState()
     const onChange = (e) => {
         setVerify({
             code: e.target.value
@@ -26,10 +27,12 @@ function Verify(props) {
             .then((res)=>{console.log(res.data)
                 history.push({
                     pathname: '/login',
-                    state: { detail: res.data}
+                    search: { detail: res.data}
                 })
             })
-            .catch((err)=>{console.log(err)}) 
+            .catch((err) => { setErrResponse(err.response.data); 
+                console.log(err.response.data);
+            })
     }
     return (
         <>
@@ -47,7 +50,7 @@ function Verify(props) {
                                 />
                             </div>
                         </div>
-                
+                <p>{errResponse}</p>
                 <br></br>
                 <button type="submit" className="btn btn-success " name="button"
                 >Submit</button>

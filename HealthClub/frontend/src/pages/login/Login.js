@@ -3,11 +3,18 @@ import { useLocation } from 'react-router-dom';
 
 function Login(props) {
     const location = useLocation()
-    const success = location.state.detail
+    let success
+    console.log(location.state)
+    if (location.state=== null) {
+        success = location.state.detail.message
+    }
+    else {
+        success = null
+    }
     return (
         <div>
             <h1>Login page check</h1>
-            <p>{success.message}</p>
+            <p>{success}</p>
         </div>
     );
 }
