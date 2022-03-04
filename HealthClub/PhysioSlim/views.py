@@ -1,3 +1,4 @@
+import email
 import imp
 from django.http import HttpResponse
 from importlib.resources import contents
@@ -18,7 +19,7 @@ from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer
+from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer,LoginSerializer
 from . import verify
 
 
@@ -100,6 +101,23 @@ def verify_code_api(request):
 
     return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST,'])
+def login_view(request):
+
+    if request.method == 'POST':
+        print(request)
+        # user=User.objects.filter(email=request.data.email,password=request.data.password).exists() 
+        ser_user = LoginSerializer(data=request.data)
+    
+        if ser_user.is_valid():
+            ser_user = User.objects.check(email=request['email'],
+                password=request['possword'])
+            return Response({"message": "'User successfully Login'!"}) 
+        else:
+           return Response({"error":'You have entered an invalid username or password'}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(ser_user.errors , status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["POST"])
 def edit_user(request, user_id):
