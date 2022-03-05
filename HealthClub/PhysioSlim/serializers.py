@@ -45,6 +45,7 @@ class EventSerializer(serializers.ModelSerializer):
 class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
+        fields = '__all__'
 
 
 class ClinicSerializer(serializers.ModelSerializer):

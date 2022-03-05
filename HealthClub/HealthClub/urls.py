@@ -24,3 +24,9 @@ urlpatterns = [
     
 
 ]+ static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
+
+
+#changing the title on the Admin template
+admin.site.site_header = "Physio-Slim Admin"
+admin.site.site_title = "Physio-Slim Admin Portal"
+admin.site.index_title = "Administrator"

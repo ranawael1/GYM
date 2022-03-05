@@ -18,7 +18,7 @@ from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
 #rest_framework imports
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer
+from .serializers import ClinicSerializer, UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer
 from . import verify
 
 
@@ -240,6 +240,15 @@ def all_Offer(request):
     of_ser = OfferSerializer(all_Offer, many=True)
     return Response(of_ser.data)
 
+# displaying the offers of a certain branch
+@api_view(['GET'])
+def branchOffers(request, br_id):
+    branch_off = Offer.objects.filter(branch_id=br_id)
+    branch_offers = OfferSerializer(branch_off, many=True)
+    return Response(branch_offers.data)
+
+
+
 @api_view(['GET'])
 def one_Offer(request,of_id):
     of = Offer.objects.get(id=of_id)
@@ -364,6 +373,7 @@ def addingEvent(request):
         form = EventForm()
         return render(request, 'physio-slim/addeventform.html', {'form' : form})
 
+
 # Classes API
 #display all classes
 @api_view(['GET'])
@@ -407,15 +417,59 @@ def delClass(request,ev_id):
 
 
 
+#add clinic form for testing
+# def addingClinic(request):
+#     if request.method == 'POST':
+#         form = ClinicForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('all-events')
+#     else:
+#         form = ClinicForm()
+#         return render(request, 'physio-slim/addClinicForm.html', {'form' : form})
 
 
-#add event form for testing
-def addingClinic(request):
-    if request.method == 'POST':
-        form = ClinicForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('all-events')
-    else:
-        form = ClinicForm()
-        return render(request, 'physio-slim/addClinicForm.html', {'form' : form})
+
+
+
+
+# Clinics API
+#display all clinics
+@api_view(['GET'])
+def allClinics(request):
+    all_cl = Clinic.objects.all()
+    all_clinics = ClinicSerializer(all_cl, many=True)
+    return Response(all_clinics.data)
+
+
+# displaying the clinics of a certain branch
+@api_view(['GET'])
+def showBranchClinics(request, br_id):
+    branch_cl = Clinic.objects.filter(branch_id=br_id)
+    branch_clinics = ClinicSerializer(branch_cl, many=True)
+    return Response(branch_clinics.data)
+
+#adding a clinic to a certain branch
+@api_view(['POST'])
+def addClinic(request):
+    added_clinic= ClinicSerializer(data=request.data)
+    if added_clinic.is_valid():
+        added_clinic.save()
+        return redirect ('all-clinics')
+
+
+#edit clinic
+@api_view(['POST'])
+def editClinic(request, cl_id):
+    clinic = Clinic.objects.get(id=cl_id)
+    clinic_ser = ClinicSerializer(data=request.data, instance=clinic)
+    if clinic_ser.is_valid():
+        clinic_ser.save()
+        return redirect ('all-clinics')
+
+#delete clinic
+@api_view(['DELETE'])
+def delClinic(request,cl_id):
+    clinic = Clinic.objects.get(id=cl_id)
+    clinic.delete()
+    return HttpResponse ('Clinic deleted')
