@@ -52,7 +52,9 @@ def user(request, user_id):
 @api_view(['POST'])
 def add_user(request):
     user_ser = UserSerializer(data=request.data)
+    print("check")
     if user_ser.is_valid():
+        print("check2")
         valid = user_ser._validated_data
         username= valid.get('username')
         phone=valid.get('phone')
@@ -87,16 +89,20 @@ def verify_code_api(request):
             phone = user['phone']
             try:
                 x = verify.check(phone, code)
-                new_user = User.objects.create( email=user['email'],
-                username=user['username'],
-                age=user['age'],
-                gender =user['age'],
-                phone=user['phone'],
-                is_verified=True)
-                new_user.save()
-                return Response({"message": "Success!"})
+                if x is not False:
+                    new_user = User.objects.create( email=user['email'],
+                    username=user['username'],
+                    age=user['age'],
+                    gender =user['age'],
+                    phone=user['phone'],
+                    is_verified=True)
+                    new_user.save()
+                    return Response({"message": "Success!"})
+                else:
+                    return Response({"error":"Wrong code!"}, status=status.HTTP_400_BAD_REQUEST)
             except:
                 return Response({"error":"Wrong code!"}, status=status.HTTP_400_BAD_REQUEST)
+    print(form.errors)
 
     return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 

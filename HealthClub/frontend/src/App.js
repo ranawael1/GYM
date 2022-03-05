@@ -6,7 +6,7 @@ import Login from './pages/login/Login';
 import Navbar from './components/Navbar/Navbar';
 import Users from './pages/Users';
 function App() {
-  let admin = window.location.host+'/admin'
+  // let admin = window.location.host+'/admin'
   return (
   <>
   <BrowserRouter>
