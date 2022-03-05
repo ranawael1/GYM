@@ -19,7 +19,7 @@ from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
 from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer
-from . import verify
+# from . import verify
 
 
 
