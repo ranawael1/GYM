@@ -17,6 +17,8 @@ class VerifySerializer(serializers.Serializer):
     code = serializers.CharField()
 
 
+
+
 class BranchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
@@ -57,3 +59,12 @@ class ClinicSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Check
 #         fields = ['id','username', 'age', 'avatar', 'gender', 'phone']
+class LoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'password',)
+        extra_kwargs = {'password': {'write_only': True}}
+  
+        
+
+        

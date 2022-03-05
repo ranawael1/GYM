@@ -10,7 +10,7 @@ import BranchHomePage from './pages/BranchHomePage/BranchHomePage';
 
 
 function App() {
-  let admin = window.location.host+'/admin'
+  // let admin = window.location.host+'/admin'
   return (
   <>
   <BrowserRouter>

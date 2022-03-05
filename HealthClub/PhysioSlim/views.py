@@ -1,3 +1,4 @@
+import email
 import imp
 from django.http import HttpResponse
 from importlib.resources import contents
@@ -19,6 +20,7 @@ from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
 from rest_framework.response import Response # like render
 from rest_framework.decorators import api_view
 from .serializers import ClinicSerializer, UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer
+from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer,LoginSerializer
 from . import verify
 
 
@@ -52,7 +54,9 @@ def user(request, user_id):
 @api_view(['POST'])
 def add_user(request):
     user_ser = UserSerializer(data=request.data)
+    print("check")
     if user_ser.is_valid():
+        print("check2")
         valid = user_ser._validated_data
         username= valid.get('username')
         phone=valid.get('phone')
@@ -87,19 +91,37 @@ def verify_code_api(request):
             phone = user['phone']
             try:
                 x = verify.check(phone, code)
-                new_user = User.objects.create( email=user['email'],
-                username=user['username'],
-                age=user['age'],
-                gender =user['age'],
-                phone=user['phone'],
-                is_verified=True)
-                new_user.save()
-                return Response({"message": "Success!"})
+                if x is not False:
+                    new_user = User.objects.create( email=user['email'],
+                    username=user['username'],
+                    age=user['age'],
+                    gender =user['age'],
+                    phone=user['phone'],
+                    is_verified=True)
+                    new_user.save()
+                    return Response({"message": "Success!"})
+                else:
+                    return Response({"error":"Wrong code!"}, status=status.HTTP_400_BAD_REQUEST)
             except:
                 return Response({"error":"Wrong code!"}, status=status.HTTP_400_BAD_REQUEST)
+    print(form.errors)
 
     return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST,'])
+def login_view(request):
+    verify.cancellation()
+    if request.method == 'POST':
+        # user=User.objects.filter(email=request.data.email,password=request.data.password).exists() 
+        username=request.POST.get('email')
+        password= request.POST.get('password')
+        user= authenticate(request , username=username , password=password)
+        if user is not None:
+            login(request, user)
+            return Response({"message": "'User successfully Login'!"}) 
+        else:
+           return Response({"error":'You have entered an invalid username or password'},status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["POST"])
 def edit_user(request, user_id):
@@ -130,7 +152,7 @@ def register(request):
             print(pp)
             phone = form.cleaned_data.get('phone')
             login(request, user)  # go to login page later
-            # verify.send(phone)
+            verify.send(phone)
             return redirect('users')
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
@@ -149,40 +171,41 @@ def register(request):
 #         form = VerifyForm()
 #         context = {'form': form}
 #     return render(request, 'physio-slim/verify.html', context)
-def verify_code(request):
-    if request.method == 'POST':
-        form = VerifyForm(request.POST)
-        if form.is_valid():
-            code = form.cleaned_data.get('code')
-            phone = request.user.phone
-            if verify.check(request.user.phone, code):
-                request.user.is_verified = True
-                request.user.save()
-                return redirect('users')
-    else:
-        form = VerifyForm()
-        context = {'form': form}
-        return render(request, 'physio-slim/verify.html', context)
+# def verify_code(request):
+#     if request.method == 'POST':
+#         form = VerifyForm(request.POST)
+#         if form.is_valid():
+#             code = form.cleaned_data.get('code')
+#             phone = request.user.phone
+#             if verify.check(request.user.phone, code):
+#                 request.user.is_verified = True
+#                 request.user.save()
+#                 return redirect('users')
+#     else:
+#         form = VerifyForm()
+#         context = {'form': form}
+#         return render(request, 'physio-slim/verify.html', context)
 
-@unauthenticated_user
-def login_user(request):
-    print("valid")
-    if request.method == 'POST':
-        username = request.POST.get('username' )
-        password = request.POST.get('password')
-        print("valid")
+# # login Function 
+# @unauthenticated_user
+# def login_user(request):
+#     print("valid")
+#     if request.method == 'POST':
+#         username = request.POST.get('username' )
+#         password = request.POST.get('password')
+#         print("valid")
        
-        print(username)
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request,user)
-            return render(request, 'physio-slim/home.html')
-        else:
-          return render(request, 'physio-slim/register.html')
-    else:
-      context ={}
-      return render(request, 'physio-slim/login.html', context)
-
+#         print(username)
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request,user)
+#             return render(request, 'physio-slim/home.html')
+#         else:
+#           return render(request, 'physio-slim/register.html')
+#     else:
+#       context ={}
+#       return render(request, 'physio-slim/login.html', context)
+# logout users
 def logoutuser(request):
     logout(request)
     
