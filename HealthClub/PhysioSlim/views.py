@@ -11,6 +11,7 @@ from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AnonymousUser
 from urllib.parse import urlparse
 from urllib import parse
 # from .decorators import verification_required  
@@ -22,6 +23,7 @@ from rest_framework.decorators import api_view
 from .serializers import ClinicSerializer, UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer
 from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer,LoginSerializer
 from . import verify
+#from rest_framework import permissions
 
 
 
@@ -43,7 +45,13 @@ def users(request):
     users = User.objects.all()
     users_ser = UserSerializer(users, many=True)
     return Response(users_ser.data)
-    
+    # user = User.objects.get(id=1)
+    # login(request, user)
+    # check = request.user.is_anonymous
+    # print(check)
+    # users = User.objects.all()
+    # users_ser = UserSerializer(users, many=True)
+    # return Response({'user':users_ser.data, 'check':check})
 @login_required(login_url='login')
 @api_view(['GET'])
 def user(request, user_id):
@@ -63,8 +71,9 @@ def add_user(request):
         email = valid.get('email')
         password = make_password(valid.get('password'))
         age = valid.get('age')
-        gender = gender =valid.get('gender')
-        user_data = {'username': username,'email': email,'password': password, 'phone': phone, 'age': age, 'gender': gender}
+        gender =valid.get('gender')
+        branch = valid.get('branch')
+        user_data = {'username': username,'email': email,'password': password, 'phone': phone, 'age': age, 'gender': gender, 'branch': branch}
         try:
             verify.send(phone)
         except:
@@ -76,6 +85,8 @@ def add_user(request):
                 }
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
         return Response(user_ser.data)
+    print(user_ser.data, user_ser.errors)
+
     return Response(user_ser.errors, status=status.HTTP_400_BAD_REQUEST)
 @api_view(["POST"])   
 def verify_code_api(request):
@@ -139,7 +150,7 @@ def del_user(request, user_id):
     return redirect("users")
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def register(request):
     form = CreateUserForm()
     print(form)
@@ -147,44 +158,58 @@ def register(request):
         form = CreateUserForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
-            user.save()
-            pp = form.cleaned_data.get('avatar')
-            print(pp)
             phone = form.cleaned_data.get('phone')
-            login(request, user)  # go to login page later
-            verify.send(phone)
-            return redirect('users')
+            try:
+                verify.send(phone)
+            except:
+                error = {
+                        "error":{
+                        "statusCode": 429,
+                            "message": "Rate limit is exceeded. Try again later" 
+                        }
+                    }
+                context = {'form':form}
+                return render(request, 'physio-slim/register.html', context)
+            return redirect('verify', user=user)
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
 
-# def verify_code(request):
-#     if request.method == 'POST':
-#         form = VerifyForm(request.POST)
-#         if form.is_valid():
-#             code = form.cleaned_data.get('code')
-#             phone = request.user.phone
-#             if verify.check(request.user.phone, code):
-#                 request.user.is_verified = True
-#                 request.user.save()
-#                 return redirect('users')
-#     else:
-#         form = VerifyForm()
-#         context = {'form': form}
-#     return render(request, 'physio-slim/verify.html', context)
-# def verify_code(request):
-#     if request.method == 'POST':
-#         form = VerifyForm(request.POST)
-#         if form.is_valid():
-#             code = form.cleaned_data.get('code')
-#             phone = request.user.phone
-#             if verify.check(request.user.phone, code):
-#                 request.user.is_verified = True
-#                 request.user.save()
-#                 return redirect('users')
-#     else:
-#         form = VerifyForm()
-#         context = {'form': form}
-#         return render(request, 'physio-slim/verify.html', context)
+def verify_code(request):
+    if request.method == 'POST':
+        form = VerifyForm(request.POST)
+        if form.is_valid():
+            code = form.cleaned_data.get('code')
+            phone = request.user.phone
+            if verify.check(request.user.phone, code):
+                request.user.is_verified = True
+                request.user.save()
+                return redirect('users')
+    else:
+        form = VerifyForm()
+        context = {'form': form}
+    return render(request, 'physio-slim/verify.html', context)
+def verify_code(request, user):
+    if request.method == 'POST':
+        form = VerifyForm(request.POST)
+        context = {'form': form}
+        if form.is_valid():
+            code = form.cleaned_data.get('code')
+            phone = user.phone
+            try:
+                x=verify.check(user.phone, code)
+                if x is not False:
+                    user.save()
+                    return redirect('users')
+                else:
+                    return render(request, 'physio-slim/verify.html', context)
+            except:
+                return render(request, 'physio-slim/verify.html', context)
+        context = {'form': form}
+        return render(request, 'physio-slim/verify.html', context)
+    else:
+        form = VerifyForm()
+        context = {'form': form}
+        return render(request, 'physio-slim/verify.html', context)
 
 # # login Function 
 # @unauthenticated_user
