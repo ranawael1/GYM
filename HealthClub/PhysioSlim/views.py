@@ -110,7 +110,7 @@ def verify_code_api(request):
 
 @api_view(['POST,'])
 def login_view(request):
-
+    verify.cancellation()
     if request.method == 'POST':
         # user=User.objects.filter(email=request.data.email,password=request.data.password).exists() 
         username=request.POST.get('email')
