@@ -106,18 +106,15 @@ def verify_code_api(request):
 def login_view(request):
 
     if request.method == 'POST':
-        print(request)
         # user=User.objects.filter(email=request.data.email,password=request.data.password).exists() 
-        ser_user = LoginSerializer(data=request.data)
-    
-        if ser_user.is_valid():
-            ser_user = User.objects.check(email=request['email'],
-                password=request['possword'])
+        username=request.POST.get('email')
+        password= request.POST.get('password')
+        user= authenticate(request , username=username , password=password)
+        if user is not None:
+            login(request, user)
             return Response({"message": "'User successfully Login'!"}) 
         else:
-           return Response({"error":'You have entered an invalid username or password'}, status=status.HTTP_400_BAD_REQUEST)
-
-    return Response(ser_user.errors , status=status.HTTP_400_BAD_REQUEST)
+           return Response({"error":'You have entered an invalid username or password'},status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["POST"])
 def edit_user(request, user_id):
@@ -182,25 +179,25 @@ def register(request):
 #         context = {'form': form}
 #         return render(request, 'physio-slim/verify.html', context)
 
-# login Function 
-@unauthenticated_user
-def login_user(request):
-    print("valid")
-    if request.method == 'POST':
-        username = request.POST.get('username' )
-        password = request.POST.get('password')
-        print("valid")
+# # login Function 
+# @unauthenticated_user
+# def login_user(request):
+#     print("valid")
+#     if request.method == 'POST':
+#         username = request.POST.get('username' )
+#         password = request.POST.get('password')
+#         print("valid")
        
-        print(username)
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request,user)
-            return render(request, 'physio-slim/home.html')
-        else:
-          return render(request, 'physio-slim/register.html')
-    else:
-      context ={}
-      return render(request, 'physio-slim/login.html', context)
+#         print(username)
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request,user)
+#             return render(request, 'physio-slim/home.html')
+#         else:
+#           return render(request, 'physio-slim/register.html')
+#     else:
+#       context ={}
+#       return render(request, 'physio-slim/login.html', context)
 # logout users
 def logoutuser(request):
     logout(request)
