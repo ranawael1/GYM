@@ -34,6 +34,7 @@ urlpatterns = [
     path('branch-del/<br_id>', views.del_branch, name='branch-del'),
     #api-Offer  
     path('Offer-all/', views.all_Offer, name='Offer-all'),
+    path('branch-offers/<br_id>', views.branchOffers, name='branch-offers'),
     path('Offer-one/<of_id>', views.one_Offer, name='Offer-one'),
     path('Offer-add', views.add_Offer, name='Offer-add'),
     path('Offer-edit/<of_id>', views.edit_Offer, name='Offer-edit'),
@@ -57,9 +58,17 @@ urlpatterns = [
     path('add-class/', views.addClass, name='add-class'),
     path('edit-class/<ev_id>', views.editClass, name='edit-class'),
     path('del-class/<ev_id>', views.delClass, name='del-class'),
+
+    #api-event  
+    path('all-clinics/', views.allClinics, name='all-clinics'),
+    path('branch-clinics/<br_id>', views.showBranchClinics, name='branch-clinics'),
+    path('add-clinic/', views.addClinic, name='add-clinic'),
+    path('edit-clinic/<cl_id>', views.editClinic, name='edit-clinic'),
+    path('del-clinic/<cl_id>', views.delClinic, name='del-clinic'),
+
     #add-event-form
     path('add-event-form/', views.addingEvent, name='add-event-form'),
     #add-clinic-form
-    path('add-clinic-form/', views.addingClinic, name='add-clinic-form'),
+    # path('add-clinic-form/', views.addingClinic, name='add-clinic-form'),
 ]
 
