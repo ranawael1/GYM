@@ -1,0 +1,102 @@
+<style>
+    .logoutText {
+        visibility: hidden;
+    }
+
+    @media only screen and (min-width: 990px) {
+        .logout {
+            position: relative;
+        }
+
+        .logout .logoutText {
+            visibility: hidden;
+            width: 70px;
+            background-color: rgba(167, 167, 167, 0.699);
+            color: #fff;
+            text-align: center;
+            border-radius: 3px;
+            padding: 5px 0;
+
+            /* Position the logout */
+            position: absolute;
+            z-index: 1;
+            top: 100%;
+            left: 50%;
+            margin-left: -40px;
+        }
+
+        .logout:hover .logoutText {
+            visibility: visible;
+        }
+    }
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-light  fixed-top  justify-content-between background-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}"> <i class="fas fa-home col-2 ml-5"
+                style="font-size: 40;"></i></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            {% if request.user.is_authenticated %}
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item mt-1">
+                    <a class="nav-link" href="#">link1<i class='far fa-address-card'></i></a>
+                </li>
+               
+                <li class="nav-item mt-1">
+                    <a class="nav-link" href="#">link3 <i class="fas fa-solid fa-plus" style="font-size: 12;"></i> </a>
+                </li>
+                <li class="nav-item dropdown mt-1">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Branches
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% for branch in branches %}
+                        <li><a class="dropdown-item" href="#">{{branch.name}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+
+
+
+
+            <ul class="navbar-nav mr-auto mb-2 mb-lg-0 pb-0">
+
+                <li class="nav-item">
+                    <a class="nav-link logout" href="{% url 'logout' %}">
+                        {{request.user|title}} <i class="fas fa-sign-out-alt" style="font-size: 20;"></i>
+                        <span class="logoutText">Log out</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link logout" target="_blank" href="/admin/">
+                        Manage Site <i class="fas fa-sign-out-alt" style="font-size: 20;"></i>
+                        <span class="logoutText">Log out</span>
+                    </a>
+                </li>
+            </ul>
+            {% else %}
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <!-- posts -->
+                </li>
+            </ul>
+
+            <ul class="navbar-nav mr-auto mb-2 mb-lg-0 pb-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'register' %}">Sign up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'login' %}"> Login <i class='fas fa-user'></i>
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</nav>

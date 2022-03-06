@@ -29,8 +29,6 @@ from . import verify
 # from rest_framework import status
 
 
-
-
 @unauthenticated_user
 def register(request):
     form = CreateUserForm()
@@ -124,12 +122,17 @@ def loginPage(request):
 def logoutUser(request):
     logout(request)
     # return redirect(request.META.get('HTTP_REFERER'))  #to stay in the same page after logging out
-    return redirect('login')
+    return redirect('home')
 
 #home
 def home(request):
-    return render(request, 'physio-slim/home.html')
+    branches = Branch.objects.all()
+    context={'branches':branches}
+    return render(request, 'physio-slim/home.html', context)
 
+
+
+    
 
 
 # @verification_required  

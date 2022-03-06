@@ -1,7 +1,18 @@
-<h1>
-    hi {{request.user}}
-</h1>
-<a class="nav-link logout" href="{% url 'logout' %}">
-    {{request.user|title}} 
-    <span class="logoutText">Log out</span>
-</a>
+{% extends 'physio-slim/main.html' %}
+{% load static %}
+
+{% block head %}
+<title>Home</title>
+<link rel="stylesheet" href="{% static 'css/tag.css' %}">
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block navbar %}
+{% include 'physio-slim/navbar.html' %}
+{% endblock %}
+
+{% block main %}
+<!-- "col-md-4 col-sm-12 mr-2" -->
+
+
+{% endblock %}
