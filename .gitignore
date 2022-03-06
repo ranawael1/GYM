@@ -6,4 +6,3 @@ settings.py
 images
 avatars
 *.env
-node_modules
