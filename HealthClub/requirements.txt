@@ -7,7 +7,7 @@ cryptography==36.0.1
 Django==4.0.3
 django-phonenumber-field==6.1.0
 djangorestframework==3.13.1
-fontawesome-free==5.15.4
+fontawesomefree==5.15.4
 idna==3.3
 phonenumberslite==8.12.44
 Pillow==9.0.1

@@ -1,0 +1,94 @@
+{% extends 'physio-slim/main.html' %}
+{% load static %}
+
+{% block head %}
+  <title> {{branch.name}} Home</title>
+{% endblock %}
+
+{% block navbar %}
+{% include 'physio-slim/navbar.html' %}
+{% endblock %}
+
+{% block main %}
+<!-- "col-md-4 col-sm-12 mr-2" -->
+
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner " style="height:80vh;margin-top: 7%;">
+        <div class="carousel-item active" data-bs-interval="3000">
+            <img src="{% static 'images/img1.jpg' %}" class="d-block w-100" alt="img1">
+        </div>
+        <div class="carousel-item" data-bs-interval="3000">
+            <img src="{% static 'images/img2.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item" data-bs-interval="3000">
+            <img src="{% static 'images/img3.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+<!-- <div class = " border border-dark"> -->
+    <div class="row  p-1 mb-4"> 
+      <h3 class="m-2"> Our Classes</h3>
+      {% for class in classes %}
+
+      <div class="col-12 col-md-6 col-lg-4 ">
+        <div class="card mb-4">
+
+          <div class="bg-image hover-overlay ripple p-1" data-mdb-ripple-color="light">
+              <img src="{{MEDIA_URL}}/{{class.photo}}" class="img-fluid" style="width:  100%;
+                            height: 200px;
+                            background-size: cover;" /> </a>
+            <a href="#!">
+              <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+            </a>
+          </div>
+          <div class="card-body">
+            <h4 class="card-title m-1 ">{{class}}</h4>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      <a href="{% url 'class' branch.id %}" class="text-end">  
+        See More <i class="fa-solid fa-arrow-right-long-to-line "></i></a>
+</div> <hr>
+<div>
+  <h3 class='m-2'> Our Clinics </h3>
+</div>
+<div class="row">
+   {% for clinic in clinics %}
+  <div class="col-sm-6">
+    <div class="card">
+      
+      <div class="card-body ">
+        <div class="bg-image hover-overlay ripple p-1 float-end" data-mdb-ripple-color="light">
+          <img src="{{MEDIA_URL}}/{{clinic.photo}}" class="img-fluid " style="width:  100%;
+                        height: 200px;
+                        background-size: cover;" /> </a>
+          <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+        </a>
+        </div>
+        <h5 class="card-title col-6">{{clinic.clinic}}</h5>
+        <div>
+          <p class="card-text">{{clinic.description}}</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  {%endfor%}
+  <div class='row'>
+    <a href="{% url 'clinics' branch.id %}" class="text-end">  
+      See More <i class="fa-solid fa-arrow-right-long-to-line "></i></a>
+  </div>
+</div>
+
+
+
+{% endblock %}

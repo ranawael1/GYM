@@ -1,4 +1,9 @@
 
+{% load static %}
+
+
+
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 <style>
     .logoutText {
         visibility: hidden;
@@ -78,10 +83,14 @@
         }
        
 </style>
-<nav class="navbar navbar-expand-lg navbar-light bg-light  fixed-top  justify-content-between background-light">
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-light  fixed-top  justify-content-between background-light text-danger">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}"> <i class="fas fa-home col-2 ml-5"
-                style="font-size: 40;"></i></a>
+        <a class="navbar-brand" href="{% url 'home' %}"> </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -91,12 +100,9 @@
 
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item mt-1">
-                    <a class="nav-link" href="#">link1<i class='far fa-address-card'></i></a>
+                    <a class="nav-link" href="{% url 'home' %}"><b>Physio-Slim</b></a>
                 </li>
 
-                <li class="nav-item mt-1">
-                    <a class="nav-link" href="#">link3 <i class="fas fa-solid fa-plus" style="font-size: 12;"></i> </a>
-                </li>
                 <li class="nav-item dropdown mt-1">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -104,7 +110,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         {% for branch in branches %}
-                        <li><a class="dropdown-item" href="#">{{branch.name}}</a></li>
+                        <li><a class="dropdown-item dropdown-item-font" href="{% url 'branch' branch.id %}">{{branch.name}}</a></li>
                         {% endfor %}
                     </ul>
                 </li>
@@ -135,34 +141,36 @@
                     </ul>
                 </li>
 
+            <ul class="navbar-nav mr-auto mb-2 mb-lg-0 pb-0" style="padding-right: 3%;">
+                <li class="nav-item mt-1">
+                    <a class="nav-link" href="#about"><b>About</b></a>
+                </li>
+                <li class="nav-item mt-1">
+                    <a class="nav-link" href="#contact-us"><b>Contact us</b></a>
+                </li>
                 <li class="nav-item dropdown mt-1">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         {{request.user|title}}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Edit account</a></li>
+                        <li><a class="dropdown-item dropdown-item-font" href="#">Account<i class="fa-solid fa-user px-2"></i> </a></li>
                         {% if not request.user.is_annonymous %}
-                        <li><a class="dropdown-item" href="/admin" target="_blank">Manage Site</a></li>
+                        <li><a class="dropdown-item dropdown-item-font" href="/admin" target="_blank">Manage Site <i class="fa-solid fa-gear px-1"></i></a></li>
                         {% endif %}
-                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        <li><a class="dropdown-item dropdown-item-font" href="{% url 'logout' %}">Logout <i class="fa-solid fa-arrow-right-from-bracket px-1"></i></a></li>
                     </ul>
                 </li>
             </ul>
             
             {% else %}
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <!-- posts -->
-                </li>
-            </ul>
 
             <ul class="navbar-nav mr-auto mb-2 mb-lg-0 pb-0">
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="{% url 'register' %}">Sign up</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'login' %}"> Login <i class='fas fa-user'></i>
+                    <a class="nav-link" aria-current="page" href="{% url 'login' %}"> Login <i class="fa-solid fa-arrow-right-to-bracket"></i>
                     </a>
                 </li>
             </ul>
