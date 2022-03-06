@@ -132,7 +132,7 @@ def logoutUser(request):
 #home
 def home(request):
     branches = Branch.objects.all()
-    context={'branches':branches , {'room_name' : "broadcast"}}
+    context={'branches':branches ,'room_name' : "broadcast"}
     return render(request, 'physio-slim/home.html', context)
 
 # branch  details
