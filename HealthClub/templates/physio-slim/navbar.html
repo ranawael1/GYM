@@ -1,3 +1,8 @@
+{% load static %}
+
+{% block head %}
+
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 <style>
     .logoutText {
         visibility: hidden;
@@ -30,10 +35,14 @@
         }
     }
 </style>
+{% endblock %}
+
+
+
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light  fixed-top  justify-content-between background-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}"> <i class="fas fa-home col-2 ml-5"
-                style="font-size: 40;"></i></a>
+        <a class="navbar-brand" href="{% url 'home' %}"> </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -53,7 +62,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         {% for branch in branches %}
-                        <li><a class="dropdown-item" href="{% url 'branch' branch.id %}">{{branch.name}}</a></li>
+                        <li><a class="dropdown-item dropdown-item-font" href="{% url 'branch' branch.id %}">{{branch.name}}</a></li>
                         {% endfor %}
                     </ul>
                 </li>
@@ -75,11 +84,11 @@
                         {{request.user|title}}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Edit account</a></li>
+                        <li><a class="dropdown-item dropdown-item-font" href="#">Edit account <i class="fa-solid fa-gear"></i></a></li>
                         {% if not request.user.is_annonymous %}
-                        <li><a class="dropdown-item" href="/admin" target="_blank">Manage Site</a></li>
+                        <li><a class="dropdown-item dropdown-item-font" href="/admin" target="_blank">Manage Site</a></li>
                         {% endif %}
-                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        <li><a class="dropdown-item dropdown-item-font" href="{% url 'logout' %}">Logout</a></li>
                     </ul>
                 </li>
             </ul>

@@ -3,6 +3,7 @@
 
 {% block head %}
 <title>Home</title>
+<link rel="stylesheet" href="{% static 'css/contactUs.css' %}">
 {% endblock %}
 
 {% block navbar %}
@@ -34,7 +35,7 @@
     </button>
 </div>
 <div id="about">
-    <div id="carouselExampleControls" class="carousel slide py-3" data-bs-ride="carousel">
+    <div id="carouselExampleControls" class="carousel slide pt-2" data-bs-ride="carousel">
         <div class="carousel-inner " style="height:80vh;margin-top: 7%;">
             <div class="carousel-item active" data-bs-interval="3000">
                 <img src="{% static 'images/img1.jpg' %}" class="d-block w-100" alt="img1">
@@ -46,37 +47,33 @@
                 <img src="{% static 'images/img3.jpg' %}" class="d-block w-100" alt="...">
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
     </div>
 </div>
 <div id="contact-us">
-    <div id="carouselExampleControls pb-3" class="carousel slide py-3" data-bs-ride="carousel">
-        <div class="carousel-inner " style="height:80vh;margin-top: 7%;">
-            <div class="carousel-item active" data-bs-interval="3000">
-                <img src="{% static 'images/img1.jpg' %}" class="d-block w-100" alt="img1">
+    <div class="contact-us container py-5">
+        <div class="row py-5" >
+            {% for branch in branches %}
+            <div class="col text-center">
+                <a href="{% url 'branch' branch.id %}"><p>{{branch.name|title}}</p></a>
+                <p>{{branch.address|title}}</p>
+                <p>{{branch.phone}}</p>
             </div>
-            <div class="carousel-item" data-bs-interval="3000">
-                <img src="{% static 'images/img2.jpg' %}" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item" data-bs-interval="3000">
-                <img src="{% static 'images/img3.jpg' %}" class="d-block w-100" alt="...">
-            </div>
+            {% endfor %}
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+
+        <div class="text-center py-1" > Check us on social media 
+              <div class="col-sm "><i class="fa-brands fa-facebook-f icons py-3 px-3"></i> <i class="fa-brands fa-instagram icons"></i></div>
+          </div>
     </div>
 </div>
 {% endblock %}
