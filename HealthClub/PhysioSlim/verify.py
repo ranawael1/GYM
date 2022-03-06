@@ -19,7 +19,11 @@ def send(phone):
 def check(phone, code):
     try:
         print(phone, code)
-        
+        if phone.startswith('+2'):
+            pass
+        else:
+            phone = '+2'+phone
+        print(phone)
         result = verify.verification_checks.create(to=str(phone), code=str(code))
         print(result)
     except TwilioRestException:

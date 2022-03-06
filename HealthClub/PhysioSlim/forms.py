@@ -6,7 +6,18 @@ from .models import User, Branch, Offer, Event, Clinic
 class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'age', 'gender', 'phone']
+        fields = ['username', 'email', 'password1', 'password2', 'phone','avatar', 'age', 'gender' , 'branch', 'membership_num']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.TextInput(attrs={'class': 'form-control'}),
+            'password1': forms.TextInput(attrs={'class': 'form-control'}),
+            'password2': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone': forms.NumberInput(attrs={'class': 'form-control'}),
+            'avatar': forms.FileInput(attrs={'class': 'form-control'}),
+            'age': forms.NumberInput(attrs={'class': 'form-control'}),
+            'gender': forms.Select(attrs={'class': 'form-control'}),
+            'branch': forms.Select(attrs={'class': 'form-control'}),
+            }
 
 class VerifyForm(forms.Form):
     code = forms.CharField(max_length=8, required=True, help_text='Enter code')
