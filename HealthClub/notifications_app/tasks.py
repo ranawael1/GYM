@@ -26,7 +26,6 @@ def broadcast_notification(self, data):
             notification.sent = True
             notification.save()
             return 'Done'
-
         else:
             self.update_state(
                 state = 'FAILURE',

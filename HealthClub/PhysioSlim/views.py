@@ -25,10 +25,12 @@ from django.template import RequestContext
 from asgiref.sync import async_to_sync
 
 #home
+# def home(request):
+#     branches = Branch.objects.all()
+#     context={'branches':branches}
+#     return render(request, 'physio-slim/base.html', context)
 def home(request):
-    branches = Branch.objects.all()
-    context={'branches':branches}
-    return render(request, 'physio-slim/base.html', context)
+    return render(request, 'physio-slim/home.html', {'room_name' : "broadcast"})
 
 #test notifications
 def test(request):

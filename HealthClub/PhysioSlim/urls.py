@@ -15,6 +15,8 @@ urlpatterns = [
     path('reset_password/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="password_reset/password_reset_form.html"), name='password_reset_confirm'),
     #success
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset/password_reset_done.html'), name="password_reset_complete"),
+    #notifications
+    path('test/', views.test, name="test"),
 
     # #rest_framework
     # path('users/', views.users, name='users'),
@@ -71,10 +73,7 @@ urlpatterns = [
     # path('add-event-form/', views.addingEvent, name='add-event-form'),
     #add-clinic-form
     # path('add-clinic-form/', views.addingClinic, name='add-clinic-form'),
-    #notifications
-    # path('test1/', views.home, name="home"),
-    # path('test/', views.test, name="test"),
-
+  
     # #add-event-form
     # path('add-event-form/', views.addingEvent, name='add-event-form'),
     # #add-clinic-form
