@@ -1,5 +1,4 @@
 # created by virtualenv automatically
-venv
 env
 __pycache__
 migrations
@@ -7,3 +6,4 @@ settings.py
 images
 avatars
 *.env
+node_modules

@@ -19,17 +19,36 @@ from django.contrib import messages
 # from .decorators import verification_required  
 #forms
 from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
-#rest_framework imports
-from rest_framework.response import Response # like render
-from rest_framework.decorators import api_view
-from .serializers import ClinicSerializer, UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer
-from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer,LoginSerializer
-from . import verify
-#from rest_framework import permissions
-# from rest_framework.views import exception_handler
-# from rest_framework import status
+from channels.layers import get_channel_layer
+#Notifications
+import json
+from django.template import RequestContext
+from asgiref.sync import async_to_sync
 
+#home
+# def home(request):
+#     return render(request, 'physio-slim/home.html', {'room_name' : "broadcast"})
 
+#test notifications
+def test(request):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "notification_broadcast",
+        {
+            'type': 'send_notification',
+            'message': json.dumps("Notification")
+        }
+    )
+    return HttpResponse("Done")
+    
+#logout
+def logoutUser(request):
+    logout(request)
+    # return redirect(request.META.get('HTTP_REFERER'))  #to stay in the same page after logging out
+    
+    return redirect('login')
+
+#register
 @unauthenticated_user
 def register(request):
     form = CreateUserForm()
@@ -53,22 +72,6 @@ def register(request):
             return redirect('verify', user=user)
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
-
-# def verify_code(request):
-#     if request.method == 'POST':
-#         form = VerifyForm(request.POST)
-#         if form.is_valid():
-#             code = form.cleaned_data.get('code')
-#             phone = request.user.phone
-#             if verify.check(request.user.phone, code):
-#                 request.user.is_verified = True
-#                 request.user.save()
-#                 return redirect('home')
-#     else:
-#         form = VerifyForm()
-#         context = {'form': form}
-#     return render(request, 'physio-slim/verify.html', context)
-
 
 def verify_code(request, user):
     if request.method == 'POST':
@@ -129,8 +132,9 @@ def logoutUser(request):
 #home
 def home(request):
     branches = Branch.objects.all()
-    context={'branches':branches}
+    context={'branches':branches ,'room_name' : "broadcast"}
     return render(request, 'physio-slim/home.html', context)
+
 # branch  details
 def branch(request, br_id):
     branches = Branch.objects.all()
@@ -160,6 +164,10 @@ def clinics(request,br_id):
 
 
     
+
+
+
+
 
 
     
@@ -535,18 +543,14 @@ def clinics(request,br_id):
 #         return redirect ('all-clinics')
 
 
-# #edit clinic
-# @api_view(['POST'])
-# def editClinic(request, cl_id):
-#     clinic = Clinic.objects.get(id=cl_id)
-#     clinic_ser = ClinicSerializer(data=request.data, instance=clinic)
-#     if clinic_ser.is_valid():
-#         clinic_ser.save()
-#         return redirect ('all-clinics')
+#add event form for testing
+def addingEvent(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('all-events')
+    else:
+        form = EventForm()
+        return render(request, 'physio-slim/addeventform.html', {'form' : form})
 
-# #delete clinic
-# @api_view(['DELETE'])
-# def delClinic(request,cl_id):
-#     clinic = Clinic.objects.get(id=cl_id)
-#     clinic.delete()
-#     return HttpResponse ('Clinic deleted')
