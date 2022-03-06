@@ -11,7 +11,7 @@ GENDER = (
 class Branch(models.Model):
     name = models.CharField(max_length=50, null= True)
     address = models.CharField(max_length=50, null= True)
-
+    phone = PhoneNumberField(unique = True, null = True, blank = True)
     def __str__(self):
         return self.name 
 
@@ -25,7 +25,7 @@ class User(AbstractUser):
     membership_num = models.CharField(max_length=50, null= True)
     
     #avatar= models.ImageField(upload_to='avatars/')
-    REQUIRED_FIELDS = ['age', 'gender','phone']
+    REQUIRED_FIELDS = ['age', 'gender','phone','email']
 
 # class Check(models.Model):
 #     phone = PhoneNumberField(unique = True, null = False, blank = False)
@@ -57,8 +57,8 @@ POSITION = (
 class PersonalTrainer(models.Model):
     name = models.CharField(max_length=50, null= True)
     bio = models.CharField(max_length=500, null= True)
-    year_of_exprince = models.IntegerField()
-    position = models.CharField(choices=GENDER, max_length=20)
+    years_of_experience = models.IntegerField()
+    position = models.CharField(choices=POSITION, max_length=20)
     branch = models.ForeignKey(Branch ,on_delete=models.CASCADE)
     def __str__(self):
         return self.name

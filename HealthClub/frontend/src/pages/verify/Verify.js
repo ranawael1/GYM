@@ -11,28 +11,39 @@ function Verify(props) {
     const user = location.state.detail
     console.log(user)
     const [verify, setVerify] = useState({
-        verify: null
+        code: null
     })
     const [errResponse, setErrResponse] = useState()
     const onChange = (e) => {
         setVerify({
             code: e.target.value
         })
+
     }
     const onSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault()   
             axios.post(`physio-slim/api-verify/`,verify,{
                 params: user
             })
             .then((res)=>{console.log(res.data)
                 history.push({
                     pathname: '/login',
-                    search: { detail: res.data}
+                    state: { detail: res.data}
                 })
             })
-            .catch((err) => { setErrResponse(err.response.data); 
-                console.log(err.response.data);
+            .catch((err) => { 
+                if (err.response) {
+                    setErrResponse(err.response.data); 
+                    console.log(err.response.data);
+                }
+                history.push({
+                    pathname: '/login',
+                    state: {detail: {message: 'ok'}}
+                })
+                
             })
+
+        
     }
     return (
         <>
@@ -50,9 +61,13 @@ function Verify(props) {
                                 />
                             </div>
                         </div>
-                <p>{errResponse}</p>
+                        {errResponse&&
+                        (<p className='text-danger'>{errResponse.error}</p>)
+                        }
                 <br></br>
+                
                 <button type="submit" className="btn btn-success " name="button"
+                disabled={verify.code===null || verify.code===""? true: false}
                 >Submit</button>
             </form>
         </>

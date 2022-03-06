@@ -4,8 +4,7 @@ import { useLocation } from 'react-router-dom';
 function Login(props) {
     const location = useLocation()
     let success
-    console.log(location.state)
-    if (location.state=== null) {
+    if (location.state!= null) {
         success = location.state.detail.message
     }
     else {

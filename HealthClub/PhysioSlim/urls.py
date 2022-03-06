@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     path('register/', views.register, name='register'),
-    path('login/', views.login_user, name='login'),
+    # path('login/', views.login_user, name='login'),
     path('logout/', views.logoutuser, name='logout'),
     #reset password form
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="password_reset/password_reset.html"), name="reset_password"),
@@ -19,8 +19,9 @@ urlpatterns = [
     path('users/', views.users, name='users'),
     path('user/<user_id>', views.user, name='user'),
     path('add-user/', views.add_user, name='add-user'),
+    path('login/',views.login_view,name='login'),
     # path('verify/', views.verify_code, name='verify-code'),  
-    path('verify/', views.verify_code, name='verify-code'),  
+    # path('verify/', views.verify_code, name='verify-code'),  
     path('api-verify/', views.verify_code_api, name='verify-code-api'),  
     path('edit-user/<user_id>', views.edit_user, name='edit-user'),  
     path('delete-user/<user_id>', views.del_user, name='delete-user'),  
@@ -33,6 +34,7 @@ urlpatterns = [
     path('branch-del/<br_id>', views.del_branch, name='branch-del'),
     #api-Offer  
     path('Offer-all/', views.all_Offer, name='Offer-all'),
+    path('branch-offers/<br_id>', views.branchOffers, name='branch-offers'),
     path('Offer-one/<of_id>', views.one_Offer, name='Offer-one'),
     path('Offer-add', views.add_Offer, name='Offer-add'),
     path('Offer-edit/<of_id>', views.edit_Offer, name='Offer-edit'),
@@ -56,9 +58,21 @@ urlpatterns = [
     path('add-class/', views.addClass, name='add-class'),
     path('edit-class/<ev_id>', views.editClass, name='edit-class'),
     path('del-class/<ev_id>', views.delClass, name='del-class'),
+
+    #api-event  
+    path('all-clinics/', views.allClinics, name='all-clinics'),
+    path('branch-clinics/<br_id>', views.showBranchClinics, name='branch-clinics'),
+    path('add-clinic/', views.addClinic, name='add-clinic'),
+    path('edit-clinic/<cl_id>', views.editClinic, name='edit-clinic'),
+    path('del-clinic/<cl_id>', views.delClinic, name='del-clinic'),
+
     #add-event-form
     path('add-event-form/', views.addingEvent, name='add-event-form'),
     #add-clinic-form
-    path('add-clinic-form/', views.addingClinic, name='add-clinic-form'),
+    # path('add-clinic-form/', views.addingClinic, name='add-clinic-form'),
+    #notifications
+    path('test1/', views.home, name="home"),
+    path('test/', views.test, name="test"),
+
 ]
 
