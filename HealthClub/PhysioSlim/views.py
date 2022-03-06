@@ -102,7 +102,6 @@ def loginPage(request):
         #gather the username and the password entered on the login form
         username = request.POST.get('username')
         password = request.POST.get('password')
-
         #authenticate the data entered by the user
         user = authenticate(request, username=username, password=password)
         #if the user exists
