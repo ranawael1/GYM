@@ -36,7 +36,7 @@
 						<input type="password" name="password" placeholder="Password..." class="form-control">
 						
 					</div>
-					<a href="{% url 'reset_password' %}" class="ml-2 fs-6">Forgot your password?</a> 
+					<a href="{% url 'reset_password' %}" class="ml-2 fs-6 text-primary">Forgot your password?</a> 
 					{% for message in messages %}
 					<p id="messages" style="font-weight: bolder;">{{message}}</p>
 					{% endfor %}
@@ -47,7 +47,7 @@
 			</div>
 			<div>
 				<div class="d-flex justify-content-center links text-light" >
-					Don't have an account?<a href="{% url 'register' %}" class="ml-2">Sign Up</a>
+					Don't have an account?<a href="{% url 'register' %}" class="ml-2 text-primary">Sign Up</a>
 				</div>
 			</div>
 		</div>

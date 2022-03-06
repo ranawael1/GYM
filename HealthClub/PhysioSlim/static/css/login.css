@@ -7,17 +7,9 @@ html {
     background: #fbc531c1 !important;
 
 }
-a{
-    text-decoration: none;
-    color: white;
-}
 
-a:hover{
-    text-decoration: none;
-}
 .user_card {
     width: 400px;
-    height: 30px;
     margin-top: auto;
     margin-bottom: auto;
     background: #050301d5;
