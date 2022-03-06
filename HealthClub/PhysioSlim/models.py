@@ -21,7 +21,7 @@ class User(AbstractUser):
     is_verified = models.BooleanField(default=False)
     age = models.IntegerField()
     gender = models.CharField(choices=GENDER, max_length=20)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= False)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= True)
     membership_num = models.CharField(max_length=50, null= True)
     
     avatar= models.ImageField(upload_to='avatars/',null=True)
