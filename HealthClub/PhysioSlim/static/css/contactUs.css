@@ -6,3 +6,12 @@
 .icons{
     height: 10%;
 }
+
+
+
+a{
+    color: inherit;
+}
+a:hover{
+    color: inherit;
+}
