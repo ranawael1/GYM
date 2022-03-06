@@ -138,8 +138,9 @@ def branch(request, br_id):
     classe= Class.objects.filter(branch= br_id )[0:3]
     # print(classe)
     clinic= Clinic.objects.filter(branch=br_id)
-    print(clinic)
-    context ={'branch':branch, 'classes':classe ,'clinics':clinic,'branches':branches}
+    events=Event.objects.filter(branch=br_id)
+    print(events)
+    context ={'branch':branch, 'classes':classe ,'events':events,'clinics':clinic,'branches':branches}
     return render(request,'physio-slim/branchHomePage.html', context)
 
 def classe(request,br_id):
