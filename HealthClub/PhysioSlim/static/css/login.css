@@ -4,13 +4,23 @@ html {
     margin: 0;
     padding: 0;
     height: 100%;
-    background: #0d6efd !important;
+    background: #fbc531c1 !important;
+
+}
+a{
+    text-decoration: none;
+    color: white;
+}
+
+a:hover{
+    text-decoration: none;
 }
 .user_card {
-    width: 350px;
+    width: 400px;
+    height: 30px;
     margin-top: auto;
     margin-bottom: auto;
-    background: #0984e3;
+    background: #050301d5;
     position: relative;
     display: flex;
     justify-content: center;
@@ -20,7 +30,7 @@ html {
     -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 5px;
-
+    box-shadow: 20px 20px 50px #050301d0;
 }
 
 .form_container {
@@ -34,7 +44,7 @@ html {
 
 .login_btn {
     width: 100%;
-    background: #0d6efd !important;
+    background: #0d6dfd9f !important;
     color: white !important;
 }
 .login_btn:focus {

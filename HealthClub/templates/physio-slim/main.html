@@ -1,5 +1,4 @@
 {% load static %}
-
 <html lang="en">
 
 <head>
@@ -29,8 +28,8 @@
 </head>
 
 <body>
-
-    {% include "physio-slim/navbar.html" %}
+    {% block navbar %}
+    {% endblock %}
     <div >
         {% block main %}
 
