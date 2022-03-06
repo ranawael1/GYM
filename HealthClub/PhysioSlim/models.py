@@ -25,6 +25,7 @@ class User(AbstractUser):
     membership_num = models.CharField(max_length=50, null= True)
     
     avatar= models.ImageField(upload_to='avatars/',null=True)
+
     REQUIRED_FIELDS = ['age', 'gender','phone','email']
 
 # class Check(models.Model):

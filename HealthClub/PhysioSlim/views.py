@@ -130,6 +130,15 @@ def home(request):
     context={'branches':branches}
     return render(request, 'physio-slim/home.html', context)
 
+def branch_home(request ,b_id):
+    branch=Branch.objects.filter(b_id=id)
+    context ={'branch' : branch}
+    return render(request, 'physio-slim/br_home.html', context)
+
+
+
+
+
 
 
     
