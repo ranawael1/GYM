@@ -20,6 +20,8 @@ urlpatterns = [
     path('branch/<br_id>', views.branch, name='branch'),
     # access classes
     path('class/<br_id>', views.classe, name='class'),
+ # access clinics
+    path('clinics/<br_id>', views.clinics, name='clinics'),
 
 
     # #rest_framework
