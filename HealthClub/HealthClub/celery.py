@@ -11,14 +11,14 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'HealthClub.settings')
 
 app = Celery('HealthClub')
 app.conf.enable_utc = False
-app.conf.update(timezone='UTC')
+app.conf.update(timezone='EET')
 
 app.config_from_object(settings, namespace='CELERY')
 
 app.conf.beat_schedule = {
 }
 
-app.conf.timezone = 'UTC'
+app.conf.timezone = 'EET'
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()

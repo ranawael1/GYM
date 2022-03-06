@@ -47,7 +47,6 @@ def logoutUser(request):
     # return redirect(request.META.get('HTTP_REFERER'))  #to stay in the same page after logging out
     
     return redirect('login')
-
 #register
 @unauthenticated_user
 def register(request):
