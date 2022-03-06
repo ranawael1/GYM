@@ -63,41 +63,41 @@ def logoutUser(request):
     return redirect('login')
 
 
-# @verification_required  
-@api_view(['GET'])
-def users(request):
-    users = User.objects.all()
-    users_ser = UserSerializer(users, many=True)
-    return Response(users_ser.data)
+# # @verification_required  
+# @api_view(['GET'])
+# def users(request):
+#     users = User.objects.all()
+#     users_ser = UserSerializer(users, many=True)
+#     return Response(users_ser.data)
     
-@login_required(login_url='login')
-@api_view(['GET'])
-def user(request, user_id):
-    user = User.objects.get(id = user_id)
-    user_ser = UserSerializer(user, many=False)
-    return Response(user_ser.data)
+# @login_required(login_url='login')
+# @api_view(['GET'])
+# def user(request, user_id):
+#     user = User.objects.get(id = user_id)
+#     user_ser = UserSerializer(user, many=False)
+#     return Response(user_ser.data)
 
-@api_view(['POST'])
-def add_user(request):
-    user_ser = UserSerializer(data=request.data)
-    print("check")
-    if user_ser.is_valid():
-        print("check2")
-        valid = user_ser._validated_data
-        username= valid.get('username')
-        phone=valid.get('phone')
-        email = valid.get('email')
-        password = make_password(valid.get('password'))
-        age = valid.get('age')
-        gender = gender =valid.get('gender')
-        user_data = {'username': username,'email': email,'password': password, 'phone': phone, 'age': age, 'gender': gender}
-        try:
-            verify.send(phone)
-        except:
-            error = {
-                    "error":{
-                    "statusCode": 429,
-                        "message": "Rate limit is exceeded. Try again later" 
+# @api_view(['POST'])
+# def add_user(request):
+#     user_ser = UserSerializer(data=request.data)
+#     print("check")
+#     if user_ser.is_valid():
+#         print("check2")
+#         valid = user_ser._validated_data
+#         username= valid.get('username')
+#         phone=valid.get('phone')
+#         email = valid.get('email')
+#         password = make_password(valid.get('password'))
+#         age = valid.get('age')
+#         gender = gender =valid.get('gender')
+#         user_data = {'username': username,'email': email,'password': password, 'phone': phone, 'age': age, 'gender': gender}
+#         try:
+#             verify.send(phone)
+#         except:
+#             error = {
+#                     "error":{
+#                     "statusCode": 429,
+#                         "message": "Rate limit is exceeded. Try again later" 
 @unauthenticated_user
 def register(request):
     form = CreateUserForm()
@@ -122,42 +122,42 @@ def register(request):
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
 
-def verify_code(request):
-    if request.method == 'POST':
-        form = VerifyForm(request.POST)
-        if form.is_valid():
-            code = form.cleaned_data.get('code')
-            phone = request.user.phone
-            if verify.check(request.user.phone, code):
-                request.user.is_verified = True
-                request.user.save()
-                return redirect('users')
-    else:
-        form = VerifyForm()
-        context = {'form': form}
-    return render(request, 'physio-slim/verify.html', context)
-def verify_code(request, user):
-    if request.method == 'POST':
-        form = VerifyForm(request.POST)
-        context = {'form': form}
-        if form.is_valid():
-            code = form.cleaned_data.get('code')
-            phone = user.phone
-            try:
-                x=verify.check(user.phone, code)
-                if x is not False:
-                    user.save()
-                    return redirect('users')
-                else:
-                    return render(request, 'physio-slim/verify.html', context)
-            except:
-                return render(request, 'physio-slim/verify.html', context)
-        context = {'form': form}
-        return render(request, 'physio-slim/verify.html', context)
-    else:
-        form = VerifyForm()
-        context = {'form': form}
-        return render(request, 'physio-slim/verify.html', context)
+# def verify_code(request):
+#     if request.method == 'POST':
+#         form = VerifyForm(request.POST)
+#         if form.is_valid():
+#             code = form.cleaned_data.get('code')
+#             phone = request.user.phone
+#             if verify.check(request.user.phone, code):
+#                 request.user.is_verified = True
+#                 request.user.save()
+#                 return redirect('users')
+#     else:
+#         form = VerifyForm()
+#         context = {'form': form}
+#     return render(request, 'physio-slim/verify.html', context)
+# def verify_code(request, user):
+#     if request.method == 'POST':
+#         form = VerifyForm(request.POST)
+#         context = {'form': form}
+#         if form.is_valid():
+#             code = form.cleaned_data.get('code')
+#             phone = user.phone
+#             try:
+#                 x=verify.check(user.phone, code)
+#                 if x is not False:
+#                     user.save()
+#                     return redirect('users')
+#                 else:
+#                     return render(request, 'physio-slim/verify.html', context)
+#             except:
+#                 return render(request, 'physio-slim/verify.html', context)
+#         context = {'form': form}
+#         return render(request, 'physio-slim/verify.html', context)
+#     else:
+#         form = VerifyForm()
+#         context = {'form': form}
+#         return render(request, 'physio-slim/verify.html', context)
 
 
 

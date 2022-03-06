@@ -72,8 +72,8 @@ urlpatterns = [
     #add-clinic-form
     # path('add-clinic-form/', views.addingClinic, name='add-clinic-form'),
     #notifications
-    path('test1/', views.home, name="home"),
-    path('test/', views.test, name="test"),
+    # path('test1/', views.home, name="home"),
+    # path('test/', views.test, name="test"),
 
     # #add-event-form
     # path('add-event-form/', views.addingEvent, name='add-event-form'),
