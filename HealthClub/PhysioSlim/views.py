@@ -1,5 +1,6 @@
 import email
 import imp
+from multiprocessing import context
 from django.http import HttpResponse
 from importlib.resources import contents
 from django.shortcuts import redirect, render
@@ -131,22 +132,26 @@ def home(request):
     branches = Branch.objects.all()
     context={'branches':branches}
     return render(request, 'physio-slim/home.html', context)
-
-def branch_home(request ,b_id):
-    branch=Branch.objects.filter(b_id=id)
-    context ={'branch' : branch}
-    return render(request, 'physio-slim/br_home.html', context)
-
-
-
-
-
-
+# branch  details
 def branch(request, br_id):
     branches = Branch.objects.all()
     branch = Branch.objects.get(id = br_id)
-    context ={'branch':branch, 'branches':branches}
+    classe= Class.objects.filter(branch= br_id )[0:3]
+    # print(classe)
+    clinic= Clinic.objects.filter(branch=br_id)
+    print(clinic)
+    context ={'branch':branch, 'classes':classe ,'clinic':clinic,'branches':branches}
     return render(request,'physio-slim/branchHomePage.html', context)
+
+def classe(request,br_id):
+    branch = Branch.objects.get(id = br_id)
+    classe= Class.objects.filter(branch= br_id )
+    print(classe)
+    context= {'classes':classe ,'branch':branch }
+    return render(request,'physio-slim/br_class.html', context)
+    
+
+
     
 
 
