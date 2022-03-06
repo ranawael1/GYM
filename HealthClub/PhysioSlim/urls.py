@@ -19,6 +19,9 @@ urlpatterns = [
     path('branch/<b_id>', views.branch_home, name='branch'),
 
 
+    #access branch
+    path('branch/<br_id>', views.branch, name='branch'),
+
     # #rest_framework
     # path('users/', views.users, name='users'),
     # path('user/<user_id>', views.user, name='user'),
@@ -32,7 +35,7 @@ urlpatterns = [
 
     # #api-branch  
     # path('branch-all/', views.all_branch, name='branch-all'),
-    # path('branch-one/<br_id>', views.one_branch, name='branch-one'),
+    # path('branch/<br_id>', views.one_branch, name='branch'),
     # path('branch-add', views.add_branch, name='branch-add'),
     # path('branch-edit/<br_id>', views.edit_branch, name='branch-edit'),
     # path('branch-del/<br_id>', views.del_branch, name='branch-del'),

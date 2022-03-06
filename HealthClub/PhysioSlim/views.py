@@ -53,20 +53,22 @@ def register(request):
     context = {'form':form}
     return render(request, 'physio-slim/register.html', context)
 
-def verify_code(request):
-    if request.method == 'POST':
-        form = VerifyForm(request.POST)
-        if form.is_valid():
-            code = form.cleaned_data.get('code')
-            phone = request.user.phone
-            if verify.check(request.user.phone, code):
-                request.user.is_verified = True
-                request.user.save()
-                return redirect('users')
-    else:
-        form = VerifyForm()
-        context = {'form': form}
-    return render(request, 'physio-slim/verify.html', context)
+# def verify_code(request):
+#     if request.method == 'POST':
+#         form = VerifyForm(request.POST)
+#         if form.is_valid():
+#             code = form.cleaned_data.get('code')
+#             phone = request.user.phone
+#             if verify.check(request.user.phone, code):
+#                 request.user.is_verified = True
+#                 request.user.save()
+#                 return redirect('home')
+#     else:
+#         form = VerifyForm()
+#         context = {'form': form}
+#     return render(request, 'physio-slim/verify.html', context)
+
+
 def verify_code(request, user):
     if request.method == 'POST':
         form = VerifyForm(request.POST)
@@ -140,7 +142,11 @@ def branch_home(request ,b_id):
 
 
 
-
+def branch(request, br_id):
+    branches = Branch.objects.all()
+    branch = Branch.objects.get(id = br_id)
+    context ={'branch':branch, 'branches':branches}
+    return render(request,'physio-slim/branchHomePage.html', context)
     
 
 
