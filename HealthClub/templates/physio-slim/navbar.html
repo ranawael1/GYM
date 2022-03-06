@@ -84,11 +84,11 @@
                         {{request.user|title}}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item dropdown-item-font" href="#">Edit account <i class="fa-solid fa-gear"></i></a></li>
+                        <li><a class="dropdown-item dropdown-item-font" href="#">Account<i class="fa-solid fa-user px-2"></i> </a></li>
                         {% if not request.user.is_annonymous %}
-                        <li><a class="dropdown-item dropdown-item-font" href="/admin" target="_blank">Manage Site</a></li>
+                        <li><a class="dropdown-item dropdown-item-font" href="/admin" target="_blank">Manage Site <i class="fa-solid fa-gear px-1"></i></a></li>
                         {% endif %}
-                        <li><a class="dropdown-item dropdown-item-font" href="{% url 'logout' %}">Logout</a></li>
+                        <li><a class="dropdown-item dropdown-item-font" href="{% url 'logout' %}">Logout <i class="fa-solid fa-arrow-right-from-bracket px-1"></i></a></li>
                     </ul>
                 </li>
             </ul>
@@ -99,7 +99,7 @@
                     <a class="nav-link" aria-current="page" href="{% url 'register' %}">Sign up</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'login' %}"> Login <i class='fas fa-user'></i>
+                    <a class="nav-link" aria-current="page" href="{% url 'login' %}"> Login <i class="fa-solid fa-arrow-right-to-bracket"></i>
                     </a>
                 </li>
             </ul>

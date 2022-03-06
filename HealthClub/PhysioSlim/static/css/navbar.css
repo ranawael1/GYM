@@ -1,3 +1,15 @@
 .dropdown-item-font{
     font-size: 15px;
 }
+
+.dropdownitem {
+    width: 6em; 
+  }
+  
+  .dropdownitem:hover span {
+    display: none;
+  }
+  
+  .dropdownitem:hover:before {
+    content: "Account";
+  }
