@@ -33,6 +33,49 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
+
+<div class="row  p-1 mb-4"> 
+  <h3 class="m-2 "> Our offers</h3>
+  {% for offer in offers %}
+  <!-- <div class="top-content">
+    <div class="container-fluid">
+        <div id="carousel-example" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner row w-100 mx-auto" role="listbox">
+                <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 active">
+                    <img src="{{MEDIA_URL}}/{{offer.photo}}" class="img-fluid mx-auto d-block" width="20%" alt="img1">
+                </div>
+            </div>
+        </div>
+    </div>
+  </div> -->
+  <div class="row mx-auto my-auto justify-content-center">
+    <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" role="listbox">
+            <div class="carousel-item active">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-img">
+                            <img src="{{MEDIA_URL}}/{{offer.photo}}" class="img-fluid">
+                        </div>
+                        <div class="card-img-overlay">{{offer.name}}</div>
+                    </div>
+                </div>
+            </div>
+             <a class="carousel-control-prev bg-transparent w-aut" href="#recipeCarousel" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </a>
+        <a class="carousel-control-next bg-transparent w-aut" href="#recipeCarousel" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </a>
+    </div>
+  </div>
+  </div>
+
+  {% endfor %}
+
+  <a href="{% url 'offers' branch.id %}" class="text-end">  
+    See More <i class="fa-solid fa-arrow-right-long-to-line "></i></a>
+</div> <hr>
 <!-- <div class = " border border-dark"> -->
     <div class="row  p-1 mb-4"> 
       <h3 class="m-2"> Our Classes</h3>
