@@ -1,0 +1,40 @@
+{% extends 'physio-slim/main.html' %}
+{% load static %}
+
+{% block head %}
+  <title> {{branch.name}}  offers </title>
+{% endblock %}
+
+{% block navbar %}
+{% include 'physio-slim/navbar.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="row  p-1"> 
+    {% for offer in offers %}
+
+    <div class="col-12 col-md-6 col-lg-6 ">
+      <div class="card m-1 mt-5" style="height: 50vh;">
+
+        <div class="bg-image hover-overlay ripple p-1" data-mdb-ripple-color="light">
+            <img src="{{MEDIA_URL}}/{{clinic.photo}}" class="img-fluid" style="width:  100%;
+                          height: 200px;
+                          background-size: cover;" /> </a>
+          <a href="#!">
+            <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+          </a>
+        </div>
+          <h4 class="card-title m-1 ">{{offer.name}}</h4>
+          <p class="card-text m-2" >
+              {{offer.num_of_class}}
+            </p>
+
+
+       
+      </div>
+    </div>
+    {% endfor %}
+   
+</div>
+
+ {% endblock %}
