@@ -1,14 +1,18 @@
+from . import verify
 import email
 import imp
+
 from multiprocessing import context
-from django.http import HttpResponse
 from importlib.resources import contents
 from django.shortcuts import redirect, render
-from .models import User,Branch,Offer,Event,Class, Clinic, Notifications
+from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer, ClassSubscribers, Notifications
 # decorators and authentication
-from.decorators import unauthenticated_user
-from .models import User,Branch,Offer,PersonalTrainer
-from .forms import CreateUserForm
+from .decorators import unauthenticated_user, unverified_user
+# send email
+from django.core.mail import send_mail
+import re
+# forms
+from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
@@ -16,16 +20,18 @@ from django.contrib.auth.models import AnonymousUser
 from urllib.parse import urlparse
 from urllib import parse
 from django.contrib import messages
-# from .decorators import verification_required  
-#forms
-from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
+# from .decorators import verification_required
+#from rest_framework import permissions
+# from rest_framework.views import exception_handler
+# from rest_framework import status
+from django.http import HttpResponse
 from channels.layers import get_channel_layer
-#Notifications
+# Notifications
 import json
 from django.template import RequestContext
 from asgiref.sync import async_to_sync
 
-#home
+# home
 # def home(request):
 #     return render(request, 'physio-slim/home.html', {'room_name' : "broadcast"})
 
@@ -76,13 +82,16 @@ def RemoveNotifications(request, notification_id):
 def logoutUser(request):
     logout(request)
     # return redirect(request.META.get('HTTP_REFERER'))  #to stay in the same page after logging out
-    
+
     return redirect('login')
-#register
+
+# register
+
+
+@unverified_user
 @unauthenticated_user
 def register(request):
     form = CreateUserForm()
-    print(form)
     if request.method == 'POST':
         form = CreateUserForm(request.POST, request.FILES)
         if form.is_valid():
@@ -90,33 +99,59 @@ def register(request):
             phone = form.cleaned_data.get('phone')
             try:
                 verify.send(phone)
+                print("check")
+                user.save()
+                login(request, user)
             except:
                 error = {
-                        "error":{
+                    "error": {
                         "statusCode": 429,
-                            "message": "Rate limit is exceeded. Try again later" 
-                        }
+                        "message": "Rate limit is exceeded. Try again later"
                     }
-                context = {'form':form}
+                }
+                print(error)
+                context = {'form': form}
                 return render(request, 'physio-slim/register.html', context)
-            return redirect('verify', user=user)
-    context = {'form':form}
+            return redirect('verify-code')
+    context = {'form': form}
     return render(request, 'physio-slim/register.html', context)
+# def verify_code(request):
+#     if request.method == 'POST':
+#         form = VerifyForm(request.POST)
+#         if form.is_valid():
+#             code = form.cleaned_data.get('code')
+#             phone = request.user.phone
+#             if verify.check(request.user.phone, code):
+#                 request.user.is_verified = True
+#                 request.user.save()
+#                 return redirect('home')
+#     else:
+#         form = VerifyForm()
+#         context = {'form': form}
+#     return render(request, 'physio-slim/verify.html', context)
 
-def verify_code(request, user):
+
+def verify_code(request):
     if request.method == 'POST':
+
+        user = request.user
         form = VerifyForm(request.POST)
         context = {'form': form}
         if form.is_valid():
             code = form.cleaned_data.get('code')
             phone = user.phone
             try:
-                x=verify.check(user.phone, code)
-                if x is not False:
-                    user.save()
-                    return redirect('users')
-                else:
-                    return render(request, 'physio-slim/verify.html', context)
+                print('check verify', phone)
+                x = verify.check(phone, code)
+                # if x is not False:
+                user.is_verified = True
+                print('2')
+                user.save()
+                print('3')
+                return redirect('home')
+
+                # else:
+                #     return render(request, 'physio-slim/verify.html', context)
             except:
                 return render(request, 'physio-slim/verify.html', context)
         context = {'form': form}
@@ -127,39 +162,48 @@ def verify_code(request, user):
         return render(request, 'physio-slim/verify.html', context)
 
 
+def reverify_code(request):
+    verify.cancellation(request.user.phone)
+    form = VerifyForm()
+    context = {'form': form}
+    return render(request, 'physio-slim/verify.html', context)
 
-#login
+
+# login
+@unverified_user
 @unauthenticated_user
 def loginPage(request):
     if request.method == 'POST':
-        #gather the username and the password entered on the login form
+        # gather the username and the password entered on the login form
         username = request.POST.get('username')
         password = request.POST.get('password')
-        #authenticate the data entered by the user
+        # authenticate the data entered by the user
         user = authenticate(request, username=username, password=password)
-        #if the user exists
+        # if the user exists
         if user is not None:
             login(request, user)
             if request.GET.get('next') is not None:
                 return redirect(request.GET.get('next'))
             else:
-            # return redirect(request.META.get('HTTP_REFERER'), history = -2)  #to stay in the same page after logging in
+                # return redirect(request.META.get('HTTP_REFERER'), history = -2)  #to stay in the same page after logging in
                 return redirect('home')
-        #if not, show this flash message
+        # if not, show this flash message
         else:
             messages.info(request, 'Username or Password is incorrect')
-    #displaying the loging form
-    context ={}
+    # displaying the loging form
+    context = {}
     return render(request, 'physio-slim/login.html', context)
 
 
-#logout
+# logout
 def logoutUser(request):
     logout(request)
     # return redirect(request.META.get('HTTP_REFERER'))  #to stay in the same page after logging out
     return redirect('home')
 
-#home
+# home
+
+
 def home(request):
     branches = Branch.objects.all()
     trainers = PersonalTrainer.objects.all()
@@ -167,48 +211,99 @@ def home(request):
     return render(request, 'physio-slim/home.html', context)
 
 # branch  details
+
+
 def branch(request, br_id):
     branches = Branch.objects.all()
-    branch = Branch.objects.get(id = br_id)
-    classe= Class.objects.filter(branch= br_id )[0:3]
+    branch = Branch.objects.get(id=br_id)
+    classe = Class.objects.filter(branch=br_id)[0:3]
     # print(classe)
-    clinic= Clinic.objects.filter(branch=br_id)
-    events=Event.objects.filter(branch=br_id)
-    print(events)
-    context ={'branch':branch, 'classes':classe ,'events':events,'clinics':clinic,'branches':branches}
-    return render(request,'physio-slim/branchHomePage.html', context)
+    clinic = Clinic.objects.filter(branch=br_id)
+    offers = Offer.objects.filter(branch=br_id)
+    events = Event.objects.filter(branch=br_id)
+    PersonalTrainers = PersonalTrainer.objects.filter(branch=br_id)
+    print(clinic)
+    context = {'branch': branch, 'classes': classe,
+               'clinics': clinic, 'offers': offers, 'branches': branches, 'PersonalTrainers': PersonalTrainers, 'events': events}
+    return render(request, 'physio-slim/branchHomePage.html', context)
 
-def classe(request,br_id):
+
+def offers(request, br_id):
+    branch = Branch.objects.get(id=br_id)
+    offers = Offer.objects.filter(branch=br_id)
+    context = {'offers': offers, 'branch': branch}
+    return render(request, 'physio-slim/br_offer.html', context)
+
+
+def PersonalTrainers(request, br_id):
+    branch = Branch.objects.get(id=br_id)
+    PersonalTrainers = PersonalTrainer.objects.filter(branch=br_id)
+    context = {'PersonalTrainers': PersonalTrainers, 'branch': branch}
+    return render(request, 'physio-slim/br_PersonalTrainer.html', context)
+
+
+def classe(request, br_id):
     branches = Branch.objects.all()
-    branch = Branch.objects.get(id = br_id)
-    classe= Class.objects.filter(branch= br_id )
-    context= {'classes':classe ,'branch':branch, 'branches':branches }
-    return render(request,'physio-slim/br_class.html', context)
+    branch = Branch.objects.get(id=br_id)
+    classe = Class.objects.filter(branch=br_id)
+    all_subscribers = ClassSubscribers.objects.filter(
+        subscriber=request.user).values_list('favclass_id', flat=True)
+    context = {'classes': classe, 'branch': branch,
+               'branches': branches, 'all_subscribers': all_subscribers}
+    return render(request, 'physio-slim/br_class.html', context)
 
-def clinics(request,br_id):
+
+def clinics(request, br_id):
+    branch = Branch.objects.get(id=br_id)
+    clinic = Clinic.objects.filter(branch=br_id)
+    print(clinic)
+    context = {'clinics': clinic, 'branch': branch}
+    return render(request, 'physio-slim/br_clinics.html', context)
+
+
+# subscribe to a Class
+def subscribeToClass(request, class_id):
+    classs = Class.objects.get(id=class_id)
+    classSubscriber = ClassSubscribers.objects.create(
+        subscriber=request.user, favclass=classs)
+    branch = request.user.branch_id
     branches = Branch.objects.all()
-    branch = Branch.objects.get(id = br_id)
-    clinic= Clinic.objects.filter(branch= br_id )
-    context= {'clinics':clinic,'branch':branch , 'branches':branches}
-    return render(request,'physio-slim/br_clinics.html', context)
+    context = {'classes': classe, 'branch': branch, 'branches': branches}
+    email = request.user.email
+    # send email confirming subscription
+    send_mail(
+        'Subscription Successful!',
+        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board',
+        'physio.slim2@gmail.com',
+        [f'{email}'],
+        fail_silently=False,
+    )
 
-# notification = Notifications.objects.create(notification_type=1, from_user=request.user,to_user=post.user, post=post)
+    # send email to the management to contact the subscriber
+    send_mail(
+        'New user subscribed!',
+        f'The user: {request.user} \n has subscribed to: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
+        'physio.slim2@gmail.com',
+        ['physio.slim2@gmail.com'],
+        fail_silently=False,
+    )
+    return redirect('class', branch)
+
+# Unsubscribe from a class
 
 
+def unSubscribeFromClass(request, class_id):
+    classs = Class.objects.get(id=class_id)
+    favclass = ClassSubscribers.objects.get(
+        subscriber=request.user, favclass=classs)
+    favclass.delete()
+    branch = request.user.branch_id
+    branches = Branch.objects.all()
+    context = {'classes': classe, 'branch': branch, 'branches': branches}
+    return redirect('class', branch)
 
 
-
-    
-
-
-
-
-
-
-    
-
-
-# @verification_required  
+# @verification_required
 # @api_view(['GET'])
 # def users(request):
 #     users = User.objects.all()
@@ -221,7 +316,7 @@ def clinics(request,br_id):
 #     # users = User.objects.all()
 #     # users_ser = UserSerializer(users, many=True)
 #     # return Response({'user':users_ser.data, 'check':check})
-    
+
 # @login_required(login_url='login')
 # @api_view(['GET'])
 # def user(request, user_id):
@@ -250,7 +345,7 @@ def clinics(request,br_id):
 #             error = {
 #                     "error":{
 #                     "statusCode": 429,
-#                         "message": "Rate limit is exceeded. Try again later" 
+#                         "message": "Rate limit is exceeded. Try again later"
 #                     }
 #                 }
 #             return Response(error, status=status.HTTP_400_BAD_REQUEST)
@@ -258,7 +353,7 @@ def clinics(request,br_id):
 #     print(user_ser.data, user_ser.errors)
 
 #     return Response(user_ser.errors, status=status.HTTP_400_BAD_REQUEST)
-# @api_view(["POST"])   
+# @api_view(["POST"])
 # def verify_code_api(request):
 #     if request.method == 'POST':
 #         params =request.GET.urlencode()
@@ -306,9 +401,6 @@ def clinics(request,br_id):
     # return redirect("users")
 
 
-
-
-
 # @login_required(login_url='login')
 # #BranchSerializers
 # @api_view(['GET'])
@@ -333,7 +425,6 @@ def clinics(request,br_id):
 #         return redirect('api-all')
 
 
-        
 # @login_required(login_url='login')
 # @api_view(['POST'])
 # def edit_branch(request,br_id):
@@ -342,7 +433,6 @@ def clinics(request,br_id):
 #     if br_ser.is_valid():
 #         br_ser.save()
 #         return redirect('api-all')
-
 
 
 # @login_required(login_url='login')
@@ -368,7 +458,6 @@ def clinics(request,br_id):
 #     return Response(branch_offers.data)
 
 
-
 # @api_view(['GET'])
 # def one_Offer(request,of_id):
 #     of = Offer.objects.get(id=of_id)
@@ -381,7 +470,7 @@ def clinics(request,br_id):
 #     if of_ser.is_valid():
 #         of_ser.save()
 #         return redirect('api-all')
-        
+
 
 # @api_view(['POST'])
 # def edit_Offer(request,of_id):
@@ -403,7 +492,7 @@ def clinics(request,br_id):
 # def showBranchTrainer(request, br_id):
 #     branch_pt = PersonalTrainer.objects.filter(branch_id=br_id)
 #     branch_Trainers = PersonalTrainerSerializers(branch_pt, many=True)
-#     return Response(branch_Trainers.data) 
+#     return Response(branch_Trainers.data)
 
 # @api_view(['GET'])
 # def all_PersonalTrainer(request):
@@ -423,7 +512,7 @@ def clinics(request,br_id):
 #     if pt_ser.is_valid():
 #         pt_ser.save()
 #         return redirect('api-all')
-        
+
 
 # @api_view(['POST'])
 # def edit_PersonalTrainer(request,pt_id):
@@ -438,7 +527,6 @@ def clinics(request,br_id):
 #     pt = PersonalTrainer.objects.get(id=pt_id)
 #     pt.delete()
 #     return Response('PersonalTrainer Deleted Success')
-
 
 
 # # Events API
@@ -536,7 +624,6 @@ def clinics(request,br_id):
 #     return HttpResponse ('Class deleted')
 
 
-
 # #add clinic form for testing
 # # def addingClinic(request):
 # #     if request.method == 'POST':
@@ -547,10 +634,6 @@ def clinics(request,br_id):
 # #     else:
 # #         form = ClinicForm()
 # #         return render(request, 'physio-slim/addClinicForm.html', {'form' : form})
-
-
-
-
 
 
 # # Clinics API
@@ -578,7 +661,7 @@ def clinics(request,br_id):
 #         return redirect ('all-clinics')
 
 
-#add event form for testing
+# add event form for testing
 def addingEvent(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
@@ -587,5 +670,4 @@ def addingEvent(request):
             return redirect('all-events')
     else:
         form = EventForm()
-        return render(request, 'physio-slim/addeventform.html', {'form' : form})
-
+        return render(request, 'physio-slim/addeventform.html', {'form': form})

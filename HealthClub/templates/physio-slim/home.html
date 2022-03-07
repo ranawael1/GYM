@@ -11,3 +11,66 @@
 {% block main %}
 {% include 'physio-slim/index.html' %}
 {% endblock %}
+<!-- "col-md-4 col-sm-12 mr-2" -->
+      <!-- <header>
+
+        <div class="overlay"></div>
+      
+        <div class="video-container">
+        <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+          <source src="https://video-lga3-1.xx.fbcdn.net/v/t39.25447-2/272204253_314144103980504_2141409016395822200_n.mp4?_nc_cat=102&vs=cda48f888cbcb9c8&_nc_vs=HBksFQAYJEdOMkJPUkRZM2JsZnRoMEJBSGgwRjUwbjBMY2RibWRqQUFBRhUAAsgBABUAGCRHTnF5UHhCUDNtX1Z1RXNDQUU2M0FmM3hsUk5qYnJGcUFBQUYVAgLIAQBLBogScHJvZ3Jlc3NpdmVfcmVjaXBlATENc3Vic2FtcGxlX2ZwcwAQdm1hZl9lbmFibGVfbnN1YgAgbWVhc3VyZV9vcmlnaW5hbF9yZXNvbHV0aW9uX3NzaW0AKGNvbXB1dGVfc3NpbV9vbmx5X2F0X29yaWdpbmFsX3Jlc29sdXRpb24AEWRpc2FibGVfcG9zdF9wdnFzABUAJQAcAAAmyPKIjI%2BsmQEVAigCQzMYC3Z0c19wcmV2aWV3HBdAYBAAAAAAABggZGFzaF92NF81c2VjZ29wX2hxMl9mcmFnXzJfdmlkZW8SABgYdmlkZW9zLnZ0cy5jYWxsYmFjay5wcm9kOBJWSURFT19WSUVXX1JFUVVFU1QbCIgVb2VtX3RhcmdldF9lbmNvZGVfdGFnBm9lcF9oZBNvZW1fcmVxdWVzdF90aW1lX21zATAMb2VtX2NmZ19ydWxlB3VubXV0ZWQTb2VtX3JvaV9yZWFjaF9jb3VudAU0OTg3OAxvZW1fdmlkZW9faWQPMzM3MjA4NTA4MjY1MjUxEm9lbV92aWRlb19hc3NldF9pZA8zMzcyMDg1MDE1OTg1ODUVb2VtX3ZpZGVvX3Jlc291cmNlX2lkDzMzNzIwODQ5ODI2NTI1MhxvZW1fc291cmNlX3ZpZGVvX2VuY29kaW5nX2lkDzUwMDU5MjY2MTYzMTQzNyUCHAAljgIbCIgBcwQxMjExAmNkCjIwMjItMDEtMjQDcmNiBTQ5ODAwA2FwcAZWaWRlb3MCY3QZQ09OVEFJTkVEX1BPU1RfQVRUQUNITUVOVBNvcmlnaW5hbF9kdXJhdGlvbl9zCjEyOC41MzMzMzMBZgJhZAJ0cxVwcm9ncmVzc2l2ZV9lbmNvZGluZ3MA&ccb=1-5&_nc_sid=edb743&efg=eyJ2ZW5jb2RlX3RhZyI6Im9lcF9oZCJ9&_nc_ohc=5lDcrsNIBfMAX-6Fvn6&_nc_ht=video-lga3-1.xx&edm=AGo2L-IEAAAA&oh=00_AT85ho-aPVWrkTNdZjs73wJx7Xd7PqgRi7F7Fazioq4R6Q&oe=622BFF3E&_nc_rid=633743947151530" type="video/mp4">
+        </video>
+      </div>
+        <div class="container h-100">
+          <div class="d-flex h-100 text-center align-items-center">
+            <div class="w-100 text-white">
+              <h1 class="display-3 physio">Physio-slim</h1>
+              <p class="lead mb-0">Health Club</p>
+            </div>
+          </div>
+        </div>
+      </header>
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel" wi>
+    <div class="carousel-inner " style="height:80vh;margin-top: 7%;">
+        <div class="carousel-item active" data-bs-interval="3000">
+            <img src="{% static 'images/img1.jpg' %}" class="d-block w-100" alt="img1">
+        </div>
+        <div class="carousel-item" data-bs-interval="3000">
+            <img src="{% static 'images/img2.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item" data-bs-interval="3000">
+            <img src="{% static 'images/img3.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div id="contact-us">
+    <div class="contact-us container py-5">
+        <div class="row py-5">
+            {% for branch in branches %}
+            <div class="col text-center">
+                <a href="{% url 'branch' branch.id %}">
+                    <p>{{branch.name|title}}</p>
+                </a>
+                <p>{{branch.address|title}}</p>
+                <p><i class="fa-solid fa-phone fs-6"></i> {{branch.phone}}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center py-1"> Check us on social media
+            <div class="col-sm text-center">
+               <a href="https://www.facebook.com/Physio-slim-1642568222659235/" target="_blank"><i class="fa-brands fa-facebook-f px-2"></i></a>
+               <a href="https://instagram.com/physio_slim33?utm_medium=copy_link" target="_blank"><i class="fa-brands fa-instagram px-2"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} -->
