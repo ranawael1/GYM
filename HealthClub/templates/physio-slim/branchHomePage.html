@@ -13,17 +13,32 @@
 <!-- "col-md-4 col-sm-12 mr-2" -->
 
 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner " style="height:80vh;margin-top: 7%;">
-        <div class="carousel-item active" data-bs-interval="3000">
-            <img src="{% static 'images/img1.jpg' %}" class="d-block w-100" alt="img1">
+    <div class="carousel-inner " style="height:80vh;margin-top: 4%;">
+
+      <div class="carousel-item active " data-bs-interval="3000">
+        <img src="{% static 'images/event.jpg' %}" class="d-block w-100" alt="">
+        <div class="card-img-overlay m-3 row">
+          <h3 class="card-title fs-2 col-lg-6 col-md-4"style="color: black; font-family: 
+          'Times New Roman', Times, serif;"> Physio Slim  Events </h3> 
         </div>
-        <div class="carousel-item" data-bs-interval="3000">
-            <img src="{% static 'images/img2.jpg' %}" class="d-block w-100" alt="...">
+      </div>
+      
+      {%for event in events %}
+      <div class="card bg-dark text-white carousel-item">
+        <img src="{{MEDIA_URL}}/{{event.photo}}" class="card-img" alt="...">
+        <div class="card-img-overlay m-3">
+          <h3 class="card-title fs-2"style="color: black; font-family: 
+          'Times New Roman', Times, serif;"> {{event.event}}</h3>
+          <p class="card-text fs-4" style="color: black; font-family: 
+          'Times New Roman', Times, serif;">{{event.description}}</p>
         </div>
-        <div class="carousel-item" data-bs-interval="3000">
-            <img src="{% static 'images/img3.jpg' %}" class="d-block w-100" alt="...">
-        </div>
+      </div>
+
+     
+      {%endfor%}
+     
     </div>
+
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
@@ -32,11 +47,12 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
     </button>
+
 </div>
 
-<div class="row  p-1 mb-4"> 
+ <div class="row  p-1 mb-4"> 
   <h3 class="m-2 "> Our offers</h3>
-  {% for offer in offers %}
+  {% for offer in offers %} -->
   <!-- <div class="top-content">
     <div class="container-fluid">
         <div id="carousel-example" class="carousel slide" data-ride="carousel">
@@ -47,7 +63,7 @@
             </div>
         </div>
     </div>
-  </div> -->
+   </div> -->
   <div class="row mx-auto my-auto justify-content-center">
     <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner" role="listbox">
