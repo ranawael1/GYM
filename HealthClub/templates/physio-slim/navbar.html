@@ -185,17 +185,29 @@
 
             {% if request.user.is_authenticated %}
 
-            <ul class="navbar-nav mb-2 mb-lg-0 pb-0">
-                <!-- notification bell -->
-                <div>
-                    <div>
-                        <a href="#">
-                            <div class="notBtn" href="#">
-                                <li class="nav-item dropdown notification-section">
-                                    <a href="#" class="dropdown-toggle" id="navbarDropdown" role="button"
-                                        data-bs-toggle="dropdown" aria-expanded="true">
-                                        <span><i class='fa fa-bell fs-5 pt-3'></i></span>
-                                        <span class="number" id="number">0</span>
+            <ul class="navbar-nav  mb-2 mb-lg-0 pb-0">
+            <!-- notification bell -->
+            <div class="icons">
+                <div class = "notification1">
+                <a href = "#">
+                    <div class = "notBtn" href = "#">
+                        
+                        <li class="nav-item dropdown notification-section">
+                            <a href="#" class="dropdown-toggle" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="true">
+                                <span><i class='fa fa-bell fs-5 '></i></span>
+                                <div class="number" id="number">0</div>
+                            </a>
+                            
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="notifications-dropdown"
+                                data-popper-placement="bottom-end">
+                            
+                            <div class = "display">
+                                <div class = "cont"><!-- Fold this div and try deleting evrything inbetween -->
+                                    {% for i in notifications %}
+                                    <div class = "sec new">
+                                    <a href = "#">
+                                        <li class="dropdown-item">{{i.message}}</li>
                                     </a>
 
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown"
