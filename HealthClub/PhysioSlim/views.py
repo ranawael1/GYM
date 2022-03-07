@@ -31,6 +31,37 @@ from . import verify
 # from rest_framework.views import exception_handler
 # from rest_framework import status
 
+
+from channels.layers import get_channel_layer
+#Notifications
+import json
+from django.template import RequestContext
+from asgiref.sync import async_to_sync
+
+#home
+# def home(request):
+#     return render(request, 'physio-slim/home.html', {'room_name' : "broadcast"})
+
+#test notifications
+def test(request):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "notification_broadcast",
+        {
+            'type': 'send_notification',
+            'message': json.dumps("Notification")
+        }
+    )
+    return HttpResponse("Done")
+    
+#logout
+def logoutUser(request):
+    logout(request)
+    # return redirect(request.META.get('HTTP_REFERER'))  #to stay in the same page after logging out
+    
+    return redirect('login')
+    
+#register
 @unverified_user
 @unauthenticated_user
 def register(request):
@@ -148,8 +179,9 @@ def logoutUser(request):
 #home
 def home(request):
     branches = Branch.objects.all()
-    context={'branches':branches}
+    context={'branches':branches ,'room_name' : "broadcast"}
     return render(request, 'physio-slim/home.html', context)
+
 # branch  details
 def branch(request, br_id):
     branches = Branch.objects.all()
@@ -157,17 +189,35 @@ def branch(request, br_id):
     classe= Class.objects.filter(branch= br_id )[0:3]
     # print(classe)
     clinic= Clinic.objects.filter(branch=br_id)
-    print(clinic)
-    context ={'branch':branch, 'classes':classe ,'clinic':clinic,'branches':branches}
+    events=Event.objects.filter(branch=br_id)
+    print(events)
+    context ={'branch':branch, 'classes':classe ,'events':events,'clinics':clinic,'branches':branches}
     return render(request,'physio-slim/branchHomePage.html', context)
 
 def classe(request,br_id):
+    branches = Branch.objects.all()
     branch = Branch.objects.get(id = br_id)
     classe= Class.objects.filter(branch= br_id )
-    print(classe)
-    context= {'classes':classe ,'branch':branch }
+    context= {'classes':classe ,'branch':branch, 'branches':branches }
     return render(request,'physio-slim/br_class.html', context)
+
+def clinics(request,br_id):
+    branches = Branch.objects.all()
+    branch = Branch.objects.get(id = br_id)
+    clinic= Clinic.objects.filter(branch= br_id )
+    context= {'clinics':clinic,'branch':branch , 'branches':branches}
+    return render(request,'physio-slim/br_clinics.html', context)
+
+
+
+
+
+
     
+
+
+
+
 
 
     
@@ -543,18 +593,14 @@ def classe(request,br_id):
 #         return redirect ('all-clinics')
 
 
-# #edit clinic
-# @api_view(['POST'])
-# def editClinic(request, cl_id):
-#     clinic = Clinic.objects.get(id=cl_id)
-#     clinic_ser = ClinicSerializer(data=request.data, instance=clinic)
-#     if clinic_ser.is_valid():
-#         clinic_ser.save()
-#         return redirect ('all-clinics')
+#add event form for testing
+def addingEvent(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('all-events')
+    else:
+        form = EventForm()
+        return render(request, 'physio-slim/addeventform.html', {'form' : form})
 
-# #delete clinic
-# @api_view(['DELETE'])
-# def delClinic(request,cl_id):
-#     clinic = Clinic.objects.get(id=cl_id)
-#     clinic.delete()
-#     return HttpResponse ('Clinic deleted')
