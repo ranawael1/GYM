@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block main %}
-<div class="container">
+<div class="container py-5">
   <div class="row  p-1 py-5">
     {% for class in classes %}
 
@@ -30,7 +30,21 @@
                         overflow: hidden;
                         text-overflow: ellipsis;  ">
           {{class.description}}
-          <button>subscribe</button>
+          <div>
+            {% if request.user.branch == branch %}
+              
+              {% if class.id in all_subscribers %}
+              <a href="{% url 'unsubscribe-from-class' class.id %}">
+                <button class="btn btn-danger">Remove from favorites</button>
+              </a>
+              {% else %}
+              <a href="{% url 'subscribe-to-class' class.id %}">
+                <button class="btn btn-primary">Add to favorites</button>
+              </a>
+              {% endif %}
+            {% endif %}
+          </div>
+
         </p>
         
       </div>
