@@ -18,24 +18,21 @@
       <div class="carousel-item active " data-bs-interval="3000">
         <img src="{% static 'images/event.jpg' %}" class="d-block w-100" alt="">
         <div class="card-img-overlay m-3 row">
-          <!-- <h3 class="card-title fs-2 col-lg-6 col-md-4"style="color: black; font-family: 
-          'Times New Roman', Times, serif;"> Physio Slim  Events </h3>  -->
+          <h3 class="card-title fs-2 col-lg-6 col-md-4"style="color: black; font-family: 
+          'Times New Roman', Times, serif;"> Physio Slim  Events </h3> 
         </div>
       </div>
       
       {%for event in events %}
-      <header>
+      <!-- <header>
 
-        <!-- This div is  intentionally blank. It creates the transparent black overlay over the video which you can modify in the CSS -->
         <div class="overlay"></div>
       
-        <!-- The HTML5 video element that will create the background video on the header -->
         <div class="video-container">
         <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
           <source src="https://video-lga3-1.xx.fbcdn.net/v/t39.25447-2/272204253_314144103980504_2141409016395822200_n.mp4?_nc_cat=102&vs=cda48f888cbcb9c8&_nc_vs=HBksFQAYJEdOMkJPUkRZM2JsZnRoMEJBSGgwRjUwbjBMY2RibWRqQUFBRhUAAsgBABUAGCRHTnF5UHhCUDNtX1Z1RXNDQUU2M0FmM3hsUk5qYnJGcUFBQUYVAgLIAQBLBogScHJvZ3Jlc3NpdmVfcmVjaXBlATENc3Vic2FtcGxlX2ZwcwAQdm1hZl9lbmFibGVfbnN1YgAgbWVhc3VyZV9vcmlnaW5hbF9yZXNvbHV0aW9uX3NzaW0AKGNvbXB1dGVfc3NpbV9vbmx5X2F0X29yaWdpbmFsX3Jlc29sdXRpb24AEWRpc2FibGVfcG9zdF9wdnFzABUAJQAcAAAmyPKIjI%2BsmQEVAigCQzMYC3Z0c19wcmV2aWV3HBdAYBAAAAAAABggZGFzaF92NF81c2VjZ29wX2hxMl9mcmFnXzJfdmlkZW8SABgYdmlkZW9zLnZ0cy5jYWxsYmFjay5wcm9kOBJWSURFT19WSUVXX1JFUVVFU1QbCIgVb2VtX3RhcmdldF9lbmNvZGVfdGFnBm9lcF9oZBNvZW1fcmVxdWVzdF90aW1lX21zATAMb2VtX2NmZ19ydWxlB3VubXV0ZWQTb2VtX3JvaV9yZWFjaF9jb3VudAU0OTg3OAxvZW1fdmlkZW9faWQPMzM3MjA4NTA4MjY1MjUxEm9lbV92aWRlb19hc3NldF9pZA8zMzcyMDg1MDE1OTg1ODUVb2VtX3ZpZGVvX3Jlc291cmNlX2lkDzMzNzIwODQ5ODI2NTI1MhxvZW1fc291cmNlX3ZpZGVvX2VuY29kaW5nX2lkDzUwMDU5MjY2MTYzMTQzNyUCHAAljgIbCIgBcwQxMjExAmNkCjIwMjItMDEtMjQDcmNiBTQ5ODAwA2FwcAZWaWRlb3MCY3QZQ09OVEFJTkVEX1BPU1RfQVRUQUNITUVOVBNvcmlnaW5hbF9kdXJhdGlvbl9zCjEyOC41MzMzMzMBZgJhZAJ0cxVwcm9ncmVzc2l2ZV9lbmNvZGluZ3MA&ccb=1-5&_nc_sid=edb743&efg=eyJ2ZW5jb2RlX3RhZyI6Im9lcF9oZCJ9&_nc_ohc=5lDcrsNIBfMAX-6Fvn6&_nc_ht=video-lga3-1.xx&edm=AGo2L-IEAAAA&oh=00_AT85ho-aPVWrkTNdZjs73wJx7Xd7PqgRi7F7Fazioq4R6Q&oe=622BFF3E&_nc_rid=633743947151530" type="video/mp4">
         </video>
       </div>
-        <!-- The header content -->
         <div class="container h-100">
           <div class="d-flex h-100 text-center align-items-center">
             <div class="w-100 text-white">
@@ -44,9 +41,9 @@
             </div>
           </div>
         </div>
-      </header>
+      </header> -->
       
-      <!-- <div class="card bg-dark text-white carousel-item">
+       <div class="card bg-dark text-white carousel-item">
         <img src="{{MEDIA_URL}}/{{event.photo}}" class="card-img" alt="...">
         <div class="card-img-overlay m-3">
           <h3 class="card-title fs-2"style="color: black; font-family: 
@@ -54,21 +51,19 @@
           <p class="card-text fs-4" style="color: black; font-family: 
           'Times New Roman', Times, serif;">{{event.description}}</p>
         </div>
-      </div> -->
-
-     
+  </div>
       {%endfor%}
-     
+    
     </div>
 
-    <!-- <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
     </button>
     <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
-    </button> -->
+    </button>
 
 </div>
 
@@ -76,41 +71,26 @@
   <h3 class="m-2 "> Our offers</h3>
   {% for offer in offers %}
   
-  <!-- <div class="col-12 col-md-6 col-lg-4 ">
+   <div class="col-12 col-md-6 col-lg-4 "> 
     <div class="card mb-4">
 
       <div class="bg-image hover-overlay ripple p-1" data-mdb-ripple-color="light">
           <img src="{{MEDIA_URL}}/{{offer.photo}}" class="img-fluid" style="width:  100%;
                         height: 200px;
                         background-size: cover;" /> </a>
-        <a href="#!">
-          <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);">{{ offer.name }}</div>
         </a>
       </div>
       <div class="card-body">
-        <h4 class="card-title m-1 ">{{class}}</h4>
+        <h4 class="card-title m-1 ">{{offer.name}}</h4>
       </div>
     </div>
-  </div> -->
-  <div class="col row g3">
-  <div class="card" style="width: 18rem;">
-    <img src="{{MEDIA_URL}}/{{offer.photo}}" class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title">{{offer.name}}</h5>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
-    </div>
-  </div>
-</div>
+  </div> 
 
   {% endfor %}
-                    
-
-
-
-
   <a href="{% url 'offers' branch.id %}" class="text-end">  
     See More <i class="fa-solid fa-arrow-right-long-to-line "></i></a>
-</div> <hr>
+</div> 
+<hr>
 <!-- <div class = " border border-dark"> -->
 <!--  classes Div  -->
     <div class="row  p-1 mb-4"> 
@@ -138,6 +118,7 @@
         See More <i class="fa-solid fa-arrow-right-long-to-line "></i></a>
 </div> <hr>
 <div>
+  <!-- clinics div -->
   <h3 class='m-2'> Our Clinics </h3>
 </div>
 <div class="row">
@@ -175,7 +156,7 @@
   <h3 class="m-2 "> Our PersonalTrainers</h3>
   {% for PersonalTrainer in PersonalTrainers %}
   
-  <!-- <div class="col-12 col-md-6 col-lg-4 ">
+  <div class="col-12 col-md-6 col-lg-4 ">
     <div class="card mb-4">
 
       <div class="bg-image hover-overlay ripple p-1" data-mdb-ripple-color="light">
@@ -190,7 +171,7 @@
         <h4 class="card-title m-1 ">{{class}}</h4>
       </div>
     </div>
-  </div> -->
+  </div>
   <div class="col row g3">
   <div class="card" style="width: 18rem;">
     <img src="{{MEDIA_URL}}/{{PersonalTrainer.photo}}" class="card-img-top" alt="...">
