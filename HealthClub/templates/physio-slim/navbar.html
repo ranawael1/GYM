@@ -35,52 +35,97 @@
             visibility: visible;
         }
     }
-        .notification {
-            background-color: #fdc50d;
-            color: white;
-            text-decoration: none;
-            padding: 4px 24px;
-            margin-right: 20px;
-            margin-left: 20px;
+
+        .notification1{
+            margin-top: 20px;
             position: relative;
             display: inline-block;
-            border-radius: 2px;
-            font-size: 20px;
+            /* border-style: solid; */
         }
 
-        .notification:hover {
-            background: #17181a;
-            color: #fff;
+        .icons{
+            display: inline;
+            float: right
         }
-
-        .notification .badge {
+        .fa:hover {
+            color: #d63031;
+        }
+        .fa{
+            font-size: 25pt;
+            padding-bottom: 10px;
+            color: rgb(245, 191, 74);
+            margin-right: 40px;
+            margin-left: 40px;
+        }
+        .number{
+            height: 22px;
+            width:  22px;
+            background-color: #d63031;
+            border-radius: 20px;
+            color: white;
+            text-align: center;
             position: absolute;
             top: -10px;
-            right: -10px;
-            padding: 8px 8px;
-            border-radius: 50%;
-            background: red;
-            color: white;
+            left: 55px;
+            padding: 3px;
+            border-style: solid;
+            border-width: 1px;
         }
-
+  
+        .number:empty {
+            display: none;
+        }
+        .cont{
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #F4F4F4;
+        }
+        .sec{
+            padding: 25px 10px;
+            background-color: #F4F4F4;
+            transition: 0.5s;
+        }
+        .sec:hover{
+            background-color: #BFBFBF;
+        }
+        .notBtn{
+            transition: 0.5s;
+            cursor: pointer
+        }
+        .notBtn:hover > .box{
+            height: 60vh
+        }
+        .display{
+            position: relative;
+        }
+        .new{
+            border-style: none none solid none;
+            border-color: red;
+        }
+        .cont:empty{
+            display: none;
+        }
         .notification-section .dropdown-toggle::after {
             content: none;
         }
 
-        .dropdown-toggle::after {
+        /* .dropdown-toggle::after {
             color: #fff;
-        }
+        } */
 
-        #notifications-dropdown li {
+        /* #notifications-dropdown li {
             max-width: 500px;
             word-wrap: break-word;
             display: inline-block;
             white-space: normal;
-        }
+        } */
 
         #notifications-dropdown.dropdown-menu {
             width: 15rem;
         }
+
        
 </style>
 
@@ -120,26 +165,43 @@
             {% if request.user.is_authenticated %}
 
             <ul class="navbar-nav mr-auto mb-2 mb-lg-0 pb-0">
-
-                <li class="nav-item dropdown notification-section">
-                    <a href="#" class="notification dropdown-toggle" id="navbarDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="true">
-                        <span><i class='fa fa-bell'></i></span>
-                        <span class="badge" id="notification-badge">0</span>
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="notifications-dropdown"
-                        data-popper-placement="bottom-end"
-                        style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(-70px, 42px, 0px);">
+            <!-- notification bell -->
+            <div class="icons">
+                <div class = "notification1">
+                <a href = "#">
+                    <div class = "notBtn" href = "#">
                         
-                        {% for i in notifications %}
-                        <li class="dropdown-item">{{i.message}}</li>
-                        <hr class="dropdown-divider">
-                        {% endfor %}
-                        {% comment %} <li class='dropdown-item'>Hello</li>
-                        <hr class="dropdown-divider"> {% endcomment %}
-                        
-                    </ul>
-                </li>
+                        <li class="nav-item dropdown notification-section">
+                            <a href="#" class="dropdown-toggle" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="true">
+                                <span><i class='fa fa-bell'></i></span>
+                                <div class="number" id="number">0</div>
+                            </a>
+                            
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="notifications-dropdown"
+                                data-popper-placement="bottom-end">
+                            
+                            <div class = "display">
+                                <div class = "cont"><!-- Fold this div and try deleting evrything inbetween -->
+                                    {% for i in notifications %}
+                                    <div class = "sec new">
+                                    <a href = "#">
+                                        <li class="dropdown-item">{{i.message}}</li>
+                                    </a>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                            </div>
+                          
+                                <!-- {% comment %} <li class='dropdown-item'>Hello</li>
+                                <hr class="dropdown-divider"> {% endcomment %}   -->
+                            </ul>
+                        </li>
+                </div>
+            </a>
+            </div>
+            </div>
+            <!-- end  -->
 
             <ul class="navbar-nav mr-auto mb-2 mb-lg-0 pb-0" style="padding-right: 3%;">
                 <li class="nav-item mt-1">
@@ -195,7 +257,7 @@
         const data = JSON.parse(e.data);
         console.log(data);
         document.getElementById("notifications-dropdown").innerHTML = "<li class='dropdown-item'>" + data + "</li><hr class='dropdown-divider'>" + document.getElementById("notifications-dropdown").innerHTML;
-        document.getElementById("notification-badge").innerHTML = parseInt(document.getElementById("notification-badge").innerHTML) + 1;
+        document.getElementById("number").innerHTML = parseInt(document.getElementById("number").innerHTML) + 1;
     };
 
     notificationSocket.onclose = function(e) {

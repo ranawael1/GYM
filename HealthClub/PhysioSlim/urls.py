@@ -4,9 +4,14 @@ from . import views
 
 urlpatterns = [
     path('register/', views.register, name='register'),
+    
     path('login/', views.loginPage, name='login'),
     path('logout/', views.logoutUser, name='logout'),
     path('home/',views.home, name='home'),
+    #verify phone
+    path('verify/', views.verify_code, name='verify-code'),  
+    path('re-verify/', views.reverify_code, name='re-verify'),  
+
     #reset password form
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="password_reset/password_reset.html"), name="reset_password"),
     #notify the user to check their email 
