@@ -4,21 +4,24 @@ from . import views
 
 urlpatterns = [
     path('register/', views.register, name='register'),
+    
     path('login/', views.loginPage, name='login'),
     path('logout/', views.logoutUser, name='logout'),
-    path('home/', views.home, name='home'),
-    # reset password form
-    path('reset_password/', auth_views.PasswordResetView.as_view(
-        template_name="password_reset/password_reset.html"), name="reset_password"),
-    # notify the user to check their email
-    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(
-        template_name="password_reset/password_reset_sent.html"), name="password_reset_done"),
-    # sending user id encoded and making sure the password is valid
-    path('reset_password/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
-        template_name="password_reset/password_reset_form.html"), name='password_reset_confirm'),
-    # success
-    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(
-        template_name='password_reset/password_reset_done.html'), name="password_reset_complete"),
+    path('home/',views.home, name='home'),
+    #verify phone
+    path('verify/', views.verify_code, name='verify-code'),  
+    path('re-verify/', views.reverify_code, name='re-verify'),  
+
+    #reset password form
+    path('reset_password/', auth_views.PasswordResetView.as_view(template_name="password_reset/password_reset.html"), name="reset_password"),
+    #notify the user to check their email 
+    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name="password_reset/password_reset_sent.html"), name="password_reset_done"),
+    #sending user id encoded and making sure the password is valid
+    path('reset_password/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="password_reset/password_reset_form.html"), name='password_reset_confirm'),
+    #success
+    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset/password_reset_done.html'), name="password_reset_complete"),
+    #notifications
+    path('test/', views.test, name="test"),
 
     # access branch
     path('branch/<br_id>', views.branch, name='branch'),
@@ -81,6 +84,11 @@ urlpatterns = [
     # path('edit-clinic/<cl_id>', views.editClinic, name='edit-clinic'),
     # path('del-clinic/<cl_id>', views.delClinic, name='del-clinic'),
 
+    #add-event-form
+    # path('add-event-form/', views.addingEvent, name='add-event-form'),
+    #add-clinic-form
+    # path('add-clinic-form/', views.addingClinic, name='add-clinic-form'),
+  
     # #add-event-form
     # path('add-event-form/', views.addingEvent, name='add-event-form'),
     # #add-clinic-form
