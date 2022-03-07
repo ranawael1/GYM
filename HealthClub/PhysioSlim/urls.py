@@ -30,6 +30,8 @@ urlpatterns = [
     path('clinics/<br_id>', views.clinics, name='clinics'),
     # access offers
     path('offers/<br_id>', views.offers, name='offers'),
+    # access PersonalTrainers
+    path('PersonalTrainers/<br_id>', views.PersonalTrainers, name='PersonalTrainers'),
     #subscribetoclass
     path('subscribe-to-class/<class_id>', views.subscribeToClass, name='subscribe-to-class'),
     path('unsubscribe-from-class/<class_id>', views.unSubscribeFromClass, name='unsubscribe-from-class'),
