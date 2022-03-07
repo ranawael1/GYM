@@ -4,7 +4,7 @@ from multiprocessing import context
 from django.http import HttpResponse
 from importlib.resources import contents
 from django.shortcuts import redirect, render
-from .models import User,Branch,Offer,Event,Class, Clinic
+from .models import User,Branch,Offer,Event,Class, Clinic, Notifications
 # decorators and authentication
 from.decorators import unauthenticated_user
 from .models import User,Branch,Offer,PersonalTrainer
@@ -30,17 +30,48 @@ from asgiref.sync import async_to_sync
 #     return render(request, 'physio-slim/home.html', {'room_name' : "broadcast"})
 
 #test notifications
-def test(request):
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        "notification_broadcast",
-        {
-            'type': 'send_notification',
-            'message': json.dumps("Notification")
-        }
-    )
-    return HttpResponse("Done")
-    
+# def test(request):
+#     channel_layer = get_channel_layer()
+#     async_to_sync(channel_layer.group_send)(
+#         "notification_broadcast",
+#         {
+#             'type': 'send_notification',
+#             'message': json.dumps("Notification From test")
+#         }
+#     )
+#     return HttpResponse("Done")
+
+##notifications
+@login_required(login_url='login')
+def ClassNotifications(request,notification_id,Class_id):
+    notification = Notifications.objects.get(id = notification_id)
+    Class = Class.objects.get(id = Class_id)
+    notification.user_seen = True
+    notification.save()
+    return redirect('post', Class_id=Class_id)
+
+@login_required(login_url='login')
+def EventNotifications(request,notification_id,Event_id):
+    notification = Notifications.objects.get(id = notification_id)
+    Event = Event.objects.get(id = Event_id)
+    notification.user_seen = True
+    notification.save()
+    return redirect('home')
+
+@login_required(login_url='login')
+def FollowNotifications(request,notification_id,follow_id):
+    notification = Notifications.objects.get(id = notification_id)
+    personalTrainer = PersonalTrainer.objects.get(id = follow_id)
+    notification.user_seen = True
+    notification.save()
+    return redirect('home')
+
+def RemoveNotifications(request, notification_id):
+    notification = Notifications.objects.get(id = notification_id)  
+    notification.user_seen = True
+    notification.save()
+    HttpResponse('success', content_type='text/plain')
+  
 #logout
 def logoutUser(request):
     logout(request)
@@ -131,7 +162,8 @@ def logoutUser(request):
 #home
 def home(request):
     branches = Branch.objects.all()
-    context={'branches':branches ,'room_name' : "broadcast"}
+    trainers = PersonalTrainer.objects.all()
+    context={'branches':branches ,'trainers' : trainers}
     return render(request, 'physio-slim/home.html', context)
 
 # branch  details
@@ -160,6 +192,7 @@ def clinics(request,br_id):
     context= {'clinics':clinic,'branch':branch , 'branches':branches}
     return render(request,'physio-slim/br_clinics.html', context)
 
+# notification = Notifications.objects.create(notification_type=1, from_user=request.user,to_user=post.user, post=post)
 
 
 

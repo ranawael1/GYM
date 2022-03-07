@@ -17,16 +17,20 @@ urlpatterns = [
     #success
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset/password_reset_done.html'), name="password_reset_complete"),
     #notifications
-    path('test/', views.test, name="test"),
+    # path('test/', views.test, name="test"),
 
     #access branch
     path('branch/<br_id>', views.branch, name='branch'),
     # access classes
     path('class/<br_id>', views.classe, name='class'),
- # access clinics
+    # access clinics
     path('clinics/<br_id>', views.clinics, name='clinics'),
 
-
+    #notification
+    path('ClassNotifications/<notification_id>/<Class_id>', views.ClassNotifications, name='ClassNotifications'),
+    path('EventNotifications/<notification_id>/<Event_id>', views.EventNotifications, name='EventNotifications'),
+    path('RemoveNotifications/<notification_id>', views.RemoveNotifications, name='RemoveNotifications'),
+    path('FollowNotifications/<notification_id>/<follow_id>', views.FollowNotifications, name='FollowNotifications'),
     # #rest_framework
     # path('users/', views.users, name='users'),
     # path('user/<user_id>', views.user, name='user'),
