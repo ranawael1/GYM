@@ -1,3 +1,4 @@
+from enum import Flag
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import redirect
 from django.http import HttpResponse
@@ -12,7 +13,19 @@ def unauthenticated_user(view_func):
             return view_func(request, *args,**kwargs)
     return wrapper_func
 
-
+def unverified_user(view_func):
+    def wrapper_func(request, *args,**kwargs):
+        print('check')
+        if request.user.is_authenticated:
+            print('ssss')
+            if request.user.is_verified == False:
+                print(request.user.is_verified)
+                return redirect('verify-code')
+            else:     
+                return view_func(request, *args,**kwargs)
+        else:     
+            return view_func(request, *args,**kwargs)
+    return wrapper_func
 
 def verification_required(view_func):
     def wrapper_func(request, *args,**kwargs):

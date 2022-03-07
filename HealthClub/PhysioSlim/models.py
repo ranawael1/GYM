@@ -1,8 +1,11 @@
+from email.policy import default
+import imp
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.forms import CharField
 from phonenumber_field.modelfields import PhoneNumberField
-
+# import schedule
+# import time
 GENDER = (
 (None, 'Choose your gender'),
 ('male', 'male'),
@@ -24,9 +27,20 @@ class User(AbstractUser):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= True)
     membership_num = models.CharField(max_length=50, null= True, blank=True)
     
-    avatar= models.ImageField(upload_to='avatars/',null=True)
+    avatar= models.ImageField(upload_to='avatars/',null=True, default='media/avatars/dp/default.jpg', blank=True)
 
     REQUIRED_FIELDS = ['age', 'gender','phone','email']
+
+
+   
+    # def delete_not_verifed_users(self):
+    #     print("checkkkkk deleteeeee")
+    #     if self.is_verified == False:
+    #         self.delete()
+    # schedule.every(1).minutes.do(delete_not_verifed_users())
+    # while True:
+    #         schedule.run_pending()
+    #         time.sleep(1)
 
 # class Check(models.Model):
 #     phone = PhoneNumberField(unique = True, null = False, blank = False)
@@ -86,4 +100,5 @@ class Clinic(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to='clinics/', null = True, blank=True)
     def __str__(self):
-        return self.clinic 
+        return self.clinic  
+
