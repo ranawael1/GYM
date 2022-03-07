@@ -1,31 +1,18 @@
-from .serializers import UserSerializer, BranchSerializer, OfferSerializer, EventSerializer, VerifySerializer, PersonalTrainerSerializers, ClassSerializer, LoginSerializer
-from .serializers import ClinicSerializer, UserSerializer, BranchSerializer, OfferSerializer, EventSerializer, VerifySerializer, PersonalTrainerSerializers, ClassSerializer
-from .models import User, Branch, Offer, PersonalTrainer
 from . import verify
-from rest_framework.decorators import api_view
-from rest_framework.response import Response  # like render
-from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
-from django.contrib import messages
-from urllib import parse
-from urllib.parse import urlparse
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-from .forms import CreateUserForm
 import email
 import imp
-from django.core import serializers
-import json
+
 from multiprocessing import context
-from django.http import HttpResponse
 from importlib.resources import contents
 from django.shortcuts import redirect, render
-from .models import User, Branch, Offer, Event, Class, Clinic
+from .models import User, Branch, Offer, Event, Class, Clinic,PersonalTrainer, ClassSubscribers
 # decorators and authentication
-from.decorators import unauthenticated_user, unverified_user
-from .models import User,Branch,Offer,PersonalTrainer
-from .forms import CreateUserForm
+from .decorators import unauthenticated_user, unverified_user
+#send email
+from django.core.mail import send_mail
+import re 
+#forms
+from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
@@ -34,19 +21,10 @@ from urllib.parse import urlparse
 from urllib import parse
 from django.contrib import messages
 # from .decorators import verification_required  
-#forms
-from .forms import ClinicForm, CreateUserForm, VerifyForm, EventForm
-#rest_framework imports
-from rest_framework.response import Response # like render
-from rest_framework.decorators import api_view
-from .serializers import ClinicSerializer, UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer
-from .serializers import UserSerializer,BranchSerializer,OfferSerializer,EventSerializer,VerifySerializer,PersonalTrainerSerializers,ClassSerializer,LoginSerializer
-from . import verify
 #from rest_framework import permissions
 # from rest_framework.views import exception_handler
 # from rest_framework import status
-
-
+from django.http import HttpResponse
 from channels.layers import get_channel_layer
 #Notifications
 import json
@@ -199,8 +177,6 @@ def home(request):
     return render(request, 'physio-slim/home.html', context)
 
 # branch  details
-
-
 def branch(request, br_id):
     branches = Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
@@ -226,8 +202,8 @@ def classe(request, br_id):
     branches = Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
     classe = Class.objects.filter(branch=br_id)
-    print(classe)
-    context = {'classes': classe, 'branch': branch, 'branches': branches}
+    all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
+    context = {'classes': classe, 'branch': branch, 'branches': branches, 'all_subscribers':all_subscribers}
     return render(request, 'physio-slim/br_class.html', context)
 
 
@@ -237,6 +213,46 @@ def clinics(request, br_id):
     print(clinic)
     context = {'clinics': clinic, 'branch': branch}
     return render(request, 'physio-slim/br_clinics.html', context)
+
+
+
+#subscribe to a Class
+def subscribeToClass(request, class_id):
+    classs = Class.objects.get(id = class_id)
+    classSubscriber = ClassSubscribers.objects.create(subscriber=request.user,favclass=classs)
+    branch = request.user.branch_id
+    branches = Branch.objects.all()
+    context = {'classes': classe, 'branch': branch, 'branches': branches}
+    email = request.user.email
+    #send email confirming subscription
+    send_mail(
+    'Subscription Successful!',
+    f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board',
+    'physio.slim2@gmail.com',
+    [f'{email}'],
+    fail_silently=False,
+    )
+
+    #send email to the management to contact the subscriber 
+    send_mail(
+    'New user subscribed!',
+    f'The user: {request.user} \n has subscribed to: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
+    'physio.slim2@gmail.com',
+    ['physio.slim2@gmail.com'],
+    fail_silently=False,
+)
+    return redirect('class',branch)
+
+#Unsubscribe from a class
+def unSubscribeFromClass(request, class_id):
+    classs = Class.objects.get(id = class_id)
+    favclass = ClassSubscribers.objects.get(subscriber=request.user,favclass=classs)
+    favclass.delete()
+    branch = request.user.branch_id
+    branches = Branch.objects.all()
+    context = {'classes': classe, 'branch': branch, 'branches': branches}
+    return redirect('class',branch)
+
 
 
 # @verification_required

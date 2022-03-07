@@ -4,7 +4,6 @@ from . import views
 
 urlpatterns = [
     path('register/', views.register, name='register'),
-    
     path('login/', views.loginPage, name='login'),
     path('logout/', views.logoutUser, name='logout'),
     path('home/',views.home, name='home'),
@@ -31,7 +30,9 @@ urlpatterns = [
     path('clinics/<br_id>', views.clinics, name='clinics'),
     # access offers
     path('offers/<br_id>', views.offers, name='offers'),
-
+    #subscribetoclass
+    path('subscribe-to-class/<class_id>', views.subscribeToClass, name='subscribe-to-class'),
+    path('unsubscribe-from-class/<class_id>', views.unSubscribeFromClass, name='unsubscribe-from-class'),
 
     # #rest_framework
     # path('users/', views.users, name='users'),

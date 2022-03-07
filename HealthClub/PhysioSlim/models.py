@@ -119,3 +119,10 @@ class Clinic(models.Model):
     def __str__(self):
         return self.clinic  
 
+
+#testing favorites
+
+class ClassSubscribers(models.Model):
+    subscriber = models.ForeignKey(User, on_delete=models.CASCADE)
+    favclass = models.ForeignKey(Class, on_delete=models.CASCADE)
+
