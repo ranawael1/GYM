@@ -39,8 +39,9 @@ def register(request):
     form = CreateUserForm()
     if request.method == 'POST':
         form = CreateUserForm(request.POST, request.FILES)
+        print(form, 'check')
         if form.is_valid():
-            user = form.save(commit=False)
+            user = form.save(commit=False)   
             phone = form.cleaned_data.get('phone')
             try:
                 verify.send(phone)
@@ -58,6 +59,11 @@ def register(request):
                 context = {'form': form}
                 return render(request, 'physio-slim/register.html', context)
             return redirect('verify-code')
+        else:
+            print(form.errors)
+            errors = form.errors
+            context = {'form': form, 'messages': errors}
+            return render(request, 'physio-slim/register.html', context)
     context = {'form': form}
     return render(request, 'physio-slim/register.html', context)
 

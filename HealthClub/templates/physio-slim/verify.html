@@ -1,18 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify</title>
-</head>
-<body>
+{% extends 'physio-slim/main.html' %}
+{% load static %}
+
+{% block head %}
+{% endblock %}  
+
+
+
+{% block body %} 
+<div class="container" style="margin: 5%;">
+  <div class="row">
     <h1>Verify your account</h1>
     <form method="post">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit">Verify</button>
+      <button type="submit" name="send email" class="btn btn-primary">Verify</button>
+
     </form>
-    <a href="{% url 're-verify' %}">Verify</a>
-</body>
-</html>
+    <a href="{% url 're-verify' %}">Send again</a>
+   
+    
+  </div>
+</div>
+{% endblock %}
