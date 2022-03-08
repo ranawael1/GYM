@@ -135,6 +135,7 @@ def logoutUser(request):
 def home(request):
     return render(request,'physio-slim/index.html')
 
+# branch home page 
 #Contact Page
 def contact(request):
     branches = Branch.objects.all()
@@ -148,10 +149,11 @@ def about(request):
 def branch(request, br_id):
     branch = Branch.objects.get(id=br_id)
     classes = Class.objects.filter(branch=br_id)[0:3]
-    clinics = Clinic.objects.filter(branch=br_id)
-    offers = Offer.objects.filter(branch=br_id)
-    events = Event.objects.filter(branch=br_id)
-    trainers = PersonalTrainer.objects.filter(branch=br_id)
+    print(classes)
+    clinics = Clinic.objects.filter(branch=br_id)[0:3]
+    offers = Offer.objects.filter(branch=br_id)[0:3]
+    events = Event.objects.filter(branch=br_id)[0:3]
+    trainers = PersonalTrainer.objects.filter(branch=br_id)[0:3]
     context = {'branch': branch, 'classes': classes,
                'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events}
     return render(request, 'physio-slim/branch.html', context)
@@ -162,10 +164,22 @@ def classes(request, br_id):
     branches = Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
     classes = Class.objects.filter(branch=br_id)
-    # all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
-    context = {'classes': classes, 'branch': branch,
-               'branches': branches }
+    if not request.user.is_anonymous:
+        all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
+        context = {'classes': classes, 'branch': branch,
+                'branches': branches, 'all_subscribers':all_subscribers }
+    else:
+        context = {'classes': classes, 'branch': branch,
+                'branches': branches}
     return render(request, 'physio-slim/classes.html', context)
+
+# to show the Event Detailes
+def event_details(request ,br_id ):
+    branches=Branch.objects.all()
+    branch = Branch.objects.get(id=br_id)
+    events= Event.objects.filter(branch=br_id)
+    context = {'events': events, 'branch': branch , 'branches':branches}
+    return render(request, 'physio-slim/br_eventDetails.html', context)
 
 
 # subscribe to a Class
@@ -174,16 +188,9 @@ def subscribeToClass(request, class_id):
     classSubscriber = ClassSubscribers.objects.create(subscriber=request.user, favclass=classs)
     branch = request.user.branch_id
     branches = Branch.objects.all()
-    context = {'classes': classe, 'branch': branch, 'branches': branches}
+    context = {'classes': classs, 'branch': branch, 'branches': branches}
     email = request.user.email
-    # send email confirming subscription
-    send_mail(
-        'Subscription Successful!',
-        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board',
-        'physio.slim2@gmail.com',
-        [f'{email}'],
-        fail_silently=False,
-    )
+
 
     # send email to the management to contact the subscriber
     send_mail(
@@ -193,7 +200,20 @@ def subscribeToClass(request, class_id):
         ['physio.slim2@gmail.com'],
         fail_silently=False,
     )
-    return redirect('class', branch)
+
+
+        # send email confirming subscription
+    send_mail(
+        'Subscription Successful!',
+        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
+        
+        'physio.slim2@gmail.com',
+        [f'{email}'],
+        fail_silently=False,
+    )
+    return redirect('classes', branch)
+
+
 
 # Unsubscribe from a class
 def unSubscribeFromClass(request, class_id):
@@ -203,8 +223,8 @@ def unSubscribeFromClass(request, class_id):
     favclass.delete()
     branch = request.user.branch_id
     branches = Branch.objects.all()
-    context = {'classes': classe, 'branch': branch, 'branches': branches}
-    return redirect('class', branch)
+    context = {'classes': classs, 'branch': branch, 'branches': branches}
+    return redirect('classes', branch)
 
 #Clinics Branch page
 def clinics(request, br_id):
@@ -224,8 +244,8 @@ def offers(request, br_id):
 #Trainers Branch page
 def trainers(request, br_id):
     branch = Branch.objects.get(id=br_id)
-    PersonalTrainers = PersonalTrainer.objects.filter(branch=br_id)
-    context = {'PersonalTrainers': PersonalTrainers, 'branch': branch}
+    trainers = PersonalTrainer.objects.filter(branch=br_id)
+    context = {'trainers': trainers, 'branch': branch}
     return render(request, 'physio-slim/trainers.html', context)
 
 

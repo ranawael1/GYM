@@ -1,7 +1,8 @@
 {% extends 'physio-slim/main.html' %}
 {% load static %}
 {% block body %}
-	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner" style="background-image:url(images/img_bg_2.jpg);" data-stellar-background-ratio="0.5">
+	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner" style="background-image:url({% static 'images/login1.jpg' %}); " data-stellar-background-ratio="0.5">
+            
 		<div class="overlay"></div>
 		<div class="container">
 			<div class="row">
@@ -9,7 +10,7 @@
 					<div class="display-t">
 						<div class="display-tc animate-box" data-animate-effect="fadeIn">
 							<h1>Gallery</h1>
-							<h2>Free html5 templates Made by <a href="http://freehtml5.co" target="_blank">freehtml5.co</a></h2>
+							<!-- <h2>Free html5 templates Made by <a href="http://freehtml5.co" target="_blank">freehtml5.co</a></h2> -->
 						</div>
 					</div>
 				</div>
@@ -32,7 +33,7 @@
 				<div class="col-md-12">
 					<ul id="fh5co-portfolio-list">
 
-						<li class="one-third animate-box" data-animate-effect="fadeIn" style="background-image: url(images/gallery-1.jpg); ">
+						<li class="one-third animate-box" data-animate-effect="fadeIn" style="background-image: url({% static 'images/login1.jpg' %}); ">
 							<a href="#">
 								<div class="case-studies-summary">
 									<span>Illustration</span>
@@ -40,7 +41,7 @@
 								</div>
 							</a>
 						</li>
-						<li class="one-third animate-box" data-animate-effect="fadeIn" style="background-image: url(images/gallery-2.jpg); ">
+						<li class="one-third animate-box" data-animate-effect="fadeIn" style="background-image: url({% static 'images/event.jpg' %}); ">
 							<a href="#">
 								<div class="case-studies-summary">
 									<span>Web Design</span>
@@ -49,7 +50,7 @@
 							</a>
 						</li>
 
-						<li class="one-third animate-box" data-animate-effect="fadeIn" style="background-image: url(images/gallery-3.jpg); ">
+						<li class="one-third animate-box" data-animate-effect="fadeIn" style="background-image: url({% static 'images/login.jpg' %}); ">
 							<a href="#">
 								<div class="case-studies-summary">
 									<span>Web Design</span>
