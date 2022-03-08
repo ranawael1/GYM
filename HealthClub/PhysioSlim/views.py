@@ -190,15 +190,7 @@ def subscribeToClass(request, class_id):
     branches = Branch.objects.all()
     context = {'classes': classs, 'branch': branch, 'branches': branches}
     email = request.user.email
-    # send email confirming subscription
-    send_mail(
-        'Subscription Successful!',
-        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
-        
-        'physio.slim2@gmail.com',
-        [f'{email}'],
-        fail_silently=False,
-    )
+
 
     # send email to the management to contact the subscriber
     send_mail(
@@ -206,6 +198,17 @@ def subscribeToClass(request, class_id):
         f'The user: {request.user} \n has subscribed to: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
         'physio.slim2@gmail.com',
         ['physio.slim2@gmail.com'],
+        fail_silently=False,
+    )
+
+
+        # send email confirming subscription
+    send_mail(
+        'Subscription Successful!',
+        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
+        
+        'physio.slim2@gmail.com',
+        [f'{email}'],
         fail_silently=False,
     )
     return redirect('classes', branch)
