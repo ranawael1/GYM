@@ -89,7 +89,17 @@
                                 <li><a href="{% url 'register' %}">SignUp</a></li>
                                 <li><a href="{% url 'login' %}">Login</a></li>
                                 {% else %}
-                                <li><a href="{% url 'logout' %}">Logout</a></li>
+								<li class="has-dropdown">
+                                    <a href="#">{{request.user}}</a>
+                                    <ul class="dropdown">
+										{% if request.user.is_superuser %}
+                                        <li><a href="/admin/" target="_blank">Manage site </a></li>
+                                        <li><a href="{% url 'logout' %}">Logout</a></li>
+										{% else %}
+										<li><a href="{% url 'logout' %}">Logout</a></li>
+										{% endif %}
+                                    </ul>
+                                </li>
                                 {% endif %}
                             </ul>
                         </div>
