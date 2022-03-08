@@ -145,3 +145,8 @@ class ClassSubscribers(models.Model):
         return self.subscriber
 
 
+class Gallery(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.CharField(max_length=1000, null=False)
+    img = models.ImageField(upload_to='gallery/')
+    

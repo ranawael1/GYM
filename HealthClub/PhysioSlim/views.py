@@ -5,7 +5,7 @@ import imp
 from multiprocessing import context
 from importlib.resources import contents
 from django.shortcuts import redirect, render
-from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer, ClassSubscribers, Notifications
+from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer, ClassSubscribers, Notifications,Gallery
 # decorators and authentication
 from .decorators import unauthenticated_user, unverified_user
 # send email
@@ -133,7 +133,15 @@ def logoutUser(request):
 
 # Home
 def home(request):
-    return render(request,'physio-slim/index.html')
+    gallery = Gallery.objects.all()
+    context = {'gallery' : gallery }
+    return render(request,'physio-slim/index.html', context)
+    
+#Gallery
+def gallery(request):
+    gallery = Gallery.objects.all()
+    context = {'gallery' : gallery }
+    return render(request,'physio-slim/gallery.html', context)
 
 # branch home page 
 #Contact Page
@@ -144,7 +152,6 @@ def contact(request):
 #About Page
 def about(request):
     return render(request,'physio-slim/about.html')
-
 # Branch Page
 def branch(request, br_id):
     branch = Branch.objects.get(id=br_id)
