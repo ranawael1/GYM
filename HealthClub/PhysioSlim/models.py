@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.forms import CharField
 from phonenumber_field.modelfields import PhoneNumberField
+from django.utils import timezone
 # import schedule
 # import time
 GENDER = (
@@ -78,8 +79,9 @@ POSITION = (
 
 
 class PersonalTrainer(models.Model):
-    name = models.CharField(max_length=50, null=True)
-    bio = models.CharField(max_length=500, null=True)
+    name = models.CharField(max_length=50, null= True)
+    photo = models.ImageField(upload_to='trainers/',null=True)
+    bio = models.CharField(max_length=500, null= True)
     years_of_experience = models.IntegerField()
     position = models.CharField(choices=POSITION, max_length=20)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
@@ -117,8 +119,20 @@ class Clinic(models.Model):
     photo = models.ImageField(upload_to='clinics/', null=True, blank=True)
 
     def __str__(self):
-        return self.clinic  
+        return self.clinic 
 
+
+class Notifications(models.Model):
+    #1=subscribe, 2=GoingTo, 3 =Follow
+    notification_type = models.IntegerField()
+    to_user = models.ForeignKey(User,related_name='toUser', on_delete=models.CASCADE, null=True)
+    from_user = models.ForeignKey(User, related_name='fromUser', on_delete=models.CASCADE,  null=True) 
+    trainer = models.ForeignKey(PersonalTrainer,related_name='PersonalTrainer', on_delete=models.CASCADE, null=True)
+    Class = models.ForeignKey('Class',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
+    Event = models.ForeignKey('Event',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
+    created_on = models.DateTimeField(default=timezone.now)
+    user_seen = models.BooleanField(default=False)
+  
 
 #testing favorites
 

@@ -89,8 +89,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'gymdb',
-        'USER':'rana',
-        'PASSWORD': 'rana3010'
+        'USER':'shahd',
+        'PASSWORD': 'shahd@99'
     }
 }
 AUTH_USER_MODEL = 'PhysioSlim.User'
@@ -120,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'ETT'
 
 USE_I18N = True
 
