@@ -11,8 +11,7 @@
                     <div class="col-md-8 col-md-offset-2 text-center">
                         <div class="display-t">
                             <div class="display-tc animate-box" data-animate-effect="fadeIn">
-                                <h1>Make it a lifestyle, not a duty</h1>
-                                <h2>Free html5 templates Made by <a href="http://freehtml5.co/" target="_blank">freehtml5.co</a></h2>
+                                <h1> Physio Slim </h1>
                                 <p><a href="https://vimeo.com/channels/staffpicks/93951774" class="btn btn-primary popup-vimeo">Watch Our Video</a></p>
                             </div>
                         </div>
@@ -22,23 +21,27 @@
         </div>
 
 	</header>
-<!--  -->
+
+<!-- Classes  -->
 	<div id="fh5co-services" class="fh5co-bg-section">
 		<div class="container">
 			<div class="row">
+				{% for class in classes %}
 				<div class="col-md-4 text-center animate-box">
 					<div class="services">
-						<span><img class="img-responsive" src="{% static 'images/ballet.svg' %}" alt="hello"></span>
+						<span><img class="img-responsive" src="{{MEDIA_URL}}/{{class.photo}} "  alt="hello"></span>
                         
-						<h3>Weight Lifting</h3>
-						<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius</p>
-						<p><a href="#" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
+						<h3> {{class.Class}}</h3>
+						
+						<p>{{class.description}}</p>
+						<p><a href="{% url 'classes' 1 %}" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
 					</div>
 				</div>
-				<div class="col-md-4 text-center animate-box">
+				{% endfor %}
+				<!-- <div class="col-md-4 text-center animate-box">
 					<div class="services">
 						<span><img class="img-3" src="{% static 'images/exercise.svg' %}" alt=""></span>
-						<h3>Running</h3>
+						<h3></h3>
 						<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius</p>
 						<p><a href="#" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
 					</div>
@@ -50,7 +53,7 @@
 						<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius</p>
 						<p><a href="#" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</div>

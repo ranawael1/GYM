@@ -5,6 +5,7 @@ from django.db import models
 from django.forms import CharField
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils import timezone
+from django.core.validators import FileExtensionValidator
 # import schedule
 # import time
 GENDER = (
@@ -64,7 +65,7 @@ class Offer(models.Model):
     num_of_class = models.IntegerField()
     discount = models.FloatField()
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='offer/', null=True, blank=True)
+    photo = models.ImageField(upload_to='offer/', null=True, blank=True )
 
     def __str__(self):
         return self.name
@@ -106,7 +107,8 @@ class Class(models.Model):
     Class = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=500, null=False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='Classes/', null=True, blank=True)
+    photo2=models.ImageField(upload_to='Classes/', null=True, blank=True )
+    photo = models.FileField(upload_to='Classes/', null=True, blank=True , validators=[FileExtensionValidator(['jpg', 'svg'])])
 
     def __str__(self):
         return self.Class
