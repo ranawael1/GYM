@@ -107,8 +107,8 @@ class Class(models.Model):
     Class = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=500, null=False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
-    photo2=models.ImageField(upload_to='Classes/', null=True, blank=True )
-    photo = models.FileField(upload_to='Classes/', null=True, blank=True , validators=[FileExtensionValidator(['jpg', 'svg'])])
+    photo=models.ImageField(upload_to='Classes/', null=True, blank=True )
+    icon = models.FileField(upload_to='Classes/', null=True, blank=True , validators=[FileExtensionValidator(['jpg', 'svg'])])
 
     def __str__(self):
         return self.Class
