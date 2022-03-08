@@ -24,9 +24,9 @@ urlpatterns = [
 
     # access branch
     path('branch/<br_id>', views.branch, name='branch'),
-    # access classes
+    # all classes
     path('class/<br_id>', views.classe, name='class'),
-    # access clinics
+    # all  clinics
     path('clinics/<br_id>', views.clinics, name='clinics'),
     # access offers
     path('offers/<br_id>', views.offers, name='offers'),
@@ -35,6 +35,9 @@ urlpatterns = [
     #subscribetoclass
     path('subscribe-to-class/<class_id>', views.subscribeToClass, name='subscribe-to-class'),
     path('unsubscribe-from-class/<class_id>', views.unSubscribeFromClass, name='unsubscribe-from-class'),
+    # event details
+    path('event-details/<br_id> ', views.event_details, name='event-details'),
+
 
     # #rest_framework
     # path('users/', views.users, name='users'),

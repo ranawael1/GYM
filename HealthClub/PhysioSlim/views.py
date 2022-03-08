@@ -184,7 +184,7 @@ def home(request):
 
 # branch  details
 
-
+# branch home page 
 def branch(request, br_id):
     branches = Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
@@ -196,24 +196,27 @@ def branch(request, br_id):
     PersonalTrainers = PersonalTrainer.objects.filter(branch=br_id)
     print(clinic)
     context = {'branch': branch, 'classes': classe,
-               'clinics': clinic, 'offers': offers, 'branches': branches, 'PersonalTrainers': PersonalTrainers, 'events': events}
+               'clinics': clinic, 'offers': offers, 'branches': branches,
+                'PersonalTrainers': PersonalTrainers, 'events': events}
     return render(request, 'physio-slim/branchHomePage.html', context)
 
 
 def offers(request, br_id):
+    branches= Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
     offers = Offer.objects.filter(branch=br_id)
-    context = {'offers': offers, 'branch': branch}
+    context = {'offers': offers, 'branch': branch , 'branches': branches}
     return render(request, 'physio-slim/br_offer.html', context)
 
 
 def PersonalTrainers(request, br_id):
+    branches= Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
     PersonalTrainers = PersonalTrainer.objects.filter(branch=br_id)
-    context = {'PersonalTrainers': PersonalTrainers, 'branch': branch}
+    context = {'PersonalTrainers': PersonalTrainers, 'branches': branches,'branch': branch}
     return render(request, 'physio-slim/br_PersonalTrainer.html', context)
 
-
+# show all the classws in the branch 
 def classe(request, br_id):
     branches = Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
@@ -224,13 +227,22 @@ def classe(request, br_id):
                'branches': branches, 'all_subscribers': all_subscribers}
     return render(request, 'physio-slim/br_class.html', context)
 
-
+# show all the clinics in the branch 
 def clinics(request, br_id):
+    branches = Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
     clinic = Clinic.objects.filter(branch=br_id)
     print(clinic)
-    context = {'clinics': clinic, 'branch': branch}
+    context = {'clinics': clinic, 'branches':branches,'branch': branch}
     return render(request, 'physio-slim/br_clinics.html', context)
+
+# to show the Event Detailes
+def event_details(request ,br_id ):
+    branches=Branch.objects.all()
+    branch = Branch.objects.get(id=br_id)
+    events= Event.objects.filter(branch=br_id)
+    context = {'events': events, 'branch': branch , 'branches':branches}
+    return render(request, 'physio-slim/br_eventDetails.html', context)
 
 
 # subscribe to a Class
