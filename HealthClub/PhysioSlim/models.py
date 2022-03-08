@@ -31,7 +31,7 @@ class User(AbstractUser):
     gender = models.CharField(choices=GENDER, max_length=20)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= True)
     membership_num = models.CharField(max_length=50, null= True, blank=True)
-    
+    is_subscribed = models.BooleanField(default=False)
     avatar= models.ImageField(upload_to='avatars/',null=True, default='media/avatars/dp/default.jpg', blank=True)
 
     REQUIRED_FIELDS = ['age', 'gender', 'phone', 'email']
@@ -63,7 +63,7 @@ class User(AbstractUser):
 class Offer(models.Model):
     name = models.CharField(max_length=50, null=True)
     num_of_class = models.IntegerField()
-    discount = models.FloatField()
+    discount = models.IntegerField()
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to='offer/', null=True, blank=True )
 
@@ -145,3 +145,8 @@ class ClassSubscribers(models.Model):
         return self.subscriber
 
 
+class Gallery(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.CharField(max_length=1000, null=False)
+    img = models.ImageField(upload_to='gallery/')
+    
