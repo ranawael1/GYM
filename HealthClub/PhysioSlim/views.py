@@ -21,7 +21,7 @@ from urllib.parse import urlparse
 from urllib import parse
 from django.contrib import messages
 # from .decorators import verification_required
-#from rest_framework import permissions
+# from rest_framework import permissions
 # from rest_framework.views import exception_handler
 # from rest_framework import status
 from django.http import HttpResponse
@@ -31,21 +31,203 @@ import json
 from django.template import RequestContext
 from asgiref.sync import async_to_sync
 
-# home
-# def home(request):
-#     return render(request, 'physio-slim/home.html', {'room_name' : "broadcast"})
 
-#test notifications
-# def test(request):
-#     channel_layer = get_channel_layer()
-#     async_to_sync(channel_layer.group_send)(
-#         "notification_broadcast",
-#         {
-#             'type': 'send_notification',
-#             'message': json.dumps("Notification From test")
-#         }
-#     )
-#     return HttpResponse("Done")
+#Register
+@unverified_user
+@unauthenticated_user
+def register(request):
+    form = CreateUserForm()
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save(commit=False)
+            phone = form.cleaned_data.get('phone')
+            try:
+                verify.send(phone)
+                print("check")
+                user.save()
+                login(request, user)
+            except:
+                error = {
+                    "error": {
+                        "statusCode": 429,
+                        "message": "Rate limit is exceeded. Try again later"
+                    }
+                }
+                print(error)
+                context = {'form': form}
+                return render(request, 'physio-slim/register.html', context)
+            return redirect('verify-code')
+    context = {'form': form}
+    return render(request, 'physio-slim/register.html', context)
+
+#Verify Register
+def verify_code(request):
+    if request.method == 'POST':
+
+        user = request.user
+        form = VerifyForm(request.POST)
+        context = {'form': form}
+        if form.is_valid():
+            code = form.cleaned_data.get('code')
+            phone = user.phone
+            try:
+                print('check verify', phone)
+                x = verify.check(phone, code)
+                # if x is not False:
+                user.is_verified = True
+                print('2')
+                user.save()
+                print('3')
+                return redirect('home')
+
+                # else:
+                #     return render(request, 'physio-slim/verify.html', context)
+            except:
+                return render(request, 'physio-slim/verify.html', context)
+        context = {'form': form}
+        return render(request, 'physio-slim/verify.html', context)
+    else:
+        form = VerifyForm()
+        context = {'form': form}
+        return render(request, 'physio-slim/verify.html', context)
+
+#Reverify Register
+def reverify_code(request):
+    verify.cancellation(request.user.phone)
+    form = VerifyForm()
+    context = {'form': form}
+    return render(request, 'physio-slim/verify.html', context)
+
+#login
+@unverified_user
+@unauthenticated_user
+def loginUser(request):
+    if request.method == 'POST':
+        # gather the username and the password entered on the login form
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        # authenticate the data entered by the user
+        user = authenticate(request, username=username, password=password)
+        # if the user exists
+        if user is not None:
+            login(request, user)
+            if request.GET.get('next') is not None:
+                return redirect(request.GET.get('next'))
+            else:
+                # return redirect(request.META.get('HTTP_REFERER'), history = -2)  #to stay in the same page after logging in
+                return redirect('home')
+        # if not, show this flash message
+        else:
+            messages.info(request, 'Username or Password is incorrect')
+    # displaying the loging form
+    context = {}
+    return render(request, 'physio-slim/login.html', context)
+
+
+#Logout
+def logoutUser(request):
+    logout(request)
+    # return redirect(request.META.get('HTTP_REFERER'))  #to stay in the same page after logging out
+    return redirect('home')
+
+# Home
+def home(request):
+    return render(request,'physio-slim/index.html')
+
+#Contact Page
+def contact(request):
+    branches = Branch.objects.all()
+    context = { 'branches' : branches }
+    return render(request,'physio-slim/contact.html', context)
+#About Page
+def about(request):
+    return render(request,'physio-slim/about.html')
+
+# Branch Page
+def branch(request, br_id):
+    branch = Branch.objects.get(id=br_id)
+    classes = Class.objects.filter(branch=br_id)[0:3]
+    clinics = Clinic.objects.filter(branch=br_id)
+    offers = Offer.objects.filter(branch=br_id)
+    events = Event.objects.filter(branch=br_id)
+    trainers = PersonalTrainer.objects.filter(branch=br_id)
+    context = {'branch': branch, 'classes': classes,
+               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events}
+    return render(request, 'physio-slim/branch.html', context)
+
+#######Branch Pages#######
+#Classes Branch page
+def classes(request, br_id):
+    branches = Branch.objects.all()
+    branch = Branch.objects.get(id=br_id)
+    classes = Class.objects.filter(branch=br_id)
+    # all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
+    context = {'classes': classes, 'branch': branch,
+               'branches': branches }
+    return render(request, 'physio-slim/classes.html', context)
+
+
+# subscribe to a Class
+def subscribeToClass(request, class_id):
+    classs = Class.objects.get(id=class_id)
+    classSubscriber = ClassSubscribers.objects.create(subscriber=request.user, favclass=classs)
+    branch = request.user.branch_id
+    branches = Branch.objects.all()
+    context = {'classes': classe, 'branch': branch, 'branches': branches}
+    email = request.user.email
+    # send email confirming subscription
+    send_mail(
+        'Subscription Successful!',
+        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board',
+        'physio.slim2@gmail.com',
+        [f'{email}'],
+        fail_silently=False,
+    )
+
+    # send email to the management to contact the subscriber
+    send_mail(
+        'New user subscribed!',
+        f'The user: {request.user} \n has subscribed to: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
+        'physio.slim2@gmail.com',
+        ['physio.slim2@gmail.com'],
+        fail_silently=False,
+    )
+    return redirect('class', branch)
+
+# Unsubscribe from a class
+def unSubscribeFromClass(request, class_id):
+    classs = Class.objects.get(id=class_id)
+    favclass = ClassSubscribers.objects.get(
+        subscriber=request.user, favclass=classs)
+    favclass.delete()
+    branch = request.user.branch_id
+    branches = Branch.objects.all()
+    context = {'classes': classe, 'branch': branch, 'branches': branches}
+    return redirect('class', branch)
+
+#Clinics Branch page
+def clinics(request, br_id):
+    branch = Branch.objects.get(id=br_id)
+    clinic = Clinic.objects.filter(branch=br_id)
+    print(clinic)
+    context = {'clinics': clinic, 'branch': branch}
+    return render(request, 'physio-slim/br_clinics.html', context)
+
+#Offers Branch page
+def offers(request, br_id):
+    branch = Branch.objects.get(id=br_id)
+    offers = Offer.objects.filter(branch=br_id)
+    context = {'offers': offers, 'branch': branch}
+    return render(request, 'physio-slim/br_offer.html', context)
+
+#Trainers Branch page
+def trainers(request, br_id):
+    branch = Branch.objects.get(id=br_id)
+    PersonalTrainers = PersonalTrainer.objects.filter(branch=br_id)
+    context = {'PersonalTrainers': PersonalTrainers, 'branch': branch}
+    return render(request, 'physio-slim/trainers.html', context)
+
 
 ##notifications
 @login_required(login_url='login')
@@ -78,43 +260,16 @@ def RemoveNotifications(request, notification_id):
     notification.save()
     HttpResponse('success', content_type='text/plain')
   
-#logout
-def logoutUser(request):
-    logout(request)
-    # return redirect(request.META.get('HTTP_REFERER'))  #to stay in the same page after logging out
-
-    return redirect('login')
-
-# register
 
 
-@unverified_user
-@unauthenticated_user
-def register(request):
-    form = CreateUserForm()
-    if request.method == 'POST':
-        form = CreateUserForm(request.POST, request.FILES)
-        if form.is_valid():
-            user = form.save(commit=False)
-            phone = form.cleaned_data.get('phone')
-            try:
-                verify.send(phone)
-                print("check")
-                user.save()
-                login(request, user)
-            except:
-                error = {
-                    "error": {
-                        "statusCode": 429,
-                        "message": "Rate limit is exceeded. Try again later"
-                    }
-                }
-                print(error)
-                context = {'form': form}
-                return render(request, 'physio-slim/register.html', context)
-            return redirect('verify-code')
-    context = {'form': form}
-    return render(request, 'physio-slim/register.html', context)
+
+
+
+
+
+
+
+
 # def verify_code(request):
 #     if request.method == 'POST':
 #         form = VerifyForm(request.POST)
@@ -129,178 +284,6 @@ def register(request):
 #         form = VerifyForm()
 #         context = {'form': form}
 #     return render(request, 'physio-slim/verify.html', context)
-
-
-def verify_code(request):
-    if request.method == 'POST':
-
-        user = request.user
-        form = VerifyForm(request.POST)
-        context = {'form': form}
-        if form.is_valid():
-            code = form.cleaned_data.get('code')
-            phone = user.phone
-            try:
-                print('check verify', phone)
-                x = verify.check(phone, code)
-                # if x is not False:
-                user.is_verified = True
-                print('2')
-                user.save()
-                print('3')
-                return redirect('home')
-
-                # else:
-                #     return render(request, 'physio-slim/verify.html', context)
-            except:
-                return render(request, 'physio-slim/verify.html', context)
-        context = {'form': form}
-        return render(request, 'physio-slim/verify.html', context)
-    else:
-        form = VerifyForm()
-        context = {'form': form}
-        return render(request, 'physio-slim/verify.html', context)
-
-
-def reverify_code(request):
-    verify.cancellation(request.user.phone)
-    form = VerifyForm()
-    context = {'form': form}
-    return render(request, 'physio-slim/verify.html', context)
-
-
-# login
-@unverified_user
-@unauthenticated_user
-def loginPage(request):
-    if request.method == 'POST':
-        # gather the username and the password entered on the login form
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        # authenticate the data entered by the user
-        user = authenticate(request, username=username, password=password)
-        # if the user exists
-        if user is not None:
-            login(request, user)
-            if request.GET.get('next') is not None:
-                return redirect(request.GET.get('next'))
-            else:
-                # return redirect(request.META.get('HTTP_REFERER'), history = -2)  #to stay in the same page after logging in
-                return redirect('home')
-        # if not, show this flash message
-        else:
-            messages.info(request, 'Username or Password is incorrect')
-    # displaying the loging form
-    context = {}
-    return render(request, 'physio-slim/login.html', context)
-
-
-# logout
-def logoutUser(request):
-    logout(request)
-    # return redirect(request.META.get('HTTP_REFERER'))  #to stay in the same page after logging out
-    return redirect('home')
-
-# home
-
-
-def home(request):
-    branches = Branch.objects.all()
-    trainers = PersonalTrainer.objects.all()
-    context={'branches':branches ,'trainers' : trainers}
-    return render(request, 'physio-slim/home.html', context)
-
-# branch  details
-
-
-def branch(request, br_id):
-    branches = Branch.objects.all()
-    branch = Branch.objects.get(id=br_id)
-    classe = Class.objects.filter(branch=br_id)[0:3]
-    # print(classe)
-    clinic = Clinic.objects.filter(branch=br_id)
-    offers = Offer.objects.filter(branch=br_id)
-    events = Event.objects.filter(branch=br_id)
-    PersonalTrainers = PersonalTrainer.objects.filter(branch=br_id)
-    print(clinic)
-    context = {'branch': branch, 'classes': classe,
-               'clinics': clinic, 'offers': offers, 'branches': branches, 'PersonalTrainers': PersonalTrainers, 'events': events}
-    return render(request, 'physio-slim/branchHomePage.html', context)
-
-
-def offers(request, br_id):
-    branch = Branch.objects.get(id=br_id)
-    offers = Offer.objects.filter(branch=br_id)
-    context = {'offers': offers, 'branch': branch}
-    return render(request, 'physio-slim/br_offer.html', context)
-
-
-def PersonalTrainers(request, br_id):
-    branch = Branch.objects.get(id=br_id)
-    PersonalTrainers = PersonalTrainer.objects.filter(branch=br_id)
-    context = {'PersonalTrainers': PersonalTrainers, 'branch': branch}
-    return render(request, 'physio-slim/br_PersonalTrainer.html', context)
-
-
-def classe(request, br_id):
-    branches = Branch.objects.all()
-    branch = Branch.objects.get(id=br_id)
-    classe = Class.objects.filter(branch=br_id)
-    all_subscribers = ClassSubscribers.objects.filter(
-        subscriber=request.user).values_list('favclass_id', flat=True)
-    context = {'classes': classe, 'branch': branch,
-               'branches': branches, 'all_subscribers': all_subscribers}
-    return render(request, 'physio-slim/br_class.html', context)
-
-
-def clinics(request, br_id):
-    branch = Branch.objects.get(id=br_id)
-    clinic = Clinic.objects.filter(branch=br_id)
-    print(clinic)
-    context = {'clinics': clinic, 'branch': branch}
-    return render(request, 'physio-slim/br_clinics.html', context)
-
-
-# subscribe to a Class
-def subscribeToClass(request, class_id):
-    classs = Class.objects.get(id=class_id)
-    classSubscriber = ClassSubscribers.objects.create(
-        subscriber=request.user, favclass=classs)
-    branch = request.user.branch_id
-    branches = Branch.objects.all()
-    context = {'classes': classe, 'branch': branch, 'branches': branches}
-    email = request.user.email
-    # send email confirming subscription
-    send_mail(
-        'Subscription Successful!',
-        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board',
-        'physio.slim2@gmail.com',
-        [f'{email}'],
-        fail_silently=False,
-    )
-
-    # send email to the management to contact the subscriber
-    send_mail(
-        'New user subscribed!',
-        f'The user: {request.user} \n has subscribed to: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
-        'physio.slim2@gmail.com',
-        ['physio.slim2@gmail.com'],
-        fail_silently=False,
-    )
-    return redirect('class', branch)
-
-# Unsubscribe from a class
-
-
-def unSubscribeFromClass(request, class_id):
-    classs = Class.objects.get(id=class_id)
-    favclass = ClassSubscribers.objects.get(
-        subscriber=request.user, favclass=classs)
-    favclass.delete()
-    branch = request.user.branch_id
-    branches = Branch.objects.all()
-    context = {'classes': classe, 'branch': branch, 'branches': branches}
-    return redirect('class', branch)
 
 
 # @verification_required

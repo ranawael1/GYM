@@ -71,7 +71,7 @@ h1, h2, h3, h4, h5, h6, figure {
 
 ::-webkit-selection {
   color: #fff;
-  background: #fde303;
+  background: #ffd001;
 }
 
 ::-moz-selection {
@@ -90,6 +90,7 @@ h1, h2, h3, h4, h5, h6, figure {
   width: 100%;
   padding: 0;
   z-index: 1001;
+  background-color: #4d4d4d;
 }
 .fh5co-nav .top-menu {
   padding: 28px 0;
@@ -139,7 +140,7 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 .fh5co-nav a {
   padding: 5px 10px;
-  color: #000;
+  color: #fff;
 }
 @media screen and (max-width: 768px) {
   .fh5co-nav .menu-1 {
@@ -166,7 +167,10 @@ h1, h2, h3, h4, h5, h6, figure {
   transition: 0.5s;
 }
 .fh5co-nav ul li a:hover, .fh5co-nav ul li a:focus, .fh5co-nav ul li a:active {
-  color: #000 !important;
+  color: #fde303 !important;
+}
+.fh5co-nav .dropdown a:hover, .fh5co-nav .dropdown a:focus, .fh5co-nav .dropdown a:active {
+  color: #fde303 !important;
 }
 .fh5co-nav ul li.has-dropdown {
   position: relative;
@@ -183,7 +187,7 @@ h1, h2, h3, h4, h5, h6, figure {
   top: 40px;
   left: 0;
   text-align: left;
-  background: #fde303;
+  background: #fff;
   padding: 20px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -202,7 +206,7 @@ h1, h2, h3, h4, h5, h6, figure {
   width: 0;
   position: absolute;
   pointer-events: none;
-  border-bottom-color: #fde303;
+  border-bottom-color: #fff;
   border-width: 8px;
   margin-left: -8px;
 }
@@ -216,14 +220,14 @@ h1, h2, h3, h4, h5, h6, figure {
 .fh5co-nav ul li.has-dropdown .dropdown li a {
   padding: 2px 0;
   display: block;
-  color: #f2f2f2;
+  color: #4d4d4d;
   line-height: 1.2;
   text-transform: none;
   font-size: 13px;
   letter-spacing: 0;
 }
 .fh5co-nav ul li.has-dropdown .dropdown li a:hover {
-  color: #fff;
+  color: #000;
 }
 .fh5co-nav ul li.has-dropdown:hover a, .fh5co-nav ul li.has-dropdown:focus a {
   color: #fff;
@@ -1572,8 +1576,8 @@ h1, h2, h3, h4, h5, h6, figure {
   border: 2px solid #fde303;
 }
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
-  background: #f96c2f !important;
-  border-color: #f96c2f !important;
+  background: #d1851f !important;
+  border-color: #d1851f !important;
 }
 .btn-primary.btn-outline {
   background: transparent;

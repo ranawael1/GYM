@@ -132,8 +132,7 @@ class Notifications(models.Model):
     Event = models.ForeignKey('Event',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
     created_on = models.DateTimeField(default=timezone.now)
     user_seen = models.BooleanField(default=False)
-        return self.clinic  
-
+  
 
 #testing favorites
 
