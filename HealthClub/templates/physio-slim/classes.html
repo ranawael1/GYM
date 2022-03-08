@@ -2,22 +2,23 @@
 {% load static %}
 {% block body %}
 
-	<div class="fh5co-loader"></div>
+<div class="fh5co-loader"></div>
 
-	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner" style="background-image:url(images/img_bg_2.jpg);" data-stellar-background-ratio="0.5">
-		<div class="overlay"></div>
-		<div class="container">
-			<div class="row">
-				<div class="col-md-8 col-md-offset-2 text-center">
-					<div class="display-t">
-						<div class="display-tc animate-box" data-animate-effect="fadeIn">
-							<h1> {{branch}} Classes </h1>
-						</div>
+<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner"
+	style="background-image:url(images/img_bg_2.jpg);" data-stellar-background-ratio="0.5">
+	<div class="overlay"></div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2 text-center">
+				<div class="display-t">
+					<div class="display-tc animate-box" data-animate-effect="fadeIn">
+						<h1> {{branch}} Classes</h1>
 					</div>
 				</div>
 			</div>
 		</div>
-	</header>
+	</div>
+</header>
 
 <!-- 	
 	<div id="fh5co-trainer">
@@ -82,52 +83,64 @@
 			</div>
 		</div>
 	</div> -->
-	<div id="fh5co-services" class="fh5co-bg-section">
-		<div class="container">
+<div id="fh5co-services" class="fh5co-bg-section">
+	<div class="container">
 
-			<div class="row">
-				{% for class in classes %}
+		<div class="row">
+			{% for class in classes %}
 
-				<div class="col-md-4 text-center animate-box">
+			<div class="col-md-4 text-center animate-box">
 
-					<div class="services">
-						<span><img class="img-responsive image" src="{{MEDIA_URL}}/{{class.photo2}} "  alt="hello"></span>
-                        
-						<h3> {{class.Class}}</h3>
-						
-						<p>{{class.description}}</p>
-					</div>
+				<div class="services">
+					<span><img class="img-responsive image" src="{{MEDIA_URL}}/{{class.photo2}} " alt="hello"></span>
 
+					<h3> {{class.Class}}</h3>
+
+					<p>{{class.description}}</p>
+					{% if not request.user.is_anonymous %}
+						{% if request.user.branch == branch %}
+							{% if class.id in all_subscribers %}
+							<a href="{% url 'unsubscribe-from-class' class.id %}">
+								<button class="btn btn-danger">Remove from favorites <i class="fa-regular fa-face-frown"></i></button>
+							</a>
+							{% else %}
+							<a href="{% url 'subscribe-to-class' class.id %}">
+								<button class="btn btn-primary btn-outline btn-sm">Add to favorites <i class="fa-regular fa-face-smile-beam"></i></button>
+							</a>
+							{% endif %}
+						{% endif %}
+					{% endif %}
 				</div>
-				{% endfor %}
 
-				
 			</div>
+			{% endfor %}
+		</div>
 
+	</div>
+</div>
+
+<div id="fh5co-started" class="fh5co-bg" style="background-image: url(images/img_bg_3.jpg);">
+	<div class="overlay"></div>
+	<div class="container">
+		<div class="row animate-box">
+			<div class="col-md-8 col-md-offset-2 text-center">
+				<h2>Fitness Classes this Summer <br> <span> Pay Now and <br> Get <span class="percent">35%</span>
+						Discount</span></h2>
+			</div>
+		</div>
+		<div class="row animate-box">
+			<div class="col-md-8 col-md-offset-2 text-center">
+				<p><a href="{% url 'register'  %}" class="btn btn-default btn-lg">Become a Member</a></p>
+			</div>
 		</div>
 	</div>
-
-	<div id="fh5co-started" class="fh5co-bg" style="background-image: url(images/img_bg_3.jpg);">
-		<div class="overlay"></div>
-		<div class="container">
-			<div class="row animate-box">
-				<div class="col-md-8 col-md-offset-2 text-center">
-					<h2>Fitness Classes this Summer <br> <span> Pay Now and <br> Get <span class="percent">35%</span> Discount</span></h2>
-				</div>
-			</div>
-			<div class="row animate-box">
-				<div class="col-md-8 col-md-offset-2 text-center">
-					<p><a href="{% url 'register'  %}" class="btn btn-default btn-lg">Become a Member</a></p>
-				</div>
-			</div>
-		</div>
-	</div>
+</div>
 
 
-	
 
-	<div class="gototop js-top">
-		<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
-	</div>
-	
+
+<div class="gototop js-top">
+	<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+</div>
+
 {% endblock %}

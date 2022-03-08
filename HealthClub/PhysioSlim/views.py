@@ -164,9 +164,13 @@ def classes(request, br_id):
     branches = Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
     classes = Class.objects.filter(branch=br_id)
-    # all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
-    context = {'classes': classes, 'branch': branch,
-               'branches': branches }
+    if not request.user.is_anonymous:
+        all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
+        context = {'classes': classes, 'branch': branch,
+                'branches': branches, 'all_subscribers':all_subscribers }
+    else:
+        context = {'classes': classes, 'branch': branch,
+                'branches': branches}
     return render(request, 'physio-slim/classes.html', context)
 
 # to show the Event Detailes
@@ -189,7 +193,8 @@ def subscribeToClass(request, class_id):
     # send email confirming subscription
     send_mail(
         'Subscription Successful!',
-        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board',
+        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
+        
         'physio.slim2@gmail.com',
         [f'{email}'],
         fail_silently=False,
@@ -203,7 +208,9 @@ def subscribeToClass(request, class_id):
         ['physio.slim2@gmail.com'],
         fail_silently=False,
     )
-    return redirect('class', branch)
+    return redirect('classes', branch)
+
+
 
 # Unsubscribe from a class
 def unSubscribeFromClass(request, class_id):
@@ -214,7 +221,7 @@ def unSubscribeFromClass(request, class_id):
     branch = request.user.branch_id
     branches = Branch.objects.all()
     context = {'classes': classs, 'branch': branch, 'branches': branches}
-    return redirect('class', branch)
+    return redirect('classes', branch)
 
 #Clinics Branch page
 def clinics(request, br_id):
