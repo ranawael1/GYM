@@ -5,11 +5,13 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title> Physio Slim Gym </title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
 	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
 	<meta name="author" content="freehtml5.co" />
-
+	<script src="https://kit.fontawesome.com/c4ecdd0437.js" crossorigin="anonymous"></script>
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
 	<meta property="og:image" content=""/>
@@ -22,6 +24,7 @@
 	<meta name="twitter:card" content="" />
 
 	<link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,700,800" rel="stylesheet">
+	
 	
 	<!-- Animate.css -->
 	<link rel="stylesheet" href="{% static 'css/animate.css' %}">
@@ -96,7 +99,12 @@
                                         <li><a href="/admin/" target="_blank">Manage site </a></li>
                                         <li><a href="{% url 'logout' %}">Logout</a></li>
 										{% else %}
-										<li><a href="{% url 'logout' %}">Logout</a></li>
+											{% if request.user.is_subscribed %}
+												<li><a href="#">Favorites</a></li>
+												<li><a href="{% url 'logout' %}">Logout</a></li>
+											{% else %}
+												<li><a href="{% url 'logout' %}">Logout</a></li>
+											{% endif %}
 										{% endif %}
                                     </ul>
                                 </li>
@@ -111,6 +119,26 @@
     <!-- End Navigation -->
 
         {% block body %} {% endblock %}
+	<!-- offer  -->
+	<div id="fh5co-started" class="fh5co-bg" style="background-image: url(images/img_bg_3.jpg);">
+		<div class="overlay"></div>
+		<div class="container">
+			<div class="row animate-box">
+				<div class="col-md-8 col-md-offset-2 text-center">
+					<h2>Fitness Classes this Summer <br> <span> Pay Now and <br> Get <span class="percent">35%</span> Discount</span></h2>
+				</div>
+			</div>
+			<div class="row animate-box">
+				<div class="col-md-8 col-md-offset-2 text-center">
+					{% if request.user.is_anonymous %}
+                    <p><a class="btn btn-default btn-lg" href="{% url 'register' %}">Become A Member</a></p>
+                    {% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end offer -->
+	
     <!-- Footer -->
 	<footer id="fh5co-footer" class="fh5co-bg" style="background-image: url(images/img_bg_1.jpg);" role="contentinfo">
 		<div class="overlay"></div>
@@ -176,6 +204,12 @@
 
 		</div>
 	</footer>
+
+	<div class="gototop js-top">
+		<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+	</div>
+
+	
     <!-- End Footer -->
     <!-- jQuery -->
 	<script src="{% static 'js/jquery.min.js' %}"></script>
@@ -195,6 +229,7 @@
 	<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
 	<script src="{% static 'js/magnific-popup-options.js' %}"></script>
 	<script src="{% static 'js/main.js' %}"></script>
+	
     </div>
 </body>
 </html>
