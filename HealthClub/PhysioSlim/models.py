@@ -31,7 +31,7 @@ class User(AbstractUser):
     gender = models.CharField(choices=GENDER, max_length=20)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= True)
     membership_num = models.CharField(max_length=50, null= True, blank=True)
-    
+    is_subscribed = models.BooleanField(default=False)
     avatar= models.ImageField(upload_to='avatars/',null=True, default='media/avatars/dp/default.jpg', blank=True)
 
     REQUIRED_FIELDS = ['age', 'gender', 'phone', 'email']
@@ -63,7 +63,7 @@ class User(AbstractUser):
 class Offer(models.Model):
     name = models.CharField(max_length=50, null=True)
     num_of_class = models.IntegerField()
-    discount = models.FloatField()
+    discount = models.IntegerField()
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to='offer/', null=True, blank=True )
 
@@ -107,8 +107,8 @@ class Class(models.Model):
     Class = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=500, null=False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
-    photo2=models.ImageField(upload_to='Classes/', null=True, blank=True )
-    photo = models.FileField(upload_to='Classes/', null=True, blank=True , validators=[FileExtensionValidator(['jpg', 'svg'])])
+    photo=models.ImageField(upload_to='Classes/', null=True, blank=True )
+    icon = models.FileField(upload_to='Classes/', null=True, blank=True , validators=[FileExtensionValidator(['jpg', 'svg'])])
 
     def __str__(self):
         return self.Class

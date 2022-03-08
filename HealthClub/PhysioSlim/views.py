@@ -109,6 +109,7 @@ def loginUser(request):
         password = request.POST.get('password')
         # authenticate the data entered by the user
         user = authenticate(request, username=username, password=password)
+        print(user)
         # if the user exists
         if user is not None:
             login(request, user)
@@ -119,7 +120,18 @@ def loginUser(request):
                 return redirect('home')
         # if not, show this flash message
         else:
-            messages.info(request, 'Username or Password is incorrect')
+            email = username
+            try:
+                user = User.objects.get(email=email)
+                if user.check_password(password):
+                    login(request, user)
+                    if request.GET.get('next') is not None:
+                        return redirect(request.GET.get('next'))
+                    else:
+                        # return redirect(request.META.get('HTTP_REFERER'), history = -2)  #to stay in the same page after logging in
+                        return redirect('home')
+            except:
+                messages.info(request, 'Username or Password is incorrect')
     # displaying the loging form
     context = {}
     return render(request, 'physio-slim/login.html', context)
@@ -197,41 +209,75 @@ def subscribeToClass(request, class_id):
     branches = Branch.objects.all()
     context = {'classes': classs, 'branch': branch, 'branches': branches}
     email = request.user.email
+    # if the user is subscribed to at least one class, we set is_subscribed to True
 
+
+    if not request.user.is_subscribed:
+        request.user.is_subscribed = True
+        request.user.save()
 
     # send email to the management to contact the subscriber
-    send_mail(
-        'New user subscribed!',
-        f'The user: {request.user} \n has subscribed to: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
-        'physio.slim2@gmail.com',
-        ['physio.slim2@gmail.com'],
-        fail_silently=False,
-    )
 
 
-        # send email confirming subscription
-    send_mail(
-        'Subscription Successful!',
-        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
+    # send_mail(
+    #     'New user subscribed!',
+    #     f'The user: {request.user} \n has subscribed to: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
+    #     'physio.slim2@gmail.com',
+    #     ['physio.slim2@gmail.com'],
+    #     fail_silently=False,)
+    #     # send email confirming subscription
+    # send_mail(
+    #     'Subscription Successful!',
+    #     f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
         
-        'physio.slim2@gmail.com',
-        [f'{email}'],
-        fail_silently=False,
-    )
+    #     'physio.slim2@gmail.com',
+    #     [f'{email}'],
+    #     fail_silently=False,)
+
+
     return redirect('classes', branch)
+
 
 
 
 # Unsubscribe from a class
 def unSubscribeFromClass(request, class_id):
     classs = Class.objects.get(id=class_id)
-    favclass = ClassSubscribers.objects.get(
-        subscriber=request.user, favclass=classs)
-    favclass.delete()
     branch = request.user.branch_id
     branches = Branch.objects.all()
+    email = request.user.email
+    favclass = ClassSubscribers.objects.get(subscriber=request.user, favclass=classs)
+    favclass.delete()
+    try:
+        subscriber = ClassSubscribers.objects.get(subscriber_id=request.user.id)
+    except:
+        if request.user.is_subscribed:
+            request.user.is_subscribed = False
+            request.user.save()
+
+
     context = {'classes': classs, 'branch': branch, 'branches': branches}
+
+    # send email to the management to confirm the unsubscription
+    
+    # send_mail(
+    #     'User unsubscribed!',
+    #     f'The user: {request.user} \n unsubscribed from: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
+    #     'physio.slim2@gmail.com',
+    #     ['physio.slim2@gmail.com'],
+    #     fail_silently=False,)
+    #     # send email confirming the unsubscription
+    # send_mail(
+    #     'Unsubscription',
+    #     f'Hello {request.user},\n sorry to here that you unsubscribed from our {classs} class, \n you might receive a call from our side to have a further discussion \n Br, \n Physio-Slim management.', 
+        
+    #     'physio.slim2@gmail.com',
+    #     [f'{email}'],
+    #     fail_silently=False,)
     return redirect('classes', branch)
+
+
+
 
 #Clinics Branch page
 def clinics(request, br_id):
