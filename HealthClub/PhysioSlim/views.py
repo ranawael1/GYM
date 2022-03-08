@@ -135,6 +135,7 @@ def logoutUser(request):
 def home(request):
     return render(request,'physio-slim/index.html')
 
+# branch home page 
 #Contact Page
 def contact(request):
     branches = Branch.objects.all()
@@ -148,6 +149,7 @@ def about(request):
 def branch(request, br_id):
     branch = Branch.objects.get(id=br_id)
     classes = Class.objects.filter(branch=br_id)[0:3]
+    print(classes)
     clinics = Clinic.objects.filter(branch=br_id)
     offers = Offer.objects.filter(branch=br_id)
     events = Event.objects.filter(branch=br_id)
@@ -167,6 +169,14 @@ def classes(request, br_id):
                'branches': branches }
     return render(request, 'physio-slim/classes.html', context)
 
+# to show the Event Detailes
+def event_details(request ,br_id ):
+    branches=Branch.objects.all()
+    branch = Branch.objects.get(id=br_id)
+    events= Event.objects.filter(branch=br_id)
+    context = {'events': events, 'branch': branch , 'branches':branches}
+    return render(request, 'physio-slim/br_eventDetails.html', context)
+
 
 # subscribe to a Class
 def subscribeToClass(request, class_id):
@@ -174,7 +184,7 @@ def subscribeToClass(request, class_id):
     classSubscriber = ClassSubscribers.objects.create(subscriber=request.user, favclass=classs)
     branch = request.user.branch_id
     branches = Branch.objects.all()
-    context = {'classes': classe, 'branch': branch, 'branches': branches}
+    context = {'classes': classs, 'branch': branch, 'branches': branches}
     email = request.user.email
     # send email confirming subscription
     send_mail(
@@ -203,7 +213,7 @@ def unSubscribeFromClass(request, class_id):
     favclass.delete()
     branch = request.user.branch_id
     branches = Branch.objects.all()
-    context = {'classes': classe, 'branch': branch, 'branches': branches}
+    context = {'classes': classs, 'branch': branch, 'branches': branches}
     return redirect('class', branch)
 
 #Clinics Branch page
