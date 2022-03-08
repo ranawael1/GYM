@@ -145,20 +145,22 @@ def contact(request):
 def about(request):
     return render(request,'physio-slim/about.html')
 
+#######Branch Pages#######
+
 # Branch Page
 def branch(request, br_id):
     branch = Branch.objects.get(id=br_id)
     classes = Class.objects.filter(branch=br_id)[0:3]
+    classs= Class.objects.filter(branch=br_id).order_by("c_time")
     print(classes)
     clinics = Clinic.objects.filter(branch=br_id)
     offers = Offer.objects.filter(branch=br_id)
     events = Event.objects.filter(branch=br_id)
     trainers = PersonalTrainer.objects.filter(branch=br_id)
     context = {'branch': branch, 'classes': classes,
-               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events}
+               'clinics': clinics, 'offers': offers,'classs':classs ,'trainers': trainers, 'events': events}
     return render(request, 'physio-slim/branch.html', context)
 
-#######Branch Pages#######
 #Classes Branch page
 def classes(request, br_id):
     branches = Branch.objects.all()
@@ -168,6 +170,13 @@ def classes(request, br_id):
     context = {'classes': classes, 'branch': branch,
                'branches': branches }
     return render(request, 'physio-slim/classes.html', context)
+
+def class_scheduale(request,cl_id ):
+    branches = Branch.objects.all()
+    classes = Class.objects.get(id=cl_id)
+    context= {'branches':branches , 'classes':classes }
+    return render(request, 'physio-slim/schedule.html',context )
+
 
 # to show the Event Detailes
 def event_details(request ,br_id ):

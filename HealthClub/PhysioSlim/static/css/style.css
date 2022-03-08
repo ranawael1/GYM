@@ -733,6 +733,7 @@ h1, h2, h3, h4, h5, h6, figure {
   zoom: 1;
   *display: inline;
 }
+
 .fh5co-tabs .fh5co-tab-nav li a {
   padding: 10px;
   width: 100%;
@@ -1028,7 +1029,7 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 .fh5co-heading h2 {
   font-size: 30px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   line-height: 1.5;
   color: #000;
   text-transform: uppercase;

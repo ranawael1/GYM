@@ -1,5 +1,6 @@
 from email.policy import default
 import imp
+from time import time
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.forms import CharField
@@ -107,11 +108,13 @@ class Class(models.Model):
     Class = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=500, null=False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    c_time = models.TimeField(default=timezone.now)
     photo2=models.ImageField(upload_to='Classes/', null=True, blank=True )
     photo = models.FileField(upload_to='Classes/', null=True, blank=True , validators=[FileExtensionValidator(['jpg', 'svg'])])
 
     def __str__(self):
         return self.Class
+
 
 
 class Clinic(models.Model):
