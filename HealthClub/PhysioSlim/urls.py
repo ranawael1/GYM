@@ -3,14 +3,12 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
+    #Authentications
     path('register/', views.register, name='register'),
-    path('login/', views.loginPage, name='login'),
-    path('logout/', views.logoutUser, name='logout'),
-    path('home/',views.home, name='home'),
-    #verify phone
     path('verify/', views.verify_code, name='verify-code'),  
-    path('re-verify/', views.reverify_code, name='re-verify'),  
-
+    path('re-verify/', views.reverify_code, name='re-verify'),
+    path('login/', views.loginUser, name='login'),
+    path('logout/', views.logoutUser, name='logout'),
     #reset password form
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="password_reset/password_reset.html"), name="reset_password"),
     #notify the user to check their email 
@@ -19,23 +17,25 @@ urlpatterns = [
     path('reset_password/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="password_reset/password_reset_form.html"), name='password_reset_confirm'),
     #success
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset/password_reset_done.html'), name="password_reset_complete"),
-    #notifications
-    path('test/', views.test, name="test"),
-
-    # access branch
+    #Home Page
+    path('home/',views.home, name='home'),
+    path('contact/', views.contact, name='contact'), 
+    path('about/', views.about, name='about'),  
     path('branch/<br_id>', views.branch, name='branch'),
-    # access classes
-    path('class/<br_id>', views.classe, name='class'),
-    # access clinics
-    path('clinics/<br_id>', views.clinics, name='clinics'),
-    # access offers
+    #Branch Pages
+    path('branch-classes/<br_id>', views.classes, name='classes'),
+    path('branch-clinics/<br_id>', views.clinics, name='clinics'),
+    path('branch-trainers/<br_id>', views.trainers, name='trainers'),
     path('offers/<br_id>', views.offers, name='offers'),
-    # access PersonalTrainers
-    path('PersonalTrainers/<br_id>', views.PersonalTrainers, name='PersonalTrainers'),
-    #subscribetoclass
+    #Class Subscrib
     path('subscribe-to-class/<class_id>', views.subscribeToClass, name='subscribe-to-class'),
     path('unsubscribe-from-class/<class_id>', views.unSubscribeFromClass, name='unsubscribe-from-class'),
-
+    #notification
+    path('ClassNotifications/<notification_id>/<Class_id>', views.ClassNotifications, name='ClassNotifications'),
+    path('EventNotifications/<notification_id>/<Event_id>', views.EventNotifications, name='EventNotifications'),
+    path('RemoveNotifications/<notification_id>', views.RemoveNotifications, name='RemoveNotifications'),
+    path('FollowNotifications/<notification_id>/<follow_id>', views.FollowNotifications, name='FollowNotifications'),
+   
     # #rest_framework
     # path('users/', views.users, name='users'),
     # path('user/<user_id>', views.user, name='user'),

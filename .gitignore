@@ -1,10 +1,10 @@
 # created by virtualenv automatically
 env
 venv
+media
 __pycache__
 migrations
 settings.py
-images
 avatars
 *.env
 node_modules
