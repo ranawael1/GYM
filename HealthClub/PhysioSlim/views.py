@@ -149,6 +149,7 @@ def about(request):
 def branch(request, br_id):
     branch = Branch.objects.get(id=br_id)
     classes = Class.objects.filter(branch=br_id)[0:3]
+    print(classes)
     clinics = Clinic.objects.filter(branch=br_id)
     offers = Offer.objects.filter(branch=br_id)
     events = Event.objects.filter(branch=br_id)
