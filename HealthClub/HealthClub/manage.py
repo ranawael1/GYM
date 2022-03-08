@@ -88,9 +88,9 @@ WSGI_APPLICATION = 'HealthClub.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gymdb',
-        'USER':'shahd',
-        'PASSWORD': 'shahd@99'
+        'NAME': 'gym',
+        'USER':'sohyb',
+        'PASSWORD': '1234'
     }
 }
 AUTH_USER_MODEL = 'PhysioSlim.User'
