@@ -109,6 +109,7 @@ def loginUser(request):
         password = request.POST.get('password')
         # authenticate the data entered by the user
         user = authenticate(request, username=username, password=password)
+        print(user)
         # if the user exists
         if user is not None:
             login(request, user)
@@ -119,7 +120,18 @@ def loginUser(request):
                 return redirect('home')
         # if not, show this flash message
         else:
-            messages.info(request, 'Username or Password is incorrect')
+            email = username
+            try:
+                user = User.objects.get(email=email)
+                if user.check_password(password):
+                    login(request, user)
+                    if request.GET.get('next') is not None:
+                        return redirect(request.GET.get('next'))
+                    else:
+                        # return redirect(request.META.get('HTTP_REFERER'), history = -2)  #to stay in the same page after logging in
+                        return redirect('home')
+            except:
+                messages.info(request, 'Username or Password is incorrect')
     # displaying the loging form
     context = {}
     return render(request, 'physio-slim/login.html', context)

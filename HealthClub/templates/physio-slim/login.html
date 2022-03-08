@@ -12,7 +12,7 @@
 	<div class="col-5 d-flex justify-content-center align-items-center">
 		<div class="col-10">
 			<form method="POST" action=""> {% csrf_token %}
-				<h1>Login</h1>
+				<h1>LOGIN</h1>
 				<div class="inset">
 					<p>
 						<label for="username">USERNAME OR EMAIL</label>
@@ -22,12 +22,13 @@
 						<label for="password">PASSWORD</label>
 						<input type="password" name="password" placeholder="password...">
 					</p>
+					{% for message in messages %}
+						<p id="messages" class="text-danger">{{message}}</p>
+					{% endfor %}
 					<a href="{% url 'reset_password' %}" class="forget">Forgot password ?</a>
 
 				</div>
-				{% for message in messages %}
-				<p id="messages" style="font-weight: bolder;">{{message}}</p>
-				{% endfor %}
+				
 				<p class="p-container">
 					<input class="" type="submit" value="Login">
 				</p>
