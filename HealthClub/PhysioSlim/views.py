@@ -150,10 +150,10 @@ def branch(request, br_id):
     branch = Branch.objects.get(id=br_id)
     classes = Class.objects.filter(branch=br_id)[0:3]
     print(classes)
-    clinics = Clinic.objects.filter(branch=br_id)
-    offers = Offer.objects.filter(branch=br_id)
-    events = Event.objects.filter(branch=br_id)
-    trainers = PersonalTrainer.objects.filter(branch=br_id)
+    clinics = Clinic.objects.filter(branch=br_id)[0:3]
+    offers = Offer.objects.filter(branch=br_id)[0:3]
+    events = Event.objects.filter(branch=br_id)[0:3]
+    trainers = PersonalTrainer.objects.filter(branch=br_id)[0:3]
     context = {'branch': branch, 'classes': classes,
                'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events}
     return render(request, 'physio-slim/branch.html', context)
@@ -244,8 +244,8 @@ def offers(request, br_id):
 #Trainers Branch page
 def trainers(request, br_id):
     branch = Branch.objects.get(id=br_id)
-    PersonalTrainers = PersonalTrainer.objects.filter(branch=br_id)
-    context = {'PersonalTrainers': PersonalTrainers, 'branch': branch}
+    trainers = PersonalTrainer.objects.filter(branch=br_id)
+    context = {'trainers': trainers, 'branch': branch}
     return render(request, 'physio-slim/trainers.html', context)
 
 
