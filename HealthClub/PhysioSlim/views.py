@@ -236,10 +236,7 @@ def subscribeToClass(request, class_id):
     if not request.user.is_subscribed:
         request.user.is_subscribed = True
         request.user.save()
-        #send notification of subscription
-        # notification = Notifications.objects.create(notification_type=1, from_user=request.user,to_user=classs.user, Class=classs)
-
-
+       
     # send email to the management to contact the subscriber
     # send_mail(
     #     'New user subscribed!',
@@ -268,7 +265,6 @@ def favoriteClasses(request):
     #getting the info of the favorite classes from the Class Model
     classes = Class.objects.filter(id__in = fav_classes)
     context={'classes':classes, 'all_subscribers':all_subscribers}
-
     return render(request, 'physio-slim/favorites.html', context)
 
 
@@ -286,8 +282,6 @@ def unSubscribeFromClass(request, class_id):
         if request.user.is_subscribed:
             request.user.is_subscribed = False
             request.user.save()
-
-
     context = {'classes': classs, 'branch': branch, 'branches': branches}
 
     # send email to the management to confirm the unsubscription
@@ -386,11 +380,11 @@ def OfferNotifications(request,notification_id,offer_id):
 #Removing Notification
 def RemoveNotifications(request, notification_id):
     notification = Notifications.objects.get(id = notification_id)  
-    notification.user_seen = True
+    # notification.user_seen = True
     # notification.remove()
-    # notification.delete()
+    notification.to_user.remove(request.user)
     notification.save()
-    HttpResponse('success', content_type='text/plain')
+    return redirect('home')
   
 
 
