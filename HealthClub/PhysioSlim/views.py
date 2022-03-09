@@ -1,8 +1,4 @@
 from . import verify
-import email
-import imp
-
-from multiprocessing import context
 from importlib.resources import contents
 from django.shortcuts import redirect, render
 from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer, ClassSubscribers, Notifications,Gallery
@@ -39,8 +35,9 @@ def register(request):
     form = CreateUserForm()
     if request.method == 'POST':
         form = CreateUserForm(request.POST, request.FILES)
+        print(form, 'check')
         if form.is_valid():
-            user = form.save(commit=False)
+            user = form.save(commit=False)   
             phone = form.cleaned_data.get('phone')
             try:
                 verify.send(phone)
@@ -58,6 +55,11 @@ def register(request):
                 context = {'form': form}
                 return render(request, 'physio-slim/register.html', context)
             return redirect('verify-code')
+        else:
+            print(form.errors)
+            errors = form.errors
+            context = {'form': form, 'messages': errors}
+            return render(request, 'physio-slim/register.html', context)
     context = {'form': form}
     return render(request, 'physio-slim/register.html', context)
 
@@ -72,17 +74,14 @@ def verify_code(request):
             code = form.cleaned_data.get('code')
             phone = user.phone
             try:
-                print('check verify', phone)
                 x = verify.check(phone, code)
-                # if x is not False:
-                user.is_verified = True
-                print('2')
-                user.save()
-                print('3')
-                return redirect('home')
-
-                # else:
-                #     return render(request, 'physio-slim/verify.html', context)
+                if x is not False:
+                    user.is_verified = True
+                    user.save()
+                    return redirect('home')
+                else:
+                    context={ 'error': 'Wrong code'}
+                    return render(request, 'physio-slim/verify.html', context)
             except:
                 return render(request, 'physio-slim/verify.html', context)
         context = {'form': form}
@@ -145,7 +144,7 @@ def logoutUser(request):
 
 # Home
 def home(request):
-    gallery = Gallery.objects.all()
+    gallery = Gallery.objects.all()[0:4]
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
         context = {'gallery' : gallery , 'notifications' : notifications }
@@ -185,7 +184,7 @@ def branch(request, br_id):
     classes = Class.objects.filter(branch=br_id)[0:3]
     print(classes)
     clinics = Clinic.objects.filter(branch=br_id)[0:3]
-    offers = Offer.objects.filter(branch=br_id)[0:3]
+    offers = Offer.objects.filter(branch=br_id)[0:4]
     events = Event.objects.filter(branch=br_id)[0:3]
     trainers = PersonalTrainer.objects.filter(branch=br_id)[0:3]
     if not request.user.is_anonymous : 
@@ -197,7 +196,6 @@ def branch(request, br_id):
                'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events}
     return render(request, 'physio-slim/branch.html', context)
 
-#######Branch Pages#######
 #Classes Branch page
 def classes(request, br_id):
     branches = Branch.objects.all()
@@ -212,6 +210,13 @@ def classes(request, br_id):
         context = {'classes': classes, 'branch': branch,
                 'branches': branches }
     return render(request, 'physio-slim/classes.html', context)
+
+def class_scheduale(request,cl_id ):
+    branches = Branch.objects.all()
+    classes = Class.objects.get(id=cl_id)
+    context= {'branches':branches , 'classes':classes }
+    return render(request, 'physio-slim/schedule.html',context )
+
 
 # to show the Event Detailes
 def event_details(request ,br_id ):
@@ -257,6 +262,7 @@ def subscribeToClass(request, class_id):
 #display favorite classes
 @login_required(login_url='login')
 def favoriteClasses(request):
+    notifications = UserNotifications(request)
     all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
     #getting the classes the user subscribed to
     favorite_classes = ClassSubscribers.objects.filter(subscriber_id=request.user.id).values_list('favclass_id', flat=True)
@@ -264,7 +270,12 @@ def favoriteClasses(request):
     fav_classes=list(favorite_classes)
     #getting the info of the favorite classes from the Class Model
     classes = Class.objects.filter(id__in = fav_classes)
+<<<<<<< HEAD
     context={'classes':classes, 'all_subscribers':all_subscribers}
+=======
+    context={'classes':classes, 'all_subscribers':all_subscribers,'notifications':notifications}
+
+>>>>>>> 6f844c8285376bbc4cff4227a9c7ba8822a1c5ab
     return render(request, 'physio-slim/favorites.html', context)
 
 
@@ -283,7 +294,6 @@ def unSubscribeFromClass(request, class_id):
             request.user.is_subscribed = False
             request.user.save()
     context = {'classes': classs, 'branch': branch, 'branches': branches}
-
     # send email to the management to confirm the unsubscription
     # send_mail(
     #     'User unsubscribed!',
@@ -317,8 +327,12 @@ def clinics(request, br_id):
 def offers(request, br_id):
     branch = Branch.objects.get(id=br_id)
     offers = Offer.objects.filter(branch=br_id)
-    context = {'offers': offers, 'branch': branch}
-    return render(request, 'physio-slim/br_offer.html', context)
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'offers': offers, 'branch': branch, 'notifications':notifications}
+    else:
+        context = {'offers': offers, 'branch': branch}
+    return render(request, 'physio-slim/offers.html', context)
 
 #Trainers Branch page
 def trainers(request, br_id):

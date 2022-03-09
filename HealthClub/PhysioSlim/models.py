@@ -1,5 +1,6 @@
 from email.policy import default
 import imp
+from time import time
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.forms import CharField
@@ -32,7 +33,7 @@ class User(AbstractUser):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= True)
     membership_num = models.CharField(max_length=50, null= True, blank=True)
     is_subscribed = models.BooleanField(default=False)
-    avatar= models.ImageField(upload_to='avatars/',null=True, default='media/avatars/dp/default.jpg', blank=True)
+    avatar= models.ImageField(upload_to='avatars/',null=True, default='static/avatars/default.jpg', blank=True)
 
     REQUIRED_FIELDS = ['age', 'gender', 'phone', 'email']
 
@@ -146,7 +147,7 @@ class Class(models.Model):
     description = models.CharField(max_length=500, null=False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo=models.ImageField(upload_to='Classes/', null=True, blank=True )
-    icon = models.FileField(upload_to='Classes/', null=True, blank=True , validators=[FileExtensionValidator(['jpg', 'svg'])])
+    icon = models.FileField(upload_to='Classes/', null=True, blank=True , default='static/avatars/default.jpg' ,validators=[FileExtensionValidator(['jpg', 'svg'])])
     
     def save(self,*args,**kwargs):
         users = User.objects.all()
@@ -164,6 +165,7 @@ class Class(models.Model):
         return self.Class
     
     
+
 
 
 class Clinic(models.Model):
@@ -193,4 +195,6 @@ class Gallery(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=1000, null=False)
     img = models.ImageField(upload_to='gallery/')
+    def __str__(self):
+        return self.name
     
