@@ -1,0 +1,34 @@
+{% load static %}
+{% block bell %}
+<div class="dropdown">
+    <i class="fas fa-bell"></i>
+    <span class="badge bg-danger notification-badge" onclick="showNotifications()">{{ notifications.count }}</span>
+   <!-- d-none -->
+    <div class="dropdown-content " id="notification-container">
+        {% for notification in notifications %}
+            {% if notification.notification_type == 1 %}
+            <div class="dropdown-item-parent">
+                <a href="{% url 'ClassNotifications' notification.id notification.Class.id %}">New {{notification.Class}} Class ! </a>
+                <span class="dropdown-item-close" onclick="removeNotification(`{% url 'RemoveNotifications' notification.id %}`, `{{ request.path }}`)">&times;</span>
+            </div>
+            {% elif notification.notification_type == 2 %}
+            <div class="dropdown-item-parent">
+                <a href="{% url 'EventNotifications' notification.id notification.Event.id %}">New {{notification.Event}} Event ! </a>
+                <span class="dropdown-item-close" onclick="removeNotification(`{% url 'RemoveNotifications' notification.id %}`, `{{ request.path }}`)">&times;</span>
+            </div>
+            {% elif notification.notification_type == 3 %}
+            <div class="dropdown-item-parent">
+                <a href="{% url 'TrainerNotifications' notification.id notification.trainer.id %}">New {{notification.trainer}} Personal Trainer ! </a>
+                <span class="dropdown-item-close" onclick="removeNotification(`{% url 'RemoveNotifications' notification.id %}`, `{{ request.path }}`)">&times;</span>
+            </div>
+            {% elif notification.notification_type == 4 %}
+            <div class="dropdown-item-parent">
+                <a href="{% url 'OfferNotifications' notification.id notification.Offer.id %}">New {{notification.Offer}} Offer ! </a>
+                <span class="dropdown-item-close" onclick="removeNotification(`{% url 'RemoveNotifications' notification.id %}`, `{{ request.path }}`)">&times;</span>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

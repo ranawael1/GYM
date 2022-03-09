@@ -146,9 +146,13 @@ def logoutUser(request):
 # Home
 def home(request):
     gallery = Gallery.objects.all()
-    context = {'gallery' : gallery }
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'gallery' : gallery , 'notifications' : notifications }
+    else: 
+        context = {'gallery' : gallery }
     return render(request,'physio-slim/index.html', context)
-    
+   
 #Gallery
 def gallery(request):
     gallery = Gallery.objects.all()
@@ -191,7 +195,7 @@ def classes(request, br_id):
                 'branches': branches, 'all_subscribers':all_subscribers }
     else:
         context = {'classes': classes, 'branch': branch,
-                'branches': branches}
+                'branches': branches }
     return render(request, 'physio-slim/classes.html', context)
 
 def class_scheduale(request,cl_id ):
@@ -224,10 +228,11 @@ def subscribeToClass(request, class_id):
     if not request.user.is_subscribed:
         request.user.is_subscribed = True
         request.user.save()
+        #send notification of subscription
+        # notification = Notifications.objects.create(notification_type=1, from_user=request.user,to_user=classs.user, Class=classs)
+
 
     # send email to the management to contact the subscriber
-
-
     # send_mail(
     #     'New user subscribed!',
     #     f'The user: {request.user} \n has subscribed to: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
@@ -283,6 +288,7 @@ def unSubscribeFromClass(request, class_id):
     #     'physio.slim2@gmail.com',
     #     [f'{email}'],
     #     fail_silently=False,)
+
     return redirect('classes', branch)
 
 
@@ -311,34 +317,55 @@ def trainers(request, br_id):
     return render(request, 'physio-slim/trainers.html', context)
 
 
-##notifications
-@login_required(login_url='login')
-def ClassNotifications(request,notification_id,Class_id):
+##Showing notifications
+
+def UserNotifications(request):
+    notification = Notifications.objects.filter(to_user = request.user)
+    notification.user_seen = True
+    return notification
+
+# def showNotifications(request):
+#     notification = Notifications.objects.filter(to_user = request.user)
+#     context = {'notifications': notifications}
+#     return render(request, 'physio-slim/index.html', context)
+    
+
+##Redirect to notifications
+
+def ClassNotifications(request,notification_id,class_id):
     notification = Notifications.objects.get(id = notification_id)
-    Class = Class.objects.get(id = Class_id)
+    classs = Class.objects.get(id=class_id)
     notification.user_seen = True
     notification.save()
-    return redirect('post', Class_id=Class_id)
+    return render(request, 'physio-slim/classes.html')
 
-@login_required(login_url='login')
-def EventNotifications(request,notification_id,Event_id):
+def EventNotifications(request,notification_id,event_id):
     notification = Notifications.objects.get(id = notification_id)
-    Event = Event.objects.get(id = Event_id)
+    event = Event.objects.get(id = event_id)
     notification.user_seen = True
     notification.save()
     return redirect('home')
 
-@login_required(login_url='login')
-def FollowNotifications(request,notification_id,follow_id):
+def TrainerNotifications(request,notification_id,trainer_id):
     notification = Notifications.objects.get(id = notification_id)
-    personalTrainer = PersonalTrainer.objects.get(id = follow_id)
+    trainer = PersonalTrainer.objects.get(id = trainer_id)
+    notification.user_seen = True
+    notification.save()
+    return render(request, 'physio-slim/trainers.html')
+
+def OfferNotifications(request,notification_id,offer_id):
+    notification = Notifications.objects.get(id = notification_id)
+    offer = Offer.objects.get(id = offer_id)
     notification.user_seen = True
     notification.save()
     return redirect('home')
 
+#Removing Notification
 def RemoveNotifications(request, notification_id):
     notification = Notifications.objects.get(id = notification_id)  
     notification.user_seen = True
+    # notification.remove()
+    # notification.delete()
     notification.save()
     HttpResponse('success', content_type='text/plain')
   
