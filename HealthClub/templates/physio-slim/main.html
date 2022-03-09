@@ -99,34 +99,30 @@
 
 								<li><a href="{% url 'contact' %}">Contact</a></li>
 								{% if request.user.is_anonymous %}
-								<li><a href="{% url 'register' %}">SignUp</a></li>
-								<li><a href="{% url 'login' %}">Login</a></li>
+									<li><a href="{% url 'register' %}">SignUp</a></li>
+									<li><a href="{% url 'login' %}">Login</a></li>
 								{% else %}
-								<li class="has-dropdown">
-									<a href="#">{{request.user}}</a>
-									<a href="">
+									<li class="has-dropdown">
+										<a href="#">{{request.user}}</a>
+										<ul class="dropdown">
+											{% if request.user.is_superuser %}
+												<li><a href="/admin/" target="_blank">Manage site </a></li>
+												<li><a href="{% url 'logout' %}">Logout</a></li>
+											{% else %}
+												{% if request.user.is_subscribed %}
+												<li><a href="{% url 'favorite-classes'%}">Favorites</a></li>
+												<li><a href="{% url 'logout' %}">Logout</a></li>
+												{% else %}
+												<li><a href="{% url 'logout' %}">Logout</a></li>
+												{% endif %}
+											{% endif %}
+										</ul>
+									</li>
+									{% if not request.user.is_superuser %}
 										{% block bell %}
-										{% include 'physio-slim/bell.html' %}
+										{% include 'physio-slim/show_notifications.html' %}
 										{% endblock %}
-									</a>
-									<ul class="dropdown">
-										{% if request.user.is_superuser %}
-										<li><a href="/admin/" target="_blank">Manage site </a></li>
-										<li><a href="{% url 'logout' %}">Logout</a></li>
-										{% else %}
-										{% if request.user.is_subscribed %}
-										<li><a href="{% url 'favorite-classes'%}">Favorites</a></li>
-										<li><a href="{% url 'logout' %}">Logout</a></li>
-										{% else %}
-										<li><a href="{% url 'logout' %}">Logout</a></li>
-										{% endif %}
-										{% endif %}
-
-									</ul>
-								</li>
-								{% block bell %}
-								{% include 'physio-slim/show_notifications.html' %}
-								{% endblock %}
+									{% endif	 %}
 								{% endif %}
 							</ul>
 						</div>
