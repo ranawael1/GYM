@@ -142,6 +142,9 @@ class Notifications(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
     user_seen = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ('-created_on',)
+
 class Class(models.Model):
     Class = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=500, null=False)
