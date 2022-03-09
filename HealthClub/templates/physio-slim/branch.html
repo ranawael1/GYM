@@ -77,13 +77,13 @@
     </div>
   </div>
   <!-- end of trainers 	 -->
+  <!-- start of the offers  -->
   <div id="fh5co-pricing">
     <div class="container">
       <div class="row animate-box">
         <div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
-          <h2>Pricing Plan</h2>
-          <p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab
-            aliquam dolor eius.</p>
+          <h2> Offers </h2>
+          <p></p>
         </div>
       </div>
       <div class="row">
@@ -92,10 +92,20 @@
           <div class="col-md-3 animate-box">
             <div class="price-box">
               <h2 class="pricing-plan">{{offer.name}}</h2>
-              <div class="price"><sup class="currency"></sup>{{offer.discount}} % <small>/month</small></div>
+              <div class="price"><sup class="currency"></sup>{{offer.discount}} % 
+				<small>
+					{% if offer.number_of_months is 1 %}
+					per month 
+
+					 {% elif offer.number_of_months is 12 %}
+					 per year 
+					{% else %}
+					{{ offer.number_of_months }} months
+					{% endif %}
+				</small></div>
               <ul class="classes">
-                <li><b> </b></li>
-                <li> On {{offer.num_of_class}} of our Classes </li>
+                <li><b> {{offer.days_num  }} per week </b></li>
+                <li>  {{offer.num_of_class}} class </li>
               </ul>
               <a href="{% url 'contact' %}" class="btn btn-select-plan btn-sm">Select Plan</a>
             </div>
@@ -108,6 +118,7 @@
       </a>
     </div>
   </div>
+  <!-- end of the offers -->
 
 </div>
 

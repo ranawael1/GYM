@@ -59,13 +59,20 @@ class User(AbstractUser):
 #     gender = models.CharField(choices=GENDER, max_length=20)
 #     avatar= models.ImageField(upload_to='avatars/')
 #     username = models.CharField(max_length=50)
+days = (
+    (None, 'chosse your training days'),
+    ('3 days ', '3 days'),
+    ('Everyday', 'Everyday'),
+)
 
 
 class Offer(models.Model):
     name = models.CharField(max_length=50, null=True)
     num_of_class = models.IntegerField()
     discount = models.IntegerField()
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    days_num = models.CharField(choices=days, max_length=20)
+    number_of_months= models.IntegerField()
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE )
     photo = models.ImageField(upload_to='offer/', null=True, blank=True )
     
     def save(self,*args,**kwargs):
@@ -77,6 +84,26 @@ class Offer(models.Model):
             notification.to_user.set(users)
             notification.save()
 
+
+    def __str__(self):
+        return self.name
+
+class MainOffer(models.Model):
+    name = models.CharField(max_length=50, null=True)
+    num_of_class = models.IntegerField()
+    discount = models.IntegerField()
+    days_num = models.CharField(choices=days, max_length=20)
+    number_of_months= models.IntegerField()
+    photo = models.ImageField(upload_to='offer/', null=True, blank=True )
+    
+    def save(self,*args,**kwargs):
+        users = User.objects.all()
+        created = not self.id 
+        super().save(*args,**kwargs)
+        if created :
+            notification = Notifications.objects.create(notification_type=4,Offer=self)
+            notification.to_user.set(users)
+            notification.save()
 
     def __str__(self):
         return self.name
@@ -139,6 +166,8 @@ class Notifications(models.Model):
     Class = models.ForeignKey('Class',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
     Event = models.ForeignKey('Event',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
     Offer = models.ForeignKey('Offer',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
+    MainOffer = models.ForeignKey('MainOffer',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
+
     created_on = models.DateTimeField(default=timezone.now)
     user_seen = models.BooleanField(default=False)
 

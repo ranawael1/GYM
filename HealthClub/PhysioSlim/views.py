@@ -1,7 +1,7 @@
 from . import verify
 from importlib.resources import contents
 from django.shortcuts import redirect, render
-from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer, ClassSubscribers, Notifications,Gallery
+from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer
 # decorators and authentication
 from .decorators import unauthenticated_user, unverified_user
 # send email
@@ -145,11 +145,13 @@ def logoutUser(request):
 # Home
 def home(request):
     gallery = Gallery.objects.all()[0:4]
+    offers= MainOffer.objects.all()[0:4]
+    print(offers)
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        context = {'gallery' : gallery , 'notifications' : notifications }
+        context = {'gallery' : gallery ,'offers':offers ,'notifications' : notifications }
     else: 
-        context = {'gallery' : gallery }
+        context = {'gallery' : gallery , 'offers':offers}
     return render(request,'physio-slim/index.html', context)
    
 #Gallery
@@ -161,6 +163,15 @@ def gallery(request):
     else: 
         context = {'gallery' : gallery }
     return render(request,'physio-slim/gallery.html', context)
+
+def main_offers(request):
+    offers = MainOffer.objects.all()
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'offers': offers, 'notifications' : notifications }
+    else: 
+        context = {'offers': offers }
+    return render(request, 'physio-slim/m_offers.html', context)
 
 # branch home page 
 #Contact Page
@@ -342,6 +353,8 @@ def trainers(request, br_id):
     return render(request, 'physio-slim/trainers.html', context)
 
 
+
+
 ##Showing notifications
 
 def UserNotifications(request):
@@ -386,6 +399,12 @@ def OfferNotifications(request,notification_id,offer_id):
     notification.user_seen = True
     notification.save()
     return redirect('home')
+def MOfferNotifications(request,notification_id,offer_id):
+    notification = Notifications.objects.get(id = notification_id)
+    offer = MainOffer.objects.get(id = offer_id)
+    notification.user_seen = True
+    notification.save()
+    return redirect('main-offers')
 
 #Removing Notification
 def RemoveNotifications(request, notification_id):

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User,Branch,Offer,PersonalTrainer,Event,Clinic, Class,ClassSubscribers ,Notifications,Gallery
+from .models import User,Branch,Offer,PersonalTrainer,Event,Clinic, Class,ClassSubscribers ,Notifications,Gallery,MainOffer
 
 class ClinicAdmin(admin.ModelAdmin):
     list_display = ('clinic', 'branch')
@@ -17,6 +17,11 @@ class ClassSubscribersAdmin(admin.ModelAdmin):
 class ClassAdmin(admin.ModelAdmin):
     list_display = ('Class','branch')
 
+# class OfferAdmin(admin.ModelAdmin):
+#     list_display = ('name','branch')
+
+
+
 
 admin.site.register(User,UsersAdmin)
 
@@ -29,3 +34,5 @@ admin.site.register(PersonalTrainer,TrainerAdmin)
 admin.site.register(Notifications)
 admin.site.register(ClassSubscribers,ClassSubscribersAdmin)
 admin.site.register(Gallery)
+admin.site.register(MainOffer)
+

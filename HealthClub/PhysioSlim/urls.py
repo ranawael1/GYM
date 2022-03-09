@@ -28,6 +28,8 @@ urlpatterns = [
     path('branch-clinics/<br_id>', views.clinics, name='clinics'),
     path('branch-trainers/<br_id>', views.trainers, name='trainers'),
     path('offers/<br_id>', views.offers, name='offers'),
+    path('main-offers', views.main_offers, name='main-offers'),
+
     
     #Class Subscrib
     path('subscribe-to-class/<class_id>', views.subscribeToClass, name='subscribe-to-class'),
