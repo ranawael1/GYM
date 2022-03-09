@@ -1,114 +1,138 @@
-{% extends 'physio-slim/main.html' %}
-{% load static %}
-{% block body %}
-<header id="fh5co-header" class="fh5co-cover" role="banner" data-stellar-background-ratio="0.5">
-<video autoplay muted loop id="bg-video">
-	<source src="{% static 'videos/intro.mp4' %}" type="video/mp4" />
-    </video>
-		<div class="overlay">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2 text-center">
-                        <div class="display-t">
-                            <div class="display-tc animate-box" data-animate-effect="fadeIn">
-                                <h1> Physio Slim </h1>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
+{% extends 'physio-slim/main.html' %} {% load static %} {% block body %}
+<header
+  id="fh5co-header"
+  class="fh5co-cover"
+  role="banner"
+  data-stellar-background-ratio="0.5"
+>
+  <video autoplay muted loop id="bg-video">
+    <source src="{% static 'videos/intro.mp4' %}" type="video/mp4" />
+  </video>
+  <div class="overlay">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2 text-center">
+          <div class="display-t">
+            <div class="display-tc animate-box" data-animate-effect="fadeIn">
+              <h1>Physio Slim</h1>
             </div>
+          </div>
         </div>
-
-	</header>
+      </div>
+    </div>
+  </div>
+</header>
 
 <!-- Classes  -->
-	<div class="container">
+<div class="container">
+  <div id="fh5co-services" class="fh5co-bg-section">
+    <div class="container">
+      <div class="row">
+        {% for class in classes %}
+        <div class="col-md-4 text-center animate-box">
+          <div class="services">
+            <span
+              ><img
+                class="img-responsive"
+                src="{{MEDIA_URL}}/{{class.icon }}"
+                alt="class"
+            /></span>
 
-	<div id="fh5co-services" class="fh5co-bg-section">
-		<div class="container">
+            <h3>{{class.Class}}</h3>
 
-			<div class="row">
-				{% for class in classes %}
-				<div class="col-md-4 text-center animate-box">
-					<div class="services">
-						<span><img class="img-responsive" src="{{MEDIA_URL}}/{{class.icon }}"  alt="class"></span>
-                        
-						<h3> {{class.Class}}</h3>
-						
-						<p>{{class.description}}</p>
-					</div>
-				</div>
-				{% endfor %}
-			</div>
-			<p><a href="{% url 'classes' branch.id %}" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
-		</div>
-		
-	</div>
-	<!-- end of Classes -->
+            <p>{{class.description}}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <p>
+        <a
+          href="{% url 'classes' branch.id %}"
+          class="btn btn-primary btn-outline btn-sm"
+          >More <i class="icon-arrow-right"></i
+        ></a>
+      </p>
+    </div>
+  </div>
+  <!-- end of Classes -->
 
-	<div id="fh5co-trainer">
-		<div class="container">
-			<div class="row animate-box">
-				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
-					<h2>Fitness Expert</h2>
-					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
-				</div>
-			</div>
-			<div class="row">
-                {% for trainer in trainers %}
-                    <div class="col-md-4 col-sm-4 animate-box">
-                        <div class="trainer">
-                            <a href="#"><img class="img-responsive" src="{{MEDIA_URL}}/{{trainer.photo}}" alt="trainer"></a>
-                            <div class="title">
-                                <h3><a href="#">{{trainer.name}}</a></h3>
-                                <span>{{trainer.bio}}</span>
-                                <span>{{trainer.years_of_experience}}</span>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
+  <div id="fh5co-trainer">
+    <div class="container">
+      <div class="row animate-box">
+        <div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+          <h2>Fitness Expert</h2>
+          <p>
+            Dignissimos asperiores vitae velit veniam totam fuga molestias
+            accusamus alias autem provident. Odit ab aliquam dolor eius.
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        {% for trainer in trainers %}
+        <div class="col-md-4 col-sm-4 animate-box">
+          <div class="trainer">
+            <a href="#"
+              ><img
+                class="img-responsive"
+                src="{{MEDIA_URL}}/{{trainer.photo}}"
+                alt="trainer"
+            /></a>
+            <div class="title">
+              <h3><a href="#">{{trainer.name}}</a></h3>
+              <span>{{trainer.bio}}</span>
+              <span>{{trainer.years_of_experience}}</span>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <p style="padding-top: 1%">
+        <a
+          href="{% url 'trainers' branch.id %}"
+          class="btn btn-primary btn-outline btn-sm"
+        >
+          More <i class="icon-arrow-right"></i>
+        </a>
+      </p>
+    </div>
+  </div>
 
-			</div>
-			<p style="padding-top: 1%;">
-				<a href="{% url 'trainers' branch.id %}" class="btn btn-primary btn-outline btn-sm"> 
-					More <i class="icon-arrow-right"></i>
-				</a>
-			</p>
-		</div>
-	</div>
-	
-	
-	<div id="fh5co-pricing">
-		<div class="container">
-			<div class="row animate-box">
-				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
-					<h2>Pricing Plan</h2>
-					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
-				</div>
-			</div>
-			<div class="row">
-				{% for offer in offers %}
+  <div id="fh5co-pricing">
+    <div class="container">
+      <div class="row animate-box">
+        <div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+          <h2>Pricing Plan</h2>
+          <p>
+            Dignissimos asperiores vitae velit veniam totam fuga molestias
+            accusamus alias autem provident. Odit ab aliquam dolor eius.
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        {% for offer in offers %}
 
-				<div class="pricing">
-					
-					<div class="col-md-3 animate-box">
-						<div class="price-box">
-							<h2 class="pricing-plan">{{offer.name}}</h2>
-							<div class="price"><sup class="currency"></sup>{{offer.discount}} % <small>/month</small></div>
-							<ul class="classes">
-								<li><b> </b></li>
-								<li>  On {{offer.num_of_class}} of our Classes </li>
-							</ul>
-							<a href="{% url 'contact' %}" class="btn btn-select-plan btn-sm">Select Plan</a>
-						</div>
-					</div>
+        <div class="pricing">
+          <div class="col-md-3 animate-box">
+            <div class="price-box">
+              <h2 class="pricing-plan">{{offer.name}}</h2>
+              <div class="price">
+                <sup class="currency"></sup>{{offer.discount}} %
+                <small>/month</small>
+              </div>
+              <ul class="classes">
+                <li><b> </b></li>
+                <li>On {{offer.num_of_class}} of our Classes</li>
+              </ul>
+              <a href="{% url 'contact' %}" class="btn btn-select-plan btn-sm"
+                >Select Plan</a
+              >
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 
-				</div>
-				{% endfor %}
-			</div>
-		</div>
-	</div>
-
-	
-	{% endblock %}
+  {% endblock %}
+</div>
