@@ -265,6 +265,7 @@ def subscribeToClass(request, class_id):
 #display favorite classes
 @login_required(login_url='login')
 def favoriteClasses(request):
+    notifications = UserNotifications(request)
     all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
     #getting the classes the user subscribed to
     favorite_classes = ClassSubscribers.objects.filter(subscriber_id=request.user.id).values_list('favclass_id', flat=True)
@@ -272,7 +273,7 @@ def favoriteClasses(request):
     fav_classes=list(favorite_classes)
     #getting the info of the favorite classes from the Class Model
     classes = Class.objects.filter(id__in = fav_classes)
-    context={'classes':classes, 'all_subscribers':all_subscribers}
+    context={'classes':classes, 'all_subscribers':all_subscribers,'notifications':notifications}
 
     return render(request, 'physio-slim/favorites.html', context)
 
@@ -291,10 +292,7 @@ def unSubscribeFromClass(request, class_id):
         if request.user.is_subscribed:
             request.user.is_subscribed = False
             request.user.save()
-
-
     context = {'classes': classs, 'branch': branch, 'branches': branches}
-
     # send email to the management to confirm the unsubscription
     # send_mail(
     #     'User unsubscribed!',

@@ -1,61 +1,59 @@
 {% load static %}
 {% block bell %}
 
-    <div class = "notification">
-      <a href = "#">
-      <div class = "notBtn" href = "#">
-        <!--Number supports double digets and automaticly hides itself when there is nothing between divs -->
-        <div class = "number">{{ notifications.count }}</div>
-        <i class="fas fa-bell"></i>
-          <div class = "box">
-            <div class = "display">
-              <div class = "nothing"> 
-                <i class="fas fa-child stick"></i> 
-                <div class = "cent">Looks Like your all caught up!</div>
-              </div>
-              <!-- content -->
-              <div class = "cont">
-                {% for notification in notifications %}
-                  {% if notification.notification_type == 1 %}
-                    <div class = "sec new">
-                      <a href = "{% url 'ClassNotifications' notification.id notification.Class.id %}">
-                      <div class = "txt">New {{notification.Class}} Class ! </div>
-                      <div class = "txt sub">{{notification.created_on}}</div>
-                      </a>
-                    </div>
-
-                    {% elif notification.notification_type == 2 %}
-                    <div class = "sec">
-                      <a href = "{% url 'EventNotifications' notification.id notification.Event.id %}">
-                      <div class = "txt">New {{notification.Event}} Event !</div>
-                      <div class = "txt sub">{{notification.created_on}}</div>
-                      </a>
-                    </div>
-                    {% elif notification.notification_type == 3 %}
-                    <div class = "sec">
-                      <a href = "{% url 'TrainerNotifications' notification.id notification.trainer.id %}">
-                      <div class = "txt">New {{notification.trainer}} Personal Trainer !</div>
-                      <div class = "txt sub">{{notification.created_on}}</div>
-                      </a>
-                    </div>
-                    {% elif notification.notification_type == 4 %}
-                    <div class = "sec">
-                      <a href = "{% url 'OfferNotifications' notification.id notification.Offer.id %}">
-                      <div class = "txt">New {{notification.Offer}} Offer ! </div>
-                      <div class = "txt sub">{{notification.created_on}}</div>
-                      </a>
-                    </div>
-                    {% endif %}
-                  {% endfor %}
-             </div>
-             <!-- content -->
+<div class="notification">
+  <a href="#">
+    <div class="notBtn" href="#">
+      <!--Number supports double digets and automaticly hides itself when there is nothing between divs -->
+      <div class="number">{{ notifications.count }}</div>
+      <i class="fas fa-bell"></i>
+      <div class="box">
+        <div class="display">
+          <div class="nothing">
+            <i class="fas fa-child stick"></i>
+            <div class="cent">Looks Like your all caught up!</div>
+          </div>
+          <!-- content -->
+          <div class="cont">
+            {% for notification in notifications %}
+            {% if notification.notification_type == 1 %}
+            <div class="sec new">
+              <a href="{% url 'ClassNotifications' notification.id notification.Class.id %}">
+                <div class="txt">New {{notification.Class}} Class ! </div>
+                <div class="txt sub">{{notification.created_on}}</div>
+              </a>
             </div>
-         </div>
+
+            {% elif notification.notification_type == 2 %}
+            <div class="sec">
+              <a href="{% url 'EventNotifications' notification.id notification.Event.id %}">
+                <div class="txt">New {{notification.Event}} Event !</div>
+                <div class="txt sub">{{notification.created_on}}</div>
+              </a>
+            </div>
+            {% elif notification.notification_type == 3 %}
+            <div class="sec">
+              <a href="{% url 'TrainerNotifications' notification.id notification.trainer.id %}">
+                <div class="txt">New {{notification.trainer}} Personal Trainer !</div>
+                <div class="txt sub">{{notification.created_on}}</div>
+              </a>
+            </div>
+            {% elif notification.notification_type == 4 %}
+            <div class="sec">
+              <a href="{% url 'OfferNotifications' notification.id notification.Offer.id %}">
+                <div class="txt">New {{notification.Offer}} Offer ! </div>
+                <div class="txt sub">{{notification.created_on}}</div>
+              </a>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+          <!-- content -->
+        </div>
       </div>
-
-
-        </a>
     </div>
+  </a>
+</div>
 
 
 {% endblock %}
