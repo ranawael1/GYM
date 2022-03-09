@@ -156,21 +156,29 @@ def home(request):
 #Gallery
 def gallery(request):
     gallery = Gallery.objects.all()
-    context = {'gallery' : gallery }
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'gallery' : gallery , 'notifications' : notifications }
+    else: 
+        context = {'gallery' : gallery }
     return render(request,'physio-slim/gallery.html', context)
 
 # branch home page 
 #Contact Page
 def contact(request):
     branches = Branch.objects.all()
-    context = { 'branches' : branches }
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = { 'branches' : branches , 'notifications' : notifications }
+    else: 
+        context = { 'branches' : branches }
     return render(request,'physio-slim/contact.html', context)
 #About Page
 def about(request):
-    return render(request,'physio-slim/about.html')
-
-#######Branch Pages#######
-
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'notifications' : notifications }
+    return render(request,'physio-slim/about.html', context)
 # Branch Page
 def branch(request, br_id):
     branch = Branch.objects.get(id=br_id)
@@ -180,8 +188,13 @@ def branch(request, br_id):
     offers = Offer.objects.filter(branch=br_id)[0:3]
     events = Event.objects.filter(branch=br_id)[0:3]
     trainers = PersonalTrainer.objects.filter(branch=br_id)[0:3]
-    context = {'branch': branch, 'classes': classes,
-               'clinics': clinics, 'offers': offers,'trainers': trainers, 'events': events}
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'branch': branch, 'classes': classes,
+               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events , 'notifications' : notifications}
+    else :
+        context = {'branch': branch, 'classes': classes,
+               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events}
     return render(request, 'physio-slim/branch.html', context)
 
 #Classes Branch page
@@ -189,10 +202,11 @@ def classes(request, br_id):
     branches = Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
     classes = Class.objects.filter(branch=br_id)
+    notifications = UserNotifications(request)
     if not request.user.is_anonymous:
         all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
         context = {'classes': classes, 'branch': branch,
-                'branches': branches, 'all_subscribers':all_subscribers }
+                'branches': branches, 'all_subscribers':all_subscribers, 'notifications' : notifications  }
     else:
         context = {'classes': classes, 'branch': branch,
                 'branches': branches }
@@ -322,7 +336,11 @@ def offers(request, br_id):
 def trainers(request, br_id):
     branch = Branch.objects.get(id=br_id)
     trainers = PersonalTrainer.objects.filter(branch=br_id)
-    context = {'trainers': trainers, 'branch': branch}
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'trainers': trainers, 'branch': branch, 'notifications' : notifications }
+    else: 
+        context = {'trainers': trainers, 'branch': branch}
     return render(request, 'physio-slim/trainers.html', context)
 
 
@@ -344,9 +362,11 @@ def UserNotifications(request):
 def ClassNotifications(request,notification_id,class_id):
     notification = Notifications.objects.get(id = notification_id)
     classs = Class.objects.get(id=class_id)
+    branch = request.user.branch_id
+    print(branch)
     notification.user_seen = True
     notification.save()
-    return render(request, 'physio-slim/classes.html')
+    return redirect('classes',branch)
 
 def EventNotifications(request,notification_id,event_id):
     notification = Notifications.objects.get(id = notification_id)

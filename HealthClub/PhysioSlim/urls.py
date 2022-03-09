@@ -38,7 +38,7 @@ urlpatterns = [
     path('ClassNotifications/<notification_id>/<class_id>', views.ClassNotifications, name='ClassNotifications'),
     path('TrainerNotifications/<notification_id>/<trainer_id>', views.TrainerNotifications, name='TrainerNotifications'),
     path('OfferNotifications/<notification_id>/<offer_id>', views.OfferNotifications, name='OfferNotifications'),
-    # path('RemoveNotifications/<notification_id>', views.RemoveNotifications, name='RemoveNotifications'),
+    path('RemoveNotifications/<notification_id>', views.RemoveNotifications, name='RemoveNotifications'),
    
    
     # #rest_framework

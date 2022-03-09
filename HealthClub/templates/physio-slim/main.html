@@ -1,7 +1,5 @@
-
 {% load static %}
-
-<!--  -->
+{% load custom_tags %}
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -117,9 +115,8 @@
 									</ul>
 								</li>
 								{% block bell %}
-								{% include 'physio-slim/bell.html' %}
+								{% include 'physio-slim/show_notifications.html' %}
 								{% endblock %}
-								
                                 {% endif %}
                             </ul>
                         </div>
