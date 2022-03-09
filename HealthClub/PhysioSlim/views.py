@@ -146,7 +146,7 @@ def logoutUser(request):
 def home(request):
     gallery = Gallery.objects.all()[0:4]
     offers= MainOffer.objects.all()[0:4]
-    branches = Branch.objects.all()
+    branches = Branch.objects.all()[0:4]
 
     print(offers)
     if not request.user.is_anonymous : 
