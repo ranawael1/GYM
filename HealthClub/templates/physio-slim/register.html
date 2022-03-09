@@ -38,13 +38,13 @@
                         </select>
                     </p>
                     {% if form.errors %}
-                    {% for field in form %}
-                    {% for error in field.errors %}
-                    <div class="text-danger">
-                        <p>{{ error|escape }}</p>
-                    </div>
-                    {% endfor %}
-                    {% endfor %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="text-danger">
+                                <p>{{ error|escape }}</p>
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
                     {% endif %}
                 </div>
                 <div class="inset " id="second" style="display: none;">
@@ -83,9 +83,15 @@
                         <label for="id_membership_num">If you have(optional):</label>
                         <input type="text" name="membership_num" placeholder="Enter membership number">
                     </p>
-                    {% for message in messages %}
-                    <p id="messages" class="text-danger">{{message}}</p>
-                    {% endfor %}
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="text-danger">
+                                <p>{{ error|escape }}</p>
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
 
                 </div>
 

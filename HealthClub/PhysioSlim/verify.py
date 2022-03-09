@@ -24,9 +24,7 @@ def cancellation(phone):
     try:
         print(phone)
         result = verify.verification_checks.create(to=str(phone), code=str('000000')) 
-        if result:
-            result.status = "completed"
-        send(phone)
+       
     except TwilioRestException:
         send(phone)
 

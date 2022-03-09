@@ -1,8 +1,4 @@
 from . import verify
-import email
-import imp
-
-from multiprocessing import context
 from importlib.resources import contents
 from django.shortcuts import redirect, render
 from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer, ClassSubscribers, Notifications,Gallery
