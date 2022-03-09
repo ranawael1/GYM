@@ -270,12 +270,7 @@ def favoriteClasses(request):
     fav_classes=list(favorite_classes)
     #getting the info of the favorite classes from the Class Model
     classes = Class.objects.filter(id__in = fav_classes)
-<<<<<<< HEAD
     context={'classes':classes, 'all_subscribers':all_subscribers}
-=======
-    context={'classes':classes, 'all_subscribers':all_subscribers,'notifications':notifications}
-
->>>>>>> 6f844c8285376bbc4cff4227a9c7ba8822a1c5ab
     return render(request, 'physio-slim/favorites.html', context)
 
 
