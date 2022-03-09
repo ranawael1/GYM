@@ -28,6 +28,7 @@ urlpatterns = [
     path('branch-clinics/<br_id>', views.clinics, name='clinics'),
     path('branch-trainers/<br_id>', views.trainers, name='trainers'),
     path('offers/<br_id>', views.offers, name='offers'),
+    
     #Class Subscrib
     path('subscribe-to-class/<class_id>', views.subscribeToClass, name='subscribe-to-class'),
     path('unsubscribe-from-class/<class_id>', views.unSubscribeFromClass, name='unsubscribe-from-class'),

@@ -185,7 +185,7 @@ def branch(request, br_id):
     classes = Class.objects.filter(branch=br_id)[0:3]
     print(classes)
     clinics = Clinic.objects.filter(branch=br_id)[0:3]
-    offers = Offer.objects.filter(branch=br_id)[0:3]
+    offers = Offer.objects.filter(branch=br_id)[0:4]
     events = Event.objects.filter(branch=br_id)[0:3]
     trainers = PersonalTrainer.objects.filter(branch=br_id)[0:3]
     if not request.user.is_anonymous : 
@@ -327,8 +327,12 @@ def clinics(request, br_id):
 def offers(request, br_id):
     branch = Branch.objects.get(id=br_id)
     offers = Offer.objects.filter(branch=br_id)
-    context = {'offers': offers, 'branch': branch}
-    return render(request, 'physio-slim/br_offer.html', context)
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'offers': offers, 'branch': branch, 'notifications':notifications}
+    else:
+        context = {'offers': offers, 'branch': branch}
+    return render(request, 'physio-slim/offers.html', context)
 
 #Trainers Branch page
 def trainers(request, br_id):
