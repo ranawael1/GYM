@@ -30,11 +30,14 @@
                         <input type="tel" name="phone" placeholder="Enter phone..." required>
                     </p>
                     <p>
-                        <select name="branch" class="form-control" required="" id="id_branch">
-                            <option value="" selected="">Choose your branch</option>
-
-                            <option value="1">a</option>
-
+                        <select name="branch" class="form-control" required="" id="id_branch">  
+                            {% for x, y in form.fields.branch.choices %}
+                            {% if not x %}
+                            <option value="" selected>Choose your branch</option>
+                            {% else %}
+                                <option value="{{ x }}">{{ y }}</option>
+                                {% endif %}
+                            {% endfor %}
                         </select>
                     </p>
                     {% if form.errors %}
@@ -70,11 +73,13 @@
                     </p>
                     <p>
                         <select name="gender" class="form-control" required="" id="id_gender">
-                            <option value="" selected="">Choose your gender</option>
-
-                            <option value="male">male</option>
-
-                            <option value="female">female</option>
+                            {% for x, y in form.fields.gender.choices %}
+                            {% if not x %}
+                            <option value="" selected>Choose your gender</option>
+                            {% else %}
+                                <option value="{{ x }}">{{ y }}</option>
+                                {% endif %}
+                            {% endfor %}
 
                         </select>
                     </p>

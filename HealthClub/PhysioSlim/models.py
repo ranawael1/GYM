@@ -19,6 +19,7 @@ GENDER = (
 class Branch(models.Model):
     name = models.CharField(max_length=50, null=True)
     address = models.CharField(max_length=50, null=True)
+    description = models.CharField(max_length=150, null=True)
     phone = PhoneNumberField(unique=True, null=True, blank=True)
 
     def __str__(self):
@@ -170,6 +171,9 @@ class Notifications(models.Model):
 
     created_on = models.DateTimeField(default=timezone.now)
     user_seen = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ('-created_on',)
 
 class Class(models.Model):
     Class = models.CharField(max_length=50, null=False)

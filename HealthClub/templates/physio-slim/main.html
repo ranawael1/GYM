@@ -1,11 +1,11 @@
 {% load static %}
-
 {% load custom_tags %}
 <!DOCTYPE HTML>
 <html>
 
 <head>
 	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title> Physio Slim Gym </title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" 
@@ -91,9 +91,9 @@
 								<li class="has-dropdown">
 									<a href="#">Branches</a>
 									<ul class="dropdown">
-										<li><a href="{% url 'branch' 1 %}">Fayoum 1</a></li>
-										<li><a href="{% url 'branch' 2 %}">Fayoum 2 </a></li>
-										<li><a href="{% url 'branch' 3 %}">Bani suif</a></li>
+										{% for branch in branches %}
+										<li><a href="{% url 'branch' branch.id %}">{{branch.name}}</a></li>
+										{% endfor %}
 									</ul>
 								</li>
 
@@ -119,19 +119,20 @@
 										</ul>
 									</li>
 									{% if not request.user.is_superuser %}
-										{% block bell %}
-										{% include 'physio-slim/show_notifications.html' %}
-										{% endblock %}
-									{% endif	 %}
-								{% endif %}
-							</ul>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</nav>
-		<!-- End Navigation -->
+									{% block bell %}
+									{% include 'physio-slim/bell.html' %}
+									{% endblock %}
+									{% endif %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </nav>
+    <!-- End Navigation -->
+	
 
 		{% block body %}
 		{% endblock %}
@@ -228,27 +229,27 @@
 		</div>
 
 
-		<!-- End Footer -->
-		<!-- jQuery -->
-		<script src="{% static 'js/jquery.min.js' %}"></script>
-		<!-- jQuery Easing -->
-		<script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
-		<!-- Bootstrap -->
-		<script src="{% static 'js/bootstrap.min.js' %}"></script>
-		<!-- Waypoints -->
-		<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-		<!-- Stellar Parallax -->
-		<script src="{% static 'js/jquery.stellar.min.js' %}"></script>
-		<!-- Carousel -->
-		<script src="{% static 'js/owl.carousel.min.js' %}"></script>
-		<!-- countTo -->
-		<script src="{% static 'js/jquery.countTo.js' %}"></script>
-		<!-- Magnific Popup -->
-		<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
-		<script src="{% static 'js/magnific-popup-options.js' %}"></script>
-		<script src="{% static 'js/main.js' %}"></script>
-
-	</div>
+	
+    <!-- End Footer -->
+    <!-- jQuery -->
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<!-- jQuery Easing -->
+	<script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+	<!-- Bootstrap -->
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<!-- Waypoints -->
+	<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+	<!-- Stellar Parallax -->
+	<script src="{% static 'js/jquery.stellar.min.js' %}"></script>
+	<!-- Carousel -->
+	<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+	<!-- countTo -->
+	<script src="{% static 'js/jquery.countTo.js' %}"></script>
+	<!-- Magnific Popup -->
+	<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+	<script src="{% static 'js/magnific-popup-options.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+    </div>
 </body>
 
 </html>
