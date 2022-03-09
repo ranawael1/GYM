@@ -1,5 +1,6 @@
 from email.policy import default
 import imp
+from time import time
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.forms import CharField
@@ -164,6 +165,7 @@ class Class(models.Model):
         return self.Class
     
     
+
 
 
 class Clinic(models.Model):

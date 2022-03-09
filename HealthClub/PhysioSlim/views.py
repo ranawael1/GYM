@@ -197,7 +197,6 @@ def branch(request, br_id):
                'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events}
     return render(request, 'physio-slim/branch.html', context)
 
-#######Branch Pages#######
 #Classes Branch page
 def classes(request, br_id):
     branches = Branch.objects.all()
@@ -212,6 +211,13 @@ def classes(request, br_id):
         context = {'classes': classes, 'branch': branch,
                 'branches': branches }
     return render(request, 'physio-slim/classes.html', context)
+
+def class_scheduale(request,cl_id ):
+    branches = Branch.objects.all()
+    classes = Class.objects.get(id=cl_id)
+    context= {'branches':branches , 'classes':classes }
+    return render(request, 'physio-slim/schedule.html',context )
+
 
 # to show the Event Detailes
 def event_details(request ,br_id ):
