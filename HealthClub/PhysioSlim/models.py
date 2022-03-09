@@ -185,8 +185,10 @@ class Clinic(models.Model):
 class ClassSubscribers(models.Model):
     subscriber = models.ForeignKey(User, on_delete=models.CASCADE)
     favclass = models.ForeignKey(Class, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.subscriber
+    # def __str__(self):
+    #     return self.subscriber
+    # def __str__(self):
+    #     return self.favclass
 
 
 class Gallery(models.Model):
