@@ -255,11 +255,21 @@ def subscribeToClass(request, class_id):
     #     'physio.slim2@gmail.com',
     #     [f'{email}'],
     #     fail_silently=False,)
-
-
     return redirect('classes', branch)
 
+#display favorite classes
+@login_required(login_url='login')
+def favoriteClasses(request):
+    all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
+    #getting the classes the user subscribed to
+    favorite_classes = ClassSubscribers.objects.filter(subscriber_id=request.user.id).values_list('favclass_id', flat=True)
+    #turning it into a list
+    fav_classes=list(favorite_classes)
+    #getting the info of the favorite classes from the Class Model
+    classes = Class.objects.filter(id__in = fav_classes)
+    context={'classes':classes, 'all_subscribers':all_subscribers}
 
+    return render(request, 'physio-slim/favorites.html', context)
 
 
 # Unsubscribe from a class
@@ -281,7 +291,6 @@ def unSubscribeFromClass(request, class_id):
     context = {'classes': classs, 'branch': branch, 'branches': branches}
 
     # send email to the management to confirm the unsubscription
-    
     # send_mail(
     #     'User unsubscribed!',
     #     f'The user: {request.user} \n unsubscribed from: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',

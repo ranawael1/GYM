@@ -31,6 +31,7 @@ urlpatterns = [
     #Class Subscrib
     path('subscribe-to-class/<class_id>', views.subscribeToClass, name='subscribe-to-class'),
     path('unsubscribe-from-class/<class_id>', views.unSubscribeFromClass, name='unsubscribe-from-class'),
+    path('favorite-classes/', views.favoriteClasses, name='favorite-classes'),
     #notification
     # path('showNotifications/', views.showNotifications, name='showNotifications'),
     path('EventNotifications/<notification_id>/<event_id>', views.EventNotifications, name='EventNotifications'),
