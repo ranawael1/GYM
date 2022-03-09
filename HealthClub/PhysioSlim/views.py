@@ -78,17 +78,14 @@ def verify_code(request):
             code = form.cleaned_data.get('code')
             phone = user.phone
             try:
-                print('check verify', phone)
                 x = verify.check(phone, code)
-                # if x is not False:
-                user.is_verified = True
-                print('2')
-                user.save()
-                print('3')
-                return redirect('home')
-
-                # else:
-                #     return render(request, 'physio-slim/verify.html', context)
+                if x is not False:
+                    user.is_verified = True
+                    user.save()
+                    return redirect('home')
+                else:
+                    context={ 'error': 'Wrong code'}
+                    return render(request, 'physio-slim/verify.html', context)
             except:
                 return render(request, 'physio-slim/verify.html', context)
         context = {'form': form}

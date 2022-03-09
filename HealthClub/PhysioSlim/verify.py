@@ -22,11 +22,14 @@ def check(phone, code):
     return result.status == 'approved'
 def cancellation(phone):
     try:
-        result = verify.verification_checks.create(to=str(phone), code=str('000000'))    
-        result.status = "canceled"
+        print(phone)
+        result = verify.verification_checks.create(to=str(phone), code=str('000000')) 
+        if result:
+            result.status = "completed"
         send(phone)
-    except:
-        pass
+    except TwilioRestException:
+        send(phone)
+
 # def check(phone, code):
 #     try:
 #         print(phone, code)

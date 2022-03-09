@@ -41,16 +41,19 @@ label {
     padding-bottom:9px;
 }
 
-p input, select{
+p input,p select{
  	width:100%;
     padding:8px 5px;
-    background:linear-gradient(#1f2124, #27292c);
+    background:linear-gradient(#1f2124, #27292c) !important;
     border:1px solid #222;
-    box-shadow:
-        0 1px 0 rgba(255,255,255,0.1);
     border-radius:0.3em;
     margin-bottom:20px;
 }
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  }
 
 label[for=remember]{
  	color:white;
@@ -82,10 +85,8 @@ input[type=checkbox] {
 
 
 p input:hover,
-p select:hover,
-p label:hover ~ input,
-p label:hover ~ select {
- 	background:#27292c;
+p label:hover ~ input
+{ 	background:#27292c !important;
 }
 
 /* .submit {
@@ -113,11 +114,11 @@ input[type="file"] {
 .submit{
 
   float: right;
-  background:#fde403;
+  background:#fde403 !important;
 
 }
 .submit:hover {
  box-shadow:
    inset 0 1px 0 rgba(255,255,255,0.3),
-   inset 0 -10px 10px rgba(255,255,255,0.1);
+   inset 0 -10px 10px rgba(255,255,255,0.1) !important;
 }

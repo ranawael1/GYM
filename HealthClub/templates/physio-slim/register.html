@@ -9,8 +9,8 @@
 {% block body %}
 
 <div class="row">
-    <div class="col-8 d-flex justify-content-center align-items-center">
-        <div class="col-6">
+    <div class="col-7 d-flex justify-content-center align-items-center">
+        <div class="col-8">
             <form method="POST" action=""> {% csrf_token %}
                 <h1>REGISTER</h1>
                 <div class="inset " id="first">
@@ -95,7 +95,9 @@
                     <button type="submit" id="back" class="btn next text-light" onclick="changeForm()" style="display: none;"><i
                             class="fa-solid fa-chevron-left"></i> Back</button>
 
-                    <input class=" btn submit " id='submit' style='display: none' type="submit" value="Signup">
+                            <p class="p-container">
+                                <input class="submit" id="submit" type="submit" value="Signup" style="display: none;">
+                            </p>                
                 </div>
             </form>
 
@@ -103,7 +105,7 @@
 
     </div>
 
-    <div class="col-4">
+    <div class="col-5">
         <img src="{% static 'images/login.jpg' %}" style="width: 100%; float: right;">
     </div>
 </div>
