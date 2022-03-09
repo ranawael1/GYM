@@ -1,8 +1,4 @@
 from . import verify
-import email
-import imp
-
-from multiprocessing import context
 from importlib.resources import contents
 from django.shortcuts import redirect, render
 from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer, ClassSubscribers, Notifications,Gallery
@@ -39,8 +35,9 @@ def register(request):
     form = CreateUserForm()
     if request.method == 'POST':
         form = CreateUserForm(request.POST, request.FILES)
+        print(form, 'check')
         if form.is_valid():
-            user = form.save(commit=False)
+            user = form.save(commit=False)   
             phone = form.cleaned_data.get('phone')
             try:
                 verify.send(phone)
@@ -58,6 +55,11 @@ def register(request):
                 context = {'form': form}
                 return render(request, 'physio-slim/register.html', context)
             return redirect('verify-code')
+        else:
+            print(form.errors)
+            errors = form.errors
+            context = {'form': form, 'messages': errors}
+            return render(request, 'physio-slim/register.html', context)
     context = {'form': form}
     return render(request, 'physio-slim/register.html', context)
 
@@ -72,17 +74,14 @@ def verify_code(request):
             code = form.cleaned_data.get('code')
             phone = user.phone
             try:
-                print('check verify', phone)
                 x = verify.check(phone, code)
-                # if x is not False:
-                user.is_verified = True
-                print('2')
-                user.save()
-                print('3')
-                return redirect('home')
-
-                # else:
-                #     return render(request, 'physio-slim/verify.html', context)
+                if x is not False:
+                    user.is_verified = True
+                    user.save()
+                    return redirect('home')
+                else:
+                    context={ 'error': 'Wrong code'}
+                    return render(request, 'physio-slim/verify.html', context)
             except:
                 return render(request, 'physio-slim/verify.html', context)
         context = {'form': form}
