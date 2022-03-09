@@ -59,12 +59,6 @@
 <!-- show trainers -->
 	<div id="fh5co-trainer">
 		<div class="container">
-			<div class="row animate-box">
-				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
-					<h2>Fitness Expert</h2>
-					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
-				</div>
-			</div>
 			<div class="row">
                 {% for trainer in trainers %}
                     <div class="col-md-4 col-sm-4 animate-box">
@@ -97,7 +91,6 @@
 			<div class="row animate-box">
 				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
 					<h2>Pricing Plan</h2>
-					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
 				</div>
 			</div>
 			<div class="row">
@@ -181,6 +174,7 @@
 				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box">
 					<h2>Gym gallery</h2>
 					<p>Physio Slim is known as a is professional fitness home. We are here to provide effective and best solutions for all aged people and with high quality and performance equipment and classes.</p>
+					<p><a href="{% url 'gallery' %}" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
 				</div>
 			</div>
 		</div>
@@ -189,7 +183,7 @@
 				<div class="col-md-12">
 					<ul id="fh5co-portfolio-list">
 					{% for image in gallery %}
-						<li class="one-third animate-box" data-animate-effect="fadeIn" style="background-image: url({{MEDIA_URL}}/{{image.img}});">
+						<li class="one-third animate-box" data-animate-effect="fadeIn" style="background-image: url({{MEDIA_URL}}/{{image.img}});" >
 							<a href="{% url 'gallery' %}">
 								<div class="case-studies-summary">
 									<span>{{image.description}}</span>

@@ -145,7 +145,7 @@ def logoutUser(request):
 
 # Home
 def home(request):
-    gallery = Gallery.objects.all()
+    gallery = Gallery.objects.all()[0:4]
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
         context = {'gallery' : gallery , 'notifications' : notifications }
