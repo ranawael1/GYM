@@ -1,5 +1,6 @@
 from email.policy import default
 import imp
+from time import time
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.forms import CharField
@@ -66,6 +67,16 @@ class Offer(models.Model):
     discount = models.IntegerField()
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to='offer/', null=True, blank=True )
+    
+    def save(self,*args,**kwargs):
+        users = User.objects.all()
+        created = not self.id 
+        super().save(*args,**kwargs)
+        if created :
+            notification = Notifications.objects.create(notification_type=4,Offer=self)
+            notification.to_user.set(users)
+            notification.save()
+
 
     def __str__(self):
         return self.name
@@ -86,8 +97,16 @@ class PersonalTrainer(models.Model):
     years_of_experience = models.IntegerField()
     position = models.CharField(choices=POSITION, max_length=20)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
-    photo = models.ImageField(
-        upload_to='PersonalTrainer/', null=True, blank=True)
+    photo = models.ImageField(upload_to='PersonalTrainer/', null=True, blank=True)
+
+    def save(self,*args,**kwargs):
+        users = User.objects.all()
+        created = not self.id 
+        super().save(*args,**kwargs)
+        if created :
+            notification = Notifications.objects.create(notification_type=3,PersonalTrainer=self)
+            notification.to_user.set(users)
+            notification.save()
 
     def __str__(self):
         return self.name
@@ -99,9 +118,29 @@ class Event(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to='events/', null=True, blank=True)
 
+    def save(self,*args,**kwargs):
+        users = User.objects.all()
+        created = not self.id 
+        super().save(*args,**kwargs)
+        if created :
+            notification = Notifications.objects.create(notification_type=2,Event=self)
+            notification.to_user.set(users)
+            notification.save()
+
     def __str__(self):
         return self.event
 
+
+class Notifications(models.Model):
+    #1=class, 2=event, 3 =trainer , 4=offer
+    notification_type = models.IntegerField()
+    to_user = models.ManyToManyField(User,related_name='to_user',blank=True)
+    trainer = models.ForeignKey(PersonalTrainer,related_name='PersonalTrainer', on_delete=models.CASCADE, null=True)
+    Class = models.ForeignKey('Class',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
+    Event = models.ForeignKey('Event',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
+    Offer = models.ForeignKey('Offer',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
+    created_on = models.DateTimeField(default=timezone.now)
+    user_seen = models.BooleanField(default=False)
 
 class Class(models.Model):
     Class = models.CharField(max_length=50, null=False)
@@ -109,9 +148,24 @@ class Class(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo=models.ImageField(upload_to='Classes/', null=True, blank=True )
     icon = models.FileField(upload_to='Classes/', null=True, blank=True , validators=[FileExtensionValidator(['jpg', 'svg'])])
+    
+    def save(self,*args,**kwargs):
+        users = User.objects.all()
+        created = not self.id 
+        super().save(*args,**kwargs)
+        if created :
+            notification = Notifications.objects.create(notification_type=1,Class=self)
+            notification.to_user.set(users)
+            notification.save()
+         
+
+        
 
     def __str__(self):
         return self.Class
+    
+    
+
 
 
 class Clinic(models.Model):
@@ -124,16 +178,6 @@ class Clinic(models.Model):
         return self.clinic 
 
 
-class Notifications(models.Model):
-    #1=subscribe, 2=GoingTo, 3 =Follow
-    notification_type = models.IntegerField()
-    to_user = models.ForeignKey(User,related_name='toUser', on_delete=models.CASCADE, null=True)
-    from_user = models.ForeignKey(User, related_name='fromUser', on_delete=models.CASCADE,  null=True) 
-    trainer = models.ForeignKey(PersonalTrainer,related_name='PersonalTrainer', on_delete=models.CASCADE, null=True)
-    Class = models.ForeignKey('Class',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
-    Event = models.ForeignKey('Event',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
-    created_on = models.DateTimeField(default=timezone.now)
-    user_seen = models.BooleanField(default=False)
   
 
 #testing favorites
@@ -141,8 +185,10 @@ class Notifications(models.Model):
 class ClassSubscribers(models.Model):
     subscriber = models.ForeignKey(User, on_delete=models.CASCADE)
     favclass = models.ForeignKey(Class, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.subscriber
+    # def __str__(self):
+    #     return self.subscriber
+    # def __str__(self):
+    #     return self.favclass
 
 
 class Gallery(models.Model):

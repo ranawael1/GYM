@@ -31,11 +31,15 @@ urlpatterns = [
     #Class Subscrib
     path('subscribe-to-class/<class_id>', views.subscribeToClass, name='subscribe-to-class'),
     path('unsubscribe-from-class/<class_id>', views.unSubscribeFromClass, name='unsubscribe-from-class'),
+    path('favorite-classes/', views.favoriteClasses, name='favorite-classes'),
     #notification
-    path('ClassNotifications/<notification_id>/<Class_id>', views.ClassNotifications, name='ClassNotifications'),
-    path('EventNotifications/<notification_id>/<Event_id>', views.EventNotifications, name='EventNotifications'),
+    # path('showNotifications/', views.showNotifications, name='showNotifications'),
+    path('EventNotifications/<notification_id>/<event_id>', views.EventNotifications, name='EventNotifications'),
+    path('ClassNotifications/<notification_id>/<class_id>', views.ClassNotifications, name='ClassNotifications'),
+    path('TrainerNotifications/<notification_id>/<trainer_id>', views.TrainerNotifications, name='TrainerNotifications'),
+    path('OfferNotifications/<notification_id>/<offer_id>', views.OfferNotifications, name='OfferNotifications'),
     path('RemoveNotifications/<notification_id>', views.RemoveNotifications, name='RemoveNotifications'),
-    path('FollowNotifications/<notification_id>/<follow_id>', views.FollowNotifications, name='FollowNotifications'),
+   
    
     # #rest_framework
     # path('users/', views.users, name='users'),

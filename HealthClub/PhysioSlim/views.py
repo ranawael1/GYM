@@ -149,24 +149,39 @@ def logoutUser(request):
 # Home
 def home(request):
     gallery = Gallery.objects.all()
-    context = {'gallery' : gallery }
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'gallery' : gallery , 'notifications' : notifications }
+    else: 
+        context = {'gallery' : gallery }
     return render(request,'physio-slim/index.html', context)
-    
+   
 #Gallery
 def gallery(request):
     gallery = Gallery.objects.all()
-    context = {'gallery' : gallery }
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'gallery' : gallery , 'notifications' : notifications }
+    else: 
+        context = {'gallery' : gallery }
     return render(request,'physio-slim/gallery.html', context)
 
 # branch home page 
 #Contact Page
 def contact(request):
     branches = Branch.objects.all()
-    context = { 'branches' : branches }
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = { 'branches' : branches , 'notifications' : notifications }
+    else: 
+        context = { 'branches' : branches }
     return render(request,'physio-slim/contact.html', context)
 #About Page
 def about(request):
-    return render(request,'physio-slim/about.html')
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'notifications' : notifications }
+    return render(request,'physio-slim/about.html', context)
 # Branch Page
 def branch(request, br_id):
     branch = Branch.objects.get(id=br_id)
@@ -176,24 +191,36 @@ def branch(request, br_id):
     offers = Offer.objects.filter(branch=br_id)[0:3]
     events = Event.objects.filter(branch=br_id)[0:3]
     trainers = PersonalTrainer.objects.filter(branch=br_id)[0:3]
-    context = {'branch': branch, 'classes': classes,
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'branch': branch, 'classes': classes,
+               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events , 'notifications' : notifications}
+    else :
+        context = {'branch': branch, 'classes': classes,
                'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events}
     return render(request, 'physio-slim/branch.html', context)
 
-#######Branch Pages#######
 #Classes Branch page
 def classes(request, br_id):
     branches = Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
     classes = Class.objects.filter(branch=br_id)
+    notifications = UserNotifications(request)
     if not request.user.is_anonymous:
         all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
         context = {'classes': classes, 'branch': branch,
-                'branches': branches, 'all_subscribers':all_subscribers }
+                'branches': branches, 'all_subscribers':all_subscribers, 'notifications' : notifications  }
     else:
         context = {'classes': classes, 'branch': branch,
-                'branches': branches}
+                'branches': branches }
     return render(request, 'physio-slim/classes.html', context)
+
+def class_scheduale(request,cl_id ):
+    branches = Branch.objects.all()
+    classes = Class.objects.get(id=cl_id)
+    context= {'branches':branches , 'classes':classes }
+    return render(request, 'physio-slim/schedule.html',context )
+
 
 # to show the Event Detailes
 def event_details(request ,br_id ):
@@ -218,10 +245,11 @@ def subscribeToClass(request, class_id):
     if not request.user.is_subscribed:
         request.user.is_subscribed = True
         request.user.save()
+        #send notification of subscription
+        # notification = Notifications.objects.create(notification_type=1, from_user=request.user,to_user=classs.user, Class=classs)
+
 
     # send email to the management to contact the subscriber
-
-
     # send_mail(
     #     'New user subscribed!',
     #     f'The user: {request.user} \n has subscribed to: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
@@ -236,11 +264,21 @@ def subscribeToClass(request, class_id):
     #     'physio.slim2@gmail.com',
     #     [f'{email}'],
     #     fail_silently=False,)
-
-
     return redirect('classes', branch)
 
+#display favorite classes
+@login_required(login_url='login')
+def favoriteClasses(request):
+    all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
+    #getting the classes the user subscribed to
+    favorite_classes = ClassSubscribers.objects.filter(subscriber_id=request.user.id).values_list('favclass_id', flat=True)
+    #turning it into a list
+    fav_classes=list(favorite_classes)
+    #getting the info of the favorite classes from the Class Model
+    classes = Class.objects.filter(id__in = fav_classes)
+    context={'classes':classes, 'all_subscribers':all_subscribers}
 
+    return render(request, 'physio-slim/favorites.html', context)
 
 
 # Unsubscribe from a class
@@ -262,7 +300,6 @@ def unSubscribeFromClass(request, class_id):
     context = {'classes': classs, 'branch': branch, 'branches': branches}
 
     # send email to the management to confirm the unsubscription
-    
     # send_mail(
     #     'User unsubscribed!',
     #     f'The user: {request.user} \n unsubscribed from: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
@@ -277,6 +314,7 @@ def unSubscribeFromClass(request, class_id):
     #     'physio.slim2@gmail.com',
     #     [f'{email}'],
     #     fail_silently=False,)
+
     return redirect('classes', branch)
 
 
@@ -301,38 +339,65 @@ def offers(request, br_id):
 def trainers(request, br_id):
     branch = Branch.objects.get(id=br_id)
     trainers = PersonalTrainer.objects.filter(branch=br_id)
-    context = {'trainers': trainers, 'branch': branch}
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'trainers': trainers, 'branch': branch, 'notifications' : notifications }
+    else: 
+        context = {'trainers': trainers, 'branch': branch}
     return render(request, 'physio-slim/trainers.html', context)
 
 
-##notifications
-@login_required(login_url='login')
-def ClassNotifications(request,notification_id,Class_id):
+##Showing notifications
+
+def UserNotifications(request):
+    notification = Notifications.objects.filter(to_user = request.user)
+    notification.user_seen = True
+    return notification
+
+# def showNotifications(request):
+#     notification = Notifications.objects.filter(to_user = request.user)
+#     context = {'notifications': notifications}
+#     return render(request, 'physio-slim/index.html', context)
+    
+
+##Redirect to notifications
+
+def ClassNotifications(request,notification_id,class_id):
     notification = Notifications.objects.get(id = notification_id)
-    Class = Class.objects.get(id = Class_id)
+    classs = Class.objects.get(id=class_id)
+    branch = request.user.branch_id
+    print(branch)
     notification.user_seen = True
     notification.save()
-    return redirect('post', Class_id=Class_id)
+    return redirect('classes',branch)
 
-@login_required(login_url='login')
-def EventNotifications(request,notification_id,Event_id):
+def EventNotifications(request,notification_id,event_id):
     notification = Notifications.objects.get(id = notification_id)
-    Event = Event.objects.get(id = Event_id)
+    event = Event.objects.get(id = event_id)
     notification.user_seen = True
     notification.save()
     return redirect('home')
 
-@login_required(login_url='login')
-def FollowNotifications(request,notification_id,follow_id):
+def TrainerNotifications(request,notification_id,trainer_id):
     notification = Notifications.objects.get(id = notification_id)
-    personalTrainer = PersonalTrainer.objects.get(id = follow_id)
+    trainer = PersonalTrainer.objects.get(id = trainer_id)
+    notification.user_seen = True
+    notification.save()
+    return render(request, 'physio-slim/trainers.html')
+
+def OfferNotifications(request,notification_id,offer_id):
+    notification = Notifications.objects.get(id = notification_id)
+    offer = Offer.objects.get(id = offer_id)
     notification.user_seen = True
     notification.save()
     return redirect('home')
 
+#Removing Notification
 def RemoveNotifications(request, notification_id):
     notification = Notifications.objects.get(id = notification_id)  
     notification.user_seen = True
+    # notification.remove()
+    # notification.delete()
     notification.save()
     HttpResponse('success', content_type='text/plain')
   

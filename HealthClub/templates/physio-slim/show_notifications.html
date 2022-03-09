@@ -1,0 +1,20 @@
+{% load static %}
+{% block bell %}
+<li class="has-dropdown">
+    <a href="#"> <i class="fas fa-bell">{{notifications.count}}</i></a>
+    <ul class="dropdown">
+    {% for notification in notifications %}
+        {% if notification.notification_type == 1 %}
+            <li> <a href="{% url 'ClassNotifications' notification.id notification.Class.id %}">New {{notification.Class}} Class ! </a></li>
+        {% elif notification.notification_type == 2 %}
+            <li><a href="{% url 'EventNotifications' notification.id notification.Event.id %}">New {{notification.Event}} Event ! </a></li>
+        {% elif notification.notification_type == 3 %}
+            <li><a href="{% url 'TrainerNotifications' notification.id notification.trainer.id %}">New {{notification.trainer}} Personal Trainer ! </a></li>   
+        {% elif notification.notification_type == 4 %}
+            <li>  <a href="{% url 'OfferNotifications' notification.id notification.Offer.id %}">New {{notification.Offer}} Offer ! </a></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+</li>
+{% endblock %}
+
