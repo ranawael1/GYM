@@ -269,10 +269,7 @@ def unSubscribeFromClass(request, class_id):
         if request.user.is_subscribed:
             request.user.is_subscribed = False
             request.user.save()
-
-
     context = {'classes': classs, 'branch': branch, 'branches': branches}
-
     # send email to the management to confirm the unsubscription
     # send_mail(
     #     'User unsubscribed!',

@@ -1,7 +1,6 @@
 
 {% load static %}
 
-<!--  -->
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -101,6 +100,11 @@
                                 {% else %}
 								<li class="has-dropdown">
 									<a href="#">{{request.user}}</a>
+									<a href="">
+										{% block bell %}
+										{% include 'physio-slim/bell.html' %}
+										{% endblock %}
+									</a>
 									<ul class="dropdown">
 										{% if request.user.is_superuser %}
 										<li><a href="/admin/" target="_blank">Manage site </a></li>
@@ -116,9 +120,7 @@
 										
 									</ul>
 								</li>
-								{% block bell %}
-								{% include 'physio-slim/bell.html' %}
-								{% endblock %}
+
 								
                                 {% endif %}
                             </ul>
