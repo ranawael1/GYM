@@ -1,211 +1,161 @@
 {% extends 'physio-slim/main.html' %}
 {% load static %}
-<!-- Ranaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <title>Register</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
-        integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
-
-</head>
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<link href="assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
+<script src="assets/js/scripts.bundle.js"></script>
+{% endblock %}
 
 {% block body %}
 
-<body>
+<div class="row">
+    <div class="col-7 d-flex justify-content-center align-items-center">
+        <div class="col-8">
+            <form method="POST" action=""> {% csrf_token %}
+                <h1>REGISTER</h1>
+                <div class="inset " id="first">
+                    <p>
+                        <input type="text" name="username" placeholder="Enter username..." required>
+                    </p>
+                    <p>
+                        <input type="email" name="email" placeholder="Enter email..." required>
+                    </p>
+                    <p>
+                        <input type="password" name="password1" placeholder="password..." required>
+                    </p>
+                    <p>
+                        <input type="password" name="password2" placeholder="confirm password..." required>
+                    </p>
+                    <p>
+                        <input type="tel" name="phone" placeholder="Enter phone..." required>
+                    </p>
+                    <p>
+                        <select name="branch" class="form-control" required="" id="id_branch">
+                            <option value="" selected="">Choose your branch</option>
 
-    <div class="container h-100">
-        <div class="d-flex justify-content-center h-100">
-            <div class="user_card">
-                <div class="d-flex justify-content-center">
-                    <h3 id="form-title">REGISTER ACCOUNT</h3>
+                            <option value="1">a</option>
+
+                        </select>
+                    </p>
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="text-danger">
+                                <p>{{ error|escape }}</p>
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                <div class="d-flex justify-content-center form_container">
+                <div class="inset " id="second" style="display: none;">
+                    <p>
 
-                    <form method="POST" enctype="multipart/form-data"> {% csrf_token %}
-                        {{form.as_p}}
-                        <div class="d-flex justify-content-center mt-3 login_container">
-                            <input class="btn login_btn" type="submit" value="Register Account">
+                    <div class="file-field">
+                        <div class="mb-4 d-flex flex-column  align-items-center">
+                            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"
+                                class="rounded-circle avatar-pic" id='avatar' style=" object-fit: cover;
+                                width:150px;
+                                height:150px;" alt="avatar">
+                            <label for="file-upload" class="custom-file-upload mt-3">
+                                <i class="fa fa-cloud-upload"></i> Add Photo
+                            </label>
+                            <input id="file-upload" type="file" name="avatar" onchange="changeAvatar()"
+                                accept="image/*" />
                         </div>
-                    </form>
-                    <!-- <form method="POST" enctype="multipart/form-data"> <input type="hidden"
-                            class=" form-control">
-                            {% csrf_token %}
-                        <p>
-                            <label for="id_username">Username:</label>
-                            <input type="text" name="username" class="form-control form-control" maxlength="150"
-                                autofocus="" required="" id="id_username" placeholder="Username..">
-                        </p>
+                    </div>
 
+                    </p>
+                    <p>
+                        <input type="number" name="age" placeholder="Enter age..." required min="1">
+                    </p>
+                    <p>
+                        <select name="gender" class="form-control" required="" id="id_gender">
+                            <option value="" selected="">Choose your gender</option>
 
-                        <p>
-                            <label for="id_email">Email address:</label>
-                            <input type="text" name="email" class="form-control form-control" maxlength="254"
-                                id="id_email" placeholder="Email..">
-                        </p>
-                        <p>
-                            <label for="id_password1">Password:</label>
-                            <input type="password" name="password1" autocomplete="new-password" required=""
-                                id="id_password1" placeholder="Enter password..." class=" form-control">
+                            <option value="male">male</option>
 
-                            <span class="helptext"></span>
-                            <span> password must contain at least 8 characters.</span>
+                            <option value="female">female</option>
 
-                        </p>
-                        
-                        
-                        <p>
-                            <label for="id_password2">Password confirmation:</label>
-                            <input type="password" name="password2" autocomplete="new-password" required=""
-                                id="id_password2" placeholder="Re-enter Password..." class=" form-control">
+                        </select>
+                    </p>
 
-                        </p>
+                    <p>
+                        <label for="id_membership_num">If you have(optional):</label>
+                        <input type="text" name="membership_num" placeholder="Enter membership number">
+                    </p>
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="text-danger">
+                                <p>{{ error|escape }}</p>
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
 
-
-                        <p>
-                            <label for="id_phone">Phone:</label>
-                            <input type="tel" name="phone" class="form-control form-control" maxlength="128" required=""
-                                id="id_phone">
-
-
-                        </p>
-
-
-                        <p>
-                            <label for="id_avatar">Avatar:</label>
-                            <input type="file" name="avatar" class="form-control form-control" accept="image/*"
-                                required="" id="id_avatar">
-
-                        </p>
-
-
-                        <p>
-                            <label for="id_age">Age:</label>
-                            <input type="number" name="age" class="form-control form-control" required="" id="id_age">
-
-
-                        </p>
-
-
-                        <p>
-                            <label for="id_gender">Gender:</label>
-                            <select name="gender" class="form-control" required="" id="id_gender">
-                                <option value="" selected="">Choose your gender</option>
-
-                                <option value="male">male</option>
-
-                                <option value="female">female</option>
-
-                            </select>
-
-
-                        </p>
-
-
-                        <p>
-                            <label for="id_branch">Branch:</label>
-                            <select name="branch" class="form-control" required="" id="id_branch">
-                                <option value="" selected="">---------</option>
-
-                                <option value="1">branch 1</option>
-
-                                <option value="2">branch 2</option>
-
-                                <option value="3">branch 3</option>
-
-                            </select>
-
-
-                        </p>
-
-
-                        <p>
-                            <label for="id_membership_num">Membership num:</label>
-                            <input type="text" name="membership_num" maxlength="50" id="id_membership_num"
-                                class=" form-control">
-
-
-
-
-                        </p>
-                        <div class="d-flex justify-content-center mt-3 login_container">
-                            <input class="btn login_btn form-control" type="submit" value="Register Account">
-                        </div>
-                    </form> -->
                 </div>
 
+                <div class="p-container">
+                    <button type="submit" id="next" class="btn next text-light" style="float: right;" onclick="changeForm()">Next <i
+                            class="fa-solid fa-chevron-right"></i></button>
+                    <button type="submit" id="back" class="btn next text-light" onclick="changeForm()" style="display: none;"><i
+                            class="fa-solid fa-chevron-left"></i> Back</button>
 
-            </div>
+                            <p class="p-container">
+                                <input class="submit" id="submit" type="submit" value="Signup" style="display: none;">
+                            </p>                
+                </div>
+            </form>
+
         </div>
+
     </div>
 
-
-    <script>
-        /* Because i didnt set placeholder values in forms.py they will be set here using vanilla Javascript
-        //We start indexing at one because CSRF_token is considered and input field 
-         */
-
-        //Query All input fields
-        var form_fields = document.getElementsByTagName('input')
-        form_fields[1].placeholder = 'Username..';
-        form_fields[2].placeholder = 'Email..';
-        form_fields[3].placeholder = 'Enter password...';
-        form_fields[4].placeholder = 'Re-enter Password...';
+    <div class="col-5">
+        <img src="{% static 'images/login.jpg' %}" style="width: 100%; float: right;">
+    </div>
+</div>
 
 
-        for (var field in form_fields) {
-            form_fields[field].className += ' form-control'
+
+
+
+<script>
+    function changeAvatar() {
+        var img = document.getElementById("avatar")
+        var avatar = document.getElementById("file-upload")
+        img.src = URL.createObjectURL(avatar.files[0])
+
+    }
+    function changeForm() {
+        var first = document.getElementById("first")
+        var second = document.getElementById("second")
+        var next = document.getElementById("next")
+        var back = document.getElementById("back")
+        var submit = document.getElementById("submit")
+
+        if (next.style.display == "none") {
+            first.style.display = 'block'
+            next.style.display = 'inline-block'
+            second.style.display = 'none'
+            back.style.display = 'none'
+            submit.style.display = 'none'
+
+
+
         }
-    </script>
+        else {
+            first.style.display = 'none'
+            next.style.display = 'none'
+            second.style.display = 'block'
+            back.style.display = 'inline-block'
+            submit.style.display = 'inline-block'
+
+        }
+    }
+</script>
 
 
 </body>
 
 {% endblock %}
-
-</html>
-
-<div class="col-md-6 animate-box">
-    <h3>Get In Touch</h3>
-    <form action="#">
-        <div class="row form-group">
-            <div class="col-md-6">
-                <!-- <label for="fname">First Name</label> -->
-                <input type="text" id="fname" class="form-control" placeholder="Your firstname">
-            </div>
-            <div class="col-md-6">
-                <!-- <label for="lname">Last Name</label> -->
-                <input type="text" id="lname" class="form-control" placeholder="Your lastname">
-            </div>
-        </div>
-
-        <div class="row form-group">
-            <div class="col-md-12">
-                <!-- <label for="email">Email</label> -->
-                <input type="text" id="email" class="form-control" placeholder="Your email address">
-            </div>
-        </div>
-
-        <div class="row form-group">
-            <div class="col-md-12">
-                <!-- <label for="subject">Subject</label> -->
-                <input type="text" id="subject" class="form-control" placeholder="Your subject of this message">
-            </div>
-        </div>
-
-        <div class="row form-group">
-            <div class="col-md-12">
-                <!-- <label for="message">Message</label> -->
-                <textarea name="message" id="message" cols="30" rows="10" class="form-control" placeholder="Say something about us"></textarea>
-            </div>
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Send Message" class="btn btn-primary">
-        </div>
-
-    </form>		
-</div>
