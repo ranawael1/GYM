@@ -1,0 +1,50 @@
+{% extends 'physio-slim/main.html' %}
+{% load static %}
+
+{% block head %}
+{% endblock %}  
+
+
+
+{% block body %} 
+<div class="container" style="margin: 5%;">
+  <div class="row">
+    <h3 class="tex-danger">Favorite classes</h3>
+
+
+    <div id="fh5co-services" class="fh5co-bg-section">
+	<div class="container">
+
+		<div class="row">
+			{% for class in classes %}
+
+			<div class="col-md-4 text-center animate-box">
+
+				<div class="services">
+					<span><img class="img-responsive image" src="{{MEDIA_URL}}/{{class.photo}} " alt="hello"></span>
+
+					<h3> {{class.Class}}</h3>
+
+					<p>{{class.description}}</p>
+					
+							{% if class.id in all_subscribers %}
+							<a href="{% url 'unsubscribe-from-class' class.id %}">
+								<button class="btn btn-danger">Remove from favorites <i class="fa-regular fa-face-frown"></i></button>
+							</a>
+							{% else %}
+							<a href="{% url 'subscribe-to-class' class.id %}">
+								<button class="btn btn-primary btn-outline btn-sm">Add to favorites <i class="fa-regular fa-face-smile-beam"></i></button>
+							</a>
+							{% endif %}
+				</div>
+
+			</div>
+			{% endfor %}
+		</div>
+
+	</div>
+</div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 
 {% load static %}
 
-{% load custom_tags %}
+<!--  -->
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -107,7 +107,7 @@
 										<li><a href="{% url 'logout' %}">Logout</a></li>
 										{% else %}
 											{% if request.user.is_subscribed %}
-												<li><a href="#">Favorites</a></li>
+												<li><a href="{% url 'favorite-classes'%}">Favorites</a></li>
 												<li><a href="{% url 'logout' %}">Logout</a></li>
 											{% else %}
 												<li><a href="{% url 'logout' %}">Logout</a></li>
