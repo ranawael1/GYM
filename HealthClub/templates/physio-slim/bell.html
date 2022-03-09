@@ -1,5 +1,6 @@
 {% load static %}
 {% block bell %}
+<<<<<<< HEAD
 <div class="notification">
   <a href="#">
     <div class="notBtn" href="#">
@@ -22,6 +23,31 @@
                 <div class="txt sub">{{notification.created_on}}</div>
               </a>
             </div>
+=======
+
+    <div class = "notification">
+      <a href = "#">
+      <div class = "notBtn" href = "#">
+        <!--Number supports double digets and automaticly hides itself when there is nothing between divs -->
+        <div class = "number">{{ notifications.count }}</div>
+        <i class="fas fa-bell"></i>
+          <div class = "box">
+            <div class = "display">
+              <div class = "nothing"> 
+                <i class="fas fa-child stick"></i> 
+                <div class = "cent">Looks Like your all caught up!</div>
+              </div>
+              <!-- content -->
+              <div class = "cont">
+                {% for notification in notifications %}
+                  {% if notification.notification_type == 1 %}
+                    <div class = "sec new">
+                      <a href = "{% url 'ClassNotifications' notification.id notification.Class.id %}">
+                      <div class = "txt">New {{notification.Class}} Class ! </div>
+                      <div class = "txt sub">{{notification.created_on}}</div>
+                      </a>
+                    </div>
+>>>>>>> ad76a959769e9987d32d88b8ff42d93dbe81c71e
 
             {% elif notification.notification_type == 2 %}
             <div class="sec">
