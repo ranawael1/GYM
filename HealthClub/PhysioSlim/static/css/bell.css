@@ -9,7 +9,7 @@
   {
       width: 10px;
       background-color: #F5F5F5;
-    border-radius: 5px
+      border-radius: 5px
   }
   
   .box::-webkit-scrollbar-thumb
