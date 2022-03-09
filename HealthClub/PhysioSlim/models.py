@@ -19,6 +19,7 @@ GENDER = (
 class Branch(models.Model):
     name = models.CharField(max_length=50, null=True)
     address = models.CharField(max_length=50, null=True)
+    description = models.CharField(max_length=150, null=True)
     phone = PhoneNumberField(unique=True, null=True, blank=True)
 
     def __str__(self):
