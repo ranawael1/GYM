@@ -1,0 +1,60 @@
+
+	
+	<div id="fh5co-testimonial" class="fh5co-bg-section">
+		<div class="container">
+			<div class="row animate-box">
+				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+					<h2>Happy Clients</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-10 col-md-offset-1">
+					<div class="row animate-box">
+						<div class="owl-carousel owl-carousel-fullwidth">
+							<div class="item">
+								<div class="testimony-slide active text-center">
+									<figure>
+										<img src="images/person3.jpg" alt="user">
+									</figure>
+									<span>Jean Doe, via <a href="#" class="twitter">Twitter</a></span>
+									<blockquote>
+										<p>&ldquo;Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.&rdquo;</p>
+									</blockquote>
+								</div>
+							</div>
+					
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+ <!-- start of events  -->
+ <div id="fh5co-gallery">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box">
+				<h2>Gym  Events </h2>
+			</div>
+		</div>
+	</div>
+	<div id="fh5co-services" class="fh5co-bg-section">
+		<div class="container">
+			<div class="row">
+				{% for event in events %}
+				<div class=" col-md-4 col-md-offset-1 text-center animate-box">
+					<div class="services">
+						<span><img class="img-responsive" src="{{MEDIA_URL}}/{{event.photo}}" alt="" style="width: 45%;"></span>
+						<h3>{{event.event}}</h3>
+						<p>{{event.description}}</p>
+						<h5>{{event.created_on}}</h5>
+                      	<h5>{{event.due|timeuntil}}</h5>
+						<p><a href="{% url 'event' event.id %}" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+ <!-- end of events  -->
