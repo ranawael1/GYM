@@ -1,0 +1,97 @@
+{% extends 'physio-slim/main.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<link href="assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
+<script src="assets/js/scripts.bundle.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="row d-flex justify-content-center align-items-center">
+    <div class="col-7 d-flex justify-content-center align-items-center">
+        <form method="POST" action=""> {% csrf_token %}
+        <div class="row px-2">
+            <h1 class="text-uppercase">Edit Profile</h1>
+            <p>
+                <div class="file-field">
+                    <div class=" d-flex flex-column  align-items-center">
+                        <img src="{{MEDIA_URL}}/{{request.user.avatar}}"
+                            class="rounded-circle avatar-pic" id='avatar' style=" object-fit: cover;
+                            width:150px;
+                            height:150px;" alt="avatar">
+                        <label for="file-upload" class="custom-file-upload mt-3">
+                            <i class="fa fa-cloud-upload"></i> Edit Photo
+                        </label>
+                        <input id="file-upload" type="file" name="avatar" onchange="changeAvatar()"
+                            accept="image/*" />
+                    </div>
+                </div>
+
+                </p>
+            <div class="inset col-6" id="first">
+                    <p>
+                        <label>Username</label>
+                        <input type="text" name="username" placeholder="Enter username..." required value="{{request.user.username}}">
+                    </p>
+                    <p>
+                        <label>Email</label>
+                        <input type="email" name="email" placeholder="Enter email..." required value="{{request.user.email}}">
+                    </p>
+                    <p>
+                        <label>Phone</label>
+                        <input type="tel" name="phone" placeholder="Enter phone..." required value="{{request.user.phone}}">
+                    </p>
+                </div>
+                <div class="inset col-6" id="second" >
+                    <p>
+                        <label>Age</label>
+                        <input type="number" name="age" placeholder="Enter age..." required min="1"value="{{request.user.age}}" >
+                    </p>
+                    <p>
+                        <label for="id_membership_num">membership No.(optional):</label>
+                        <input type="text" name="membership_num" placeholder="Enter membership number" {% if requset.user.membership_num %}value="{{request.user.membership_num}}"{% endif %}>
+                    </p>
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="text-danger">
+                                <p>{{ error|escape }}</p>
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
+                </div>
+
+              
+                    <p class="p-container">
+                        <input class="submit" id="submit" type="submit" value="Edit" >
+                    </p>                
+     
+
+        </div>
+       </form>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    function changeAvatar() {
+        var img = document.getElementById("avatar")
+        var avatar = document.getElementById("file-upload")
+        console.log(img.src)
+
+        img.src = URL.createObjectURL(avatar.files[0])
+        console.log(img.src)
+
+
+    }
+</script>
+
+
+</body>
+
+{% endblock %}

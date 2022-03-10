@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.shortcuts import redirect, render
 from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer
 # decorators and authentication
@@ -191,6 +192,20 @@ def about(request):
     else:
         context = { 'branches': branches }
     return render(request,'physio-slim/about.html', context)
+
+# User page
+def profile(request, user_id):
+    user = User.objects.get(id=user_id)
+    form = CreateUserForm(instance=user)
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST ,request.FILES ,instance = user)
+        if form.is_valid():
+            edit = form.save()
+            redirect("home")
+        print(form.errors)
+    context = {'form':form}
+    return render(request,'physio-slim/profile.html', context)
+
 
 # Branch Page
 def branch(request, br_id):

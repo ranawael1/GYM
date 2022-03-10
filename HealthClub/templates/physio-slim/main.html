@@ -74,12 +74,12 @@
 
 			<div class="top-menu">
 				<div class="container">
-					<div class="row">
+					<div class="row d-flex align-items-center">
 						<div class="col-xs-3">
 							<div id="fh5co-logo"><a href="{% url 'home' %}">Physio Slim</a></div>
 						</div>
 						<div class="col-xs-9 text-right menu-1">
-							<ul>
+							<ul class="d-flex align-items-center justify-content-end">
 								<!-- class="active" -->
 								<li><a href="{% url 'home' %}">Home</a></li>
 								{% if branch %}
@@ -103,25 +103,29 @@
 									<li><a href="{% url 'login' %}">Login</a></li>
 								{% else %}
 									<li class="has-dropdown">
-										<a href="#">{{request.user}}</a>
+										<a href="#"><img src="{{MEDIA_URL}}/{{request.user.avatar}}"
+											class="rounded-circle avatar-pic" id='avatar' style=" object-fit: cover;
+											width:40px;
+											height:40px;" alt="avatar"></a>
 										<ul class="dropdown">
 											{% if request.user.is_superuser %}
 												<li><a href="/admin/" target="_blank">Manage site </a></li>
+												<li><a href="{% url 'profile' request.user.id %}">Edit Profile</a></li>
 												<li><a href="{% url 'logout' %}">Logout</a></li>
 											{% else %}
 												{% if request.user.is_subscribed %}
 												<li><a href="{% url 'favorite-classes'%}">Favorites</a></li>
+												<li><a href="{% url 'profile' request.user.id %}">Edit Profile</a></li>
 												<li><a href="{% url 'logout' %}">Logout</a></li>
 												{% else %}
+												<li><a href="{% url 'profile' request.user.id %}">Edit Profile</a></li>
 												<li><a href="{% url 'logout' %}">Logout</a></li>
 												{% endif %}
 											{% endif %}
 										</ul>
 									</li>
 									{% if not request.user.is_superuser %}
-									{% block bell %}
-									{% include 'physio-slim/bell.html' %}
-									{% endblock %}
+									<li>{% include 'physio-slim/bell.html' %}</li>
 									{% endif %}
                                 {% endif %}
                             </ul>
