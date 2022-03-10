@@ -4,7 +4,7 @@ from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,C
 # decorators and authentication
 from .decorators import unauthenticated_user, unverified_user
 # forms
-from .forms import  CreateUserForm, VerifyForm
+from .forms import  CreateUserForm, EditUserForm, VerifyForm
 # authentication
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -198,17 +198,17 @@ def about(request):
 
 # User page
 @login_required(login_url='login')
-def profile(request, user_id):
+def profile(request):
     notifications = UserNotifications(request)
-    user = User.objects.get(id=user_id)
     branches = Branch.objects.all()
-    form = CreateUserForm(instance=user)
+    user = User.objects.get(id=request.user.id)
+    form = EditUserForm(instance=user)
     if request.method == 'POST':
-        form = CreateUserForm(request.POST ,request.FILES ,instance = user)
+        form = EditUserForm(request.POST ,request.FILES ,instance = user)
         if form.is_valid():
             edit = form.save()
-            redirect("home")
-        print(form.errors)
+            return redirect("home")
+        # print(form.errors)
     context = {'form':form,'branches':branches,'notifications':notifications}
     return render(request,'physio-slim/profile.html', context)
 
