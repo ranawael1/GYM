@@ -112,7 +112,7 @@ class MainOffer(models.Model):
         return self.name
 
     class Meta:
-    ordering = ('-created_on',)
+        ordering = ('-created_on',)
 
 
 class PersonalTrainer(models.Model):
