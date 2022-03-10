@@ -20,7 +20,7 @@ def check(phone, code):
         #result.status = "canceled"
         return False
     return result.status == 'approved'
-def cancellation(phone):
+def resend(phone):
     try:
         print(phone)
         result = verify.verification_checks.create(to=str(phone), code=str('000000')) 
