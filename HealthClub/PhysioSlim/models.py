@@ -70,6 +70,9 @@ class Offer(models.Model):
     number_of_months= models.IntegerField(null=True)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE )
     photo = models.ImageField(upload_to='offer/', null=True, blank=True )
+    created_on = models.DateTimeField(default=timezone.now)
+    due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
+
     
     def save(self,*args,**kwargs):
         users = User.objects.all()
@@ -82,9 +85,9 @@ class Offer(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     class Meta:
-        ordering = ('-id',)
+        ordering = ('-created_on',)
 
 class MainOffer(models.Model):
     name = models.CharField(max_length=50, null=True)
@@ -93,7 +96,9 @@ class MainOffer(models.Model):
     days_num = models.CharField(choices=DAYS, max_length=20, null=True)
     number_of_months= models.IntegerField(null=True)
     photo = models.ImageField(upload_to='offer/', null=True, blank=True )
-    
+    created_on = models.DateTimeField(default=timezone.now)
+    due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
+
     def save(self,*args,**kwargs):
         users = User.objects.all()
         created = not self.id 
@@ -105,6 +110,9 @@ class MainOffer(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+    ordering = ('-created_on',)
 
 
 class PersonalTrainer(models.Model):
@@ -133,6 +141,8 @@ class Event(models.Model):
     description = models.CharField(max_length=1000, null=False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to='events/', null=True, blank=True)
+    created_on = models.DateTimeField(default=timezone.now)
+    due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
 
     def save(self,*args,**kwargs):
         users = User.objects.all()
@@ -147,11 +157,11 @@ class Event(models.Model):
         return self.event
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ('-created_on',)
 
 
 class Notifications(models.Model):
-    #1=class, 2=event, 3 =trainer , 4=offer
+    #1=class, 2=event, 3 =trainer , 4=offer , 5=main offer
     notification_type = models.IntegerField()
     to_user = models.ManyToManyField(User,related_name='to_user',blank=True)
     trainer = models.ForeignKey(PersonalTrainer,related_name='PersonalTrainer', on_delete=models.CASCADE, null=True)
@@ -159,12 +169,8 @@ class Notifications(models.Model):
     Event = models.ForeignKey('Event',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
     Offer = models.ForeignKey('Offer',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
     MainOffer = models.ForeignKey('MainOffer',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
-
     created_on = models.DateTimeField(default=timezone.now)
     user_seen = models.BooleanField(default=False)
-
-    # def __str__(self):
-    #     return self.notification_type
 
     class Meta:
         ordering = ('-created_on',)
