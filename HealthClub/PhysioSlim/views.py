@@ -2,7 +2,7 @@ from multiprocessing import context
 from django.shortcuts import redirect, render
 from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer
 # decorators and authentication
-from .decorators import unauthenticated_user, unverified_user
+from .decorators import unauthenticated_user, unverified_user, verified_user
 # forms
 from .forms import  CreateUserForm, EditUserForm, VerifyForm
 # authentication
@@ -64,6 +64,8 @@ def register(request):
     return render(request, 'physio-slim/register.html', context)
 
 #Verify Register
+@verified_user
+@login_required(login_url='login')
 def verify_code(request):
     if request.method == 'POST':
         user = request.user
@@ -92,6 +94,8 @@ def verify_code(request):
         return render(request, 'physio-slim/verify.html', context)
 
 # reverify Register
+@verified_user
+@login_required(login_url='login')
 def reverify_code(request):
     verify.resend(request.user.phone)
     form = VerifyForm()
