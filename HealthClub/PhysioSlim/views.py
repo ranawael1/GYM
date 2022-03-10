@@ -2,7 +2,7 @@ from multiprocessing import context
 from django.shortcuts import redirect, render
 from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer
 # decorators and authentication
-from .decorators import unauthenticated_user, unverified_user, verified_user
+from .decorators import unauthenticated_user, unverified_user
 # forms
 from .forms import  CreateUserForm, EditUserForm, VerifyForm
 # authentication
@@ -64,14 +64,11 @@ def register(request):
     return render(request, 'physio-slim/register.html', context)
 
 #Verify Register
-@verified_user
-@login_required(login_url='login')
 def verify_code(request):
     if request.method == 'POST':
         user = request.user
         form = VerifyForm(request.POST)
         context = {'form': form}
-        branches = Branch.objects.all()
         if form.is_valid():
             code = form.cleaned_data.get('code')
             phone = user.phone
@@ -87,7 +84,7 @@ def verify_code(request):
                     return render(request, 'physio-slim/verify.html', context)
             except:
                 return render(request, 'physio-slim/verify.html', context)
-        context = {'form': form,'branches':branches}
+        context = {'form': form}
         return render(request, 'physio-slim/verify.html', context)
     else:
         form = VerifyForm()
@@ -95,13 +92,10 @@ def verify_code(request):
         return render(request, 'physio-slim/verify.html', context)
 
 # reverify Register
-@verified_user
-@login_required(login_url='login')
 def reverify_code(request):
-    branches = Branch.objects.all()
     verify.resend(request.user.phone)
     form = VerifyForm()
-    context = {'form': form, 'branches':branches}
+    context = {'form': form}
     return render(request, 'physio-slim/verify.html', context)
 
 # login
@@ -152,22 +146,22 @@ def home(request):
     gallery = Gallery.objects.all()[0:4]
     offers= MainOffer.objects.all()[0:4]
     branches = Branch.objects.all()[0:4]
+    events = Event.objects.all()[0:3]
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        context = {'gallery' : gallery ,'offers':offers ,'notifications' : notifications, 'branches' : branches }
+        context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches }
     else: 
-        context = {'gallery' : gallery , 'offers':offers}
+        context = {'gallery' : gallery , 'offers':offers ,'events':events}
     return render(request,'physio-slim/index.html', context)
    
 #Gallery
 def gallery(request):
     gallery = Gallery.objects.all()
-    branches = Branch.objects.all()
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        context = {'gallery' : gallery , 'notifications' : notifications, 'branches':branches }
+        context = {'gallery' : gallery , 'notifications' : notifications }
     else: 
-        context = {'gallery' : gallery,'branches':branches  }
+        context = {'gallery' : gallery }
     return render(request,'physio-slim/gallery.html', context)
 
 def main_offers(request):
@@ -178,8 +172,18 @@ def main_offers(request):
     else: 
         context = {'offers': offers }
     return render(request, 'physio-slim/m_offers.html', context)
+# Event Page 
+def events(request):
+    branches=Branch.objects.all()
+    events = Event.objects.all()
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = { 'events': events , 'notifications':notifications,'branches':branches}
+    else:
+        context = {'events':events, 'branches':branches}
+    return render(request, 'physio-slim/events.html', context)
 
-# branch home page 
+
 #Contact Page
 def contact(request):
     branches = Branch.objects.all()
@@ -217,6 +221,8 @@ def profile(request):
     return render(request,'physio-slim/profile.html', context)
 
 
+
+
 # Branch Page
 def branch(request, br_id):
     branches = Branch.objects.all()
@@ -224,15 +230,14 @@ def branch(request, br_id):
     classes = Class.objects.filter(branch=br_id)[0:3]
     clinics = Clinic.objects.filter(branch=br_id)[0:3]
     offers = Offer.objects.filter(branch=br_id)[0:4]
-    events = Event.objects.filter(branch=br_id)[0:3]
     trainers = PersonalTrainer.objects.filter(branch=br_id)[0:3]
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
         context = {'branch': branch, 'classes': classes,
-               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events , 'notifications' : notifications, 'branches':branches}
+               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'notifications' : notifications, 'branches':branches}
     else :
         context = {'branch': branch, 'classes': classes,
-               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events, 'branches':branches}
+               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'branches':branches}
     return render(request, 'physio-slim/branch.html', context)
 
 #Classes Branch page
@@ -250,12 +255,12 @@ def classes(request, br_id):
                 'branches': branches }
     return render(request, 'physio-slim/classes.html', context)
 
-# schedule of class
-def class_scheduale(request,cl_id ):
-    branches = Branch.objects.all()
-    classes = Class.objects.get(id=cl_id)
-    context= {'branches':branches , 'classes':classes }
-    return render(request, 'physio-slim/schedule.html',context )
+# # schedule of class
+# def class_scheduale(request,cl_id ):
+#     branches = Branch.objects.all()
+#     classes = Class.objects.get(id=cl_id)
+#     context= {'branches':branches , 'classes':classes }
+#     return render(request, 'physio-slim/schedule.html',context )
 
 # subscribe to a Class
 @unverified_user
@@ -343,14 +348,14 @@ def clinics(request, br_id):
     context = {'clinics': clinic, 'branch': branch}
     return render(request, 'physio-slim/br_clinics.html', context)
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # to show the Event Detailes
-def event_details(request ,br_id ):
+def event_details(request, ev_id  ):
     branches=Branch.objects.all()
-    branch = Branch.objects.get(id=br_id)
-    events= Event.objects.filter(branch=br_id)
+    events= Event.objects.filter(id= ev_id)
+    print(events)
     context = {'events': events, 'branch': branch , 'branches':branches}
-    return render(request, 'physio-slim/br_eventDetails.html', context)
+    return render(request, 'physio-slim/event.html', context)
 
 # offers Branch page
 def offers(request, br_id):
@@ -412,7 +417,7 @@ def TrainerNotifications(request,notification_id,trainer_id,branch_id):
     branch = Branch.objects.get(id = branch_id)
     notification.user_seen = True
     notification.save()
-    return redirect('trainers',br_id=branch_id)
+    return redirect('branch',br_id=branch_id)
 
 @unverified_user
 @login_required(login_url='login')
@@ -422,8 +427,7 @@ def OfferNotifications(request,notification_id,offer_id,branch_id):
     branch = Branch.objects.get(id = branch_id)
     notification.user_seen = True
     notification.save()
-    return redirect('offers',br_id=branch_id)
-
+    return redirect('branch',br_id=branch_id)
 
 @unverified_user
 @login_required(login_url='login')

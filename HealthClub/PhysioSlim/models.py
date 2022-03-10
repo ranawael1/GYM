@@ -139,7 +139,6 @@ class PersonalTrainer(models.Model):
 class Event(models.Model):
     event = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=1000, null=False)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to='events/', null=True, blank=True)
     created_on = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
@@ -226,6 +225,6 @@ class Gallery(models.Model):
     name = models.CharField(max_length=50, null=True)
     description = models.CharField(max_length=1000, null=True)
     img = models.ImageField(upload_to='gallery/')
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.name
     
