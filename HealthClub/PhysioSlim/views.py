@@ -405,7 +405,7 @@ def TrainerNotifications(request,notification_id,trainer_id,branch_id):
     branch = Branch.objects.get(id = branch_id)
     notification.user_seen = True
     notification.save()
-    return redirect('branch',br_id=branch_id)
+    return redirect('trainers',br_id=branch_id)
 
 @unverified_user
 @login_required(login_url='login')
@@ -415,7 +415,8 @@ def OfferNotifications(request,notification_id,offer_id,branch_id):
     branch = Branch.objects.get(id = branch_id)
     notification.user_seen = True
     notification.save()
-    return redirect('branch',br_id=branch_id)
+    return redirect('offers',br_id=branch_id)
+
 
 @unverified_user
 @login_required(login_url='login')
