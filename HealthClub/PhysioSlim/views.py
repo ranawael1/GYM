@@ -194,8 +194,11 @@ def about(request):
     return render(request,'physio-slim/about.html', context)
 
 # User page
+@login_required(login_url='login')
 def profile(request, user_id):
+    notifications = UserNotifications(request)
     user = User.objects.get(id=user_id)
+    branches = Branch.objects.all()
     form = CreateUserForm(instance=user)
     if request.method == 'POST':
         form = CreateUserForm(request.POST ,request.FILES ,instance = user)
@@ -203,7 +206,7 @@ def profile(request, user_id):
             edit = form.save()
             redirect("home")
         print(form.errors)
-    context = {'form':form}
+    context = {'form':form,'branches':branches,'notifications':notifications}
     return render(request,'physio-slim/profile.html', context)
 
 
@@ -282,6 +285,7 @@ def subscribeToClass(request, class_id):
 @login_required(login_url='login')
 def favoriteClasses(request):
     notifications = UserNotifications(request)
+    branches = Branch.objects.all()
     all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
     #getting the classes the user subscribed to
     favorite_classes = ClassSubscribers.objects.filter(subscriber_id=request.user.id).values_list('favclass_id', flat=True)
@@ -289,7 +293,7 @@ def favoriteClasses(request):
     fav_classes=list(favorite_classes)
     #getting the info of the favorite classes from the Class Model
     classes = Class.objects.filter(id__in = fav_classes)
-    context={'classes':classes, 'all_subscribers':all_subscribers,'notifications':notifications}
+    context={'classes':classes, 'all_subscribers':all_subscribers,'notifications':notifications, 'branches':branches}
     return render(request, 'physio-slim/favorites.html', context)
 
 # Unsubscribe from a class
@@ -343,13 +347,14 @@ def event_details(request ,br_id ):
 
 # offers Branch page
 def offers(request, br_id):
+    branches=Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
     offers = Offer.objects.filter(branch=br_id)
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        context = {'offers': offers, 'branch': branch, 'notifications':notifications}
+        context = {'offers': offers, 'branch': branch, 'notifications':notifications,'branches':branches}
     else:
-        context = {'offers': offers, 'branch': branch}
+        context = {'offers': offers, 'branch': branch, 'branches':branches}
     return render(request, 'physio-slim/offers.html', context)
 
 #Trainers Branch page
