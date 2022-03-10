@@ -61,8 +61,8 @@ class Offer(models.Model):
     name = models.CharField(max_length=50, null=True)
     num_of_class = models.IntegerField()
     discount = models.IntegerField()
-    days_num = models.CharField(choices=DAYS, max_length=20)
-    number_of_months= models.IntegerField()
+    days_num = models.CharField(choices=DAYS, max_length=20,null=True)
+    number_of_months= models.IntegerField(null=True)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE )
     photo = models.ImageField(upload_to='offer/', null=True, blank=True )
     
@@ -85,8 +85,8 @@ class MainOffer(models.Model):
     name = models.CharField(max_length=50, null=True)
     num_of_class = models.IntegerField()
     discount = models.IntegerField()
-    days_num = models.CharField(choices=DAYS, max_length=20)
-    number_of_months= models.IntegerField()
+    days_num = models.CharField(choices=DAYS, max_length=20, null=True)
+    number_of_months= models.IntegerField(null=True)
     photo = models.ImageField(upload_to='offer/', null=True, blank=True )
     
     def save(self,*args,**kwargs):
