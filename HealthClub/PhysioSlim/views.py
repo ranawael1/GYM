@@ -243,12 +243,12 @@ def classes(request, br_id):
                 'branches': branches }
     return render(request, 'physio-slim/classes.html', context)
 
-# schedule of class
-def class_scheduale(request,cl_id ):
-    branches = Branch.objects.all()
-    classes = Class.objects.get(id=cl_id)
-    context= {'branches':branches , 'classes':classes }
-    return render(request, 'physio-slim/schedule.html',context )
+# # schedule of class
+# def class_scheduale(request,cl_id ):
+#     branches = Branch.objects.all()
+#     classes = Class.objects.get(id=cl_id)
+#     context= {'branches':branches , 'classes':classes }
+#     return render(request, 'physio-slim/schedule.html',context )
 
 # subscribe to a Class
 @unverified_user
@@ -338,12 +338,12 @@ def clinics(request, br_id):
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # to show the Event Detailes
-def event_details(request ,br_id ):
-    branches=Branch.objects.all()
-    branch = Branch.objects.get(id=br_id)
-    events= Event.objects.filter(branch=br_id)
-    context = {'events': events, 'branch': branch , 'branches':branches}
-    return render(request, 'physio-slim/br_eventDetails.html', context)
+# def event_details(request ,br_id ):
+#     branches=Branch.objects.all()
+#     branch = Branch.objects.get(id=br_id)
+#     events= Event.objects.filter(branch=br_id)
+#     context = {'events': events, 'branch': branch , 'branches':branches}
+#     return render(request, 'physio-slim/br_eventDetails.html', context)
 
 # offers Branch page
 def offers(request, br_id):
