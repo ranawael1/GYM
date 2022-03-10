@@ -18,7 +18,7 @@ urlpatterns = [
     #success
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset/password_reset_done.html'), name="password_reset_complete"),
     #Home Page
-    path('home/',views.home, name='home'),
+    path('',views.home, name='home'),
     path('contact/', views.contact, name='contact'), 
     path('about/', views.about, name='about'),  
     path('gallery/', views.gallery, name='gallery'), 

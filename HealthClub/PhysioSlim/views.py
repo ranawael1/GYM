@@ -2,7 +2,7 @@ from multiprocessing import context
 from django.shortcuts import redirect, render
 from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer
 # decorators and authentication
-from .decorators import unauthenticated_user, unverified_user
+from .decorators import unauthenticated_user, unverified_user, verified_user
 # forms
 from .forms import  CreateUserForm, EditUserForm, VerifyForm
 # authentication
@@ -64,11 +64,14 @@ def register(request):
     return render(request, 'physio-slim/register.html', context)
 
 #Verify Register
+@verified_user
+@login_required(login_url='login')
 def verify_code(request):
     if request.method == 'POST':
         user = request.user
         form = VerifyForm(request.POST)
         context = {'form': form}
+        branches = Branch.objects.all()
         if form.is_valid():
             code = form.cleaned_data.get('code')
             phone = user.phone
@@ -84,7 +87,7 @@ def verify_code(request):
                     return render(request, 'physio-slim/verify.html', context)
             except:
                 return render(request, 'physio-slim/verify.html', context)
-        context = {'form': form}
+        context = {'form': form,'branches':branches}
         return render(request, 'physio-slim/verify.html', context)
     else:
         form = VerifyForm()
@@ -92,10 +95,13 @@ def verify_code(request):
         return render(request, 'physio-slim/verify.html', context)
 
 # reverify Register
+@verified_user
+@login_required(login_url='login')
 def reverify_code(request):
+    branches = Branch.objects.all()
     verify.resend(request.user.phone)
     form = VerifyForm()
-    context = {'form': form}
+    context = {'form': form, 'branches':branches}
     return render(request, 'physio-slim/verify.html', context)
 
 # login
@@ -157,11 +163,12 @@ def home(request):
 #Gallery
 def gallery(request):
     gallery = Gallery.objects.all()
+    branches = Branch.objects.all()
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        context = {'gallery' : gallery , 'notifications' : notifications }
+        context = {'gallery' : gallery , 'notifications' : notifications, 'branches':branches }
     else: 
-        context = {'gallery' : gallery }
+        context = {'gallery' : gallery,'branches':branches  }
     return render(request,'physio-slim/gallery.html', context)
 
 def main_offers(request):
@@ -404,7 +411,7 @@ def TrainerNotifications(request,notification_id,trainer_id,branch_id):
     branch = Branch.objects.get(id = branch_id)
     notification.user_seen = True
     notification.save()
-    return redirect('branch',br_id=branch_id)
+    return redirect('trainers',br_id=branch_id)
 
 @unverified_user
 @login_required(login_url='login')
@@ -414,7 +421,8 @@ def OfferNotifications(request,notification_id,offer_id,branch_id):
     branch = Branch.objects.get(id = branch_id)
     notification.user_seen = True
     notification.save()
-    return redirect('branch',br_id=branch_id)
+    return redirect('offers',br_id=branch_id)
+
 
 @unverified_user
 @login_required(login_url='login')
