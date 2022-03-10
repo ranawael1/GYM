@@ -1,9 +1,5 @@
-from email.policy import default
-import imp
-from time import time
-from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.forms import CharField
+from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils import timezone
 from django.core.validators import FileExtensionValidator
@@ -14,7 +10,12 @@ GENDER = (
     ('male', 'male'),
     ('female', 'female')
 )
-
+POSITION = (
+    (None, 'Position'),
+    ('PT', 'PT'),
+    ('floor', 'Floor'),
+    ('floor&PT', 'Floor & PT')
+)
 
 class Branch(models.Model):
     name = models.CharField(max_length=50, null=True)
@@ -49,18 +50,6 @@ class User(AbstractUser):
     #         schedule.run_pending()
     #         time.sleep(1)
 
-# class Check(models.Model):
-#     phone = PhoneNumberField(unique = True, null = False, blank = False)
-#     is_verified = models.BooleanField(default=False)
-
-# class Check(models.Model):
-#     phone = PhoneNumberField(unique = True, null = False, blank = False)
-#     is_verified = models.BooleanField(default=False)
-#     age = models.IntegerField()
-#     gender = models.CharField(choices=GENDER, max_length=20)
-#     avatar= models.ImageField(upload_to='avatars/')
-#     username = models.CharField(max_length=50)
-
 
 class Offer(models.Model):
     name = models.CharField(max_length=50, null=True)
@@ -78,17 +67,11 @@ class Offer(models.Model):
             notification.to_user.set(users)
             notification.save()
 
-
     def __str__(self):
         return self.name
-
-
-POSITION = (
-    (None, 'Position'),
-    ('PT', 'PT'),
-    ('floor', 'Floor'),
-    ('floor&PT', 'Floor & PT')
-)
+    
+    class Meta:
+        ordering = ('-id',)
 
 
 class PersonalTrainer(models.Model):
@@ -131,6 +114,9 @@ class Event(models.Model):
     def __str__(self):
         return self.event
 
+    class Meta:
+        ordering = ('-id',)
+
 
 class Notifications(models.Model):
     #1=class, 2=event, 3 =trainer , 4=offer
@@ -142,6 +128,9 @@ class Notifications(models.Model):
     Offer = models.ForeignKey('Offer',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
     created_on = models.DateTimeField(default=timezone.now)
     user_seen = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.notification_type
 
     class Meta:
         ordering = ('-created_on',)
@@ -161,7 +150,8 @@ class Class(models.Model):
             notification = Notifications.objects.create(notification_type=1,Class=self)
             notification.to_user.set(users)
             notification.save()
-         
+    class Meta:
+        ordering = ('-id',)
 
         
 
@@ -169,9 +159,6 @@ class Class(models.Model):
         return self.Class
     
     
-
-
-
 class Clinic(models.Model):
     clinic = models.CharField(max_length=50, null=False, unique=True)
     description = models.CharField(max_length=1000, null=False)
@@ -181,6 +168,8 @@ class Clinic(models.Model):
     def __str__(self):
         return self.clinic 
 
+    class Meta:
+        ordering = ('-id',)
 
   
 
