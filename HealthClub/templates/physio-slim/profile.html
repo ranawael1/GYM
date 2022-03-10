@@ -51,6 +51,10 @@
                     <input type="text" name="membership_num" placeholder="Enter membership number" {% if requset.user.membership_num %}value="{{request.user.membership_num}}"{% endif %}>
                 </p>
                 
+                <p>
+                    <a href="{% url 'reset_password' %}" class="forget">Reset password ?</a>
+                </p>
+                
 
             </div>
             <div class="px-5">
