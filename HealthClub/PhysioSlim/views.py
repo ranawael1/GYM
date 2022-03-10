@@ -152,11 +152,12 @@ def home(request):
     gallery = Gallery.objects.all()[0:4]
     offers= MainOffer.objects.all()[0:4]
     branches = Branch.objects.all()[0:4]
+    events = Event.objects.all()
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        context = {'gallery' : gallery ,'offers':offers ,'notifications' : notifications, 'branches' : branches }
+        context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches }
     else: 
-        context = {'gallery' : gallery , 'offers':offers}
+        context = {'gallery' : gallery , 'offers':offers ,'events':events}
     return render(request,'physio-slim/index.html', context)
    
 #Gallery
@@ -179,7 +180,6 @@ def main_offers(request):
         context = {'offers': offers }
     return render(request, 'physio-slim/m_offers.html', context)
 
-# branch home page 
 #Contact Page
 def contact(request):
     branches = Branch.objects.all()
@@ -224,15 +224,14 @@ def branch(request, br_id):
     classes = Class.objects.filter(branch=br_id)[0:3]
     clinics = Clinic.objects.filter(branch=br_id)[0:3]
     offers = Offer.objects.filter(branch=br_id)[0:4]
-    events = Event.objects.filter(branch=br_id)[0:3]
     trainers = PersonalTrainer.objects.filter(branch=br_id)[0:3]
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
         context = {'branch': branch, 'classes': classes,
-               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events , 'notifications' : notifications, 'branches':branches}
+               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'notifications' : notifications, 'branches':branches}
     else :
         context = {'branch': branch, 'classes': classes,
-               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'events': events, 'branches':branches}
+               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'branches':branches}
     return render(request, 'physio-slim/branch.html', context)
 
 #Classes Branch page
@@ -250,12 +249,12 @@ def classes(request, br_id):
                 'branches': branches }
     return render(request, 'physio-slim/classes.html', context)
 
-# schedule of class
-def class_scheduale(request,cl_id ):
-    branches = Branch.objects.all()
-    classes = Class.objects.get(id=cl_id)
-    context= {'branches':branches , 'classes':classes }
-    return render(request, 'physio-slim/schedule.html',context )
+# # schedule of class
+# def class_scheduale(request,cl_id ):
+#     branches = Branch.objects.all()
+#     classes = Class.objects.get(id=cl_id)
+#     context= {'branches':branches , 'classes':classes }
+#     return render(request, 'physio-slim/schedule.html',context )
 
 # subscribe to a Class
 @unverified_user
@@ -343,14 +342,14 @@ def clinics(request, br_id):
     context = {'clinics': clinic, 'branch': branch}
     return render(request, 'physio-slim/br_clinics.html', context)
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # to show the Event Detailes
-def event_details(request ,br_id ):
+def event_details(request, ev_id  ):
     branches=Branch.objects.all()
-    branch = Branch.objects.get(id=br_id)
-    events= Event.objects.filter(branch=br_id)
+    events= Event.objects.filter(id= ev_id)
+    print(events)
     context = {'events': events, 'branch': branch , 'branches':branches}
-    return render(request, 'physio-slim/br_eventDetails.html', context)
+    return render(request, 'physio-slim/Events.html', context)
 
 # offers Branch page
 def offers(request, br_id):

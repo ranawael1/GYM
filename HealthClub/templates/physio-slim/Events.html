@@ -1,0 +1,29 @@
+{% extends 'physio-slim/main.html' %}
+{% load static %}
+{% block body %}
+	
+	<div id="fh5co-gallery">
+		<div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box">
+                        <h2>Gym  Events </h2>
+                    </div>
+                </div>
+             {% for event in events %}
+                <div class="row g-0 my-5">
+                  <div class="col-md-4  " >
+                    <img src="{{MEDIA_URL}}/{{event.photo}}"  style="height: fit-content;  align-items: center;" class="img-fluid rounded-start" alt="...">
+                  </div>
+                  <div class="col-md-8 ">
+                    <div class="card-body">
+                      <h3 class="card-title"> {{ event.event }}</h3>
+                      <p class="card-text">{{event.description}}.</p>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+        </div>
+	
+{% endblock %}
+
