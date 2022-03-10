@@ -104,7 +104,6 @@ class MainOffer(models.Model):
 
 class PersonalTrainer(models.Model):
     name = models.CharField(max_length=50, null= True)
-    photo = models.ImageField(upload_to='trainers/',null=True)
     bio = models.CharField(max_length=500, null= True)
     years_of_experience = models.IntegerField()
     position = models.CharField(choices=POSITION, max_length=20)
@@ -159,8 +158,8 @@ class Notifications(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
     user_seen = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.notification_type
+    # def __str__(self):
+    #     return self.notification_type
 
     class Meta:
         ordering = ('-created_on',)
