@@ -11,13 +11,15 @@
                 </div>
              {% for event in events %}
                 <div class="row g-0 my-5">
-                  <div class="col-md-4  " >
+                  <div class="col-md-6  " >
                     <img src="{{MEDIA_URL}}/{{event.photo}}"  style="height: fit-content;  align-items: center;" class="img-fluid rounded-start" alt="...">
                   </div>
-                  <div class="col-md-8 ">
+                  <div class="col-md-6 ">
                     <div class="card-body">
                       <h3 class="card-title"> {{ event.event }}</h3>
                       <p class="card-text">{{event.description}}.</p>
+                      <h5>{{event.created_on}}</h5>
+                      <h5>{{event.due|timeuntil}}</h5>
                     </div>
                   </div>
                 </div>

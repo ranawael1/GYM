@@ -218,6 +218,8 @@
 						<span><img class="img-responsive" src="{{MEDIA_URL}}/{{event.photo}}" alt="" style="width: 45%;"></span>
 						<h3>{{event.event}}</h3>
 						<p>{{event.description}}</p>
+						<h5>{{event.created_on}}</h5>
+                      	<h5>{{event.due|timeuntil}}</h5>
 						<p><a href="{% url 'event' event.id %}" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
 					</div>
 				</div>
