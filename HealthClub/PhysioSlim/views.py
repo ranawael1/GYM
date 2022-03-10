@@ -71,6 +71,7 @@ def verify_code(request):
         user = request.user
         form = VerifyForm(request.POST)
         context = {'form': form}
+        branches = Branch.objects.all()
         if form.is_valid():
             code = form.cleaned_data.get('code')
             phone = user.phone
@@ -86,7 +87,7 @@ def verify_code(request):
                     return render(request, 'physio-slim/verify.html', context)
             except:
                 return render(request, 'physio-slim/verify.html', context)
-        context = {'form': form}
+        context = {'form': form,'branches':branches}
         return render(request, 'physio-slim/verify.html', context)
     else:
         form = VerifyForm()
@@ -97,9 +98,10 @@ def verify_code(request):
 @verified_user
 @login_required(login_url='login')
 def reverify_code(request):
+    branches = Branch.objects.all()
     verify.resend(request.user.phone)
     form = VerifyForm()
-    context = {'form': form}
+    context = {'form': form, 'branches':branches}
     return render(request, 'physio-slim/verify.html', context)
 
 # login
@@ -160,11 +162,12 @@ def home(request):
 #Gallery
 def gallery(request):
     gallery = Gallery.objects.all()
+    branches = Branch.objects.all()
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        context = {'gallery' : gallery , 'notifications' : notifications }
+        context = {'gallery' : gallery , 'notifications' : notifications, 'branches':branches }
     else: 
-        context = {'gallery' : gallery }
+        context = {'gallery' : gallery,'branches':branches  }
     return render(request,'physio-slim/gallery.html', context)
 
 def main_offers(request):
