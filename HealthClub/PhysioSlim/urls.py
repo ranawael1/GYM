@@ -24,7 +24,7 @@ urlpatterns = [
     path('gallery/', views.gallery, name='gallery'), 
     path('branch/<br_id>', views.branch, name='branch'),
     #User page
-    path('profile/<user_id>', views.profile, name='profile'),
+    path('profile/', views.profile, name='profile'),
     # Event page
     path('event/<ev_id>', views.event_details, name='event'),
     #Branch Pages
