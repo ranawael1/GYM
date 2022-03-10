@@ -72,7 +72,7 @@ class Offer(models.Model):
     photo = models.ImageField(upload_to='offer/', null=True, blank=True )
     created_on = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
-
+   
     
     def save(self,*args,**kwargs):
         users = User.objects.all()
