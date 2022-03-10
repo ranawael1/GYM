@@ -15,11 +15,8 @@ def unauthenticated_user(view_func):
 
 def unverified_user(view_func):
     def wrapper_func(request, *args,**kwargs):
-        print('check')
         if request.user.is_authenticated:
-            print('ssss')
             if request.user.is_verified == False:
-                print(request.user.is_verified)
                 return redirect('verify-code')
             else:     
                 return view_func(request, *args,**kwargs)

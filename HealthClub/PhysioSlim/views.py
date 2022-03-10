@@ -107,7 +107,6 @@ def loginUser(request):
         password = request.POST.get('password')
         # authenticate the data entered by the user
         user = authenticate(request, username=username, password=password)
-        print(user)
         # if the user exists
         if user is not None:
             login(request, user)
@@ -234,6 +233,8 @@ def class_scheduale(request,cl_id ):
     return render(request, 'physio-slim/schedule.html',context )
 
 # subscribe to a Class
+@unverified_user
+@login_required(login_url='login')
 def subscribeToClass(request, class_id):
     classs = Class.objects.get(id=class_id)
     classSubscriber = ClassSubscribers.objects.create(subscriber=request.user, favclass=classs)
@@ -262,6 +263,7 @@ def subscribeToClass(request, class_id):
     return redirect('classes', branch)
 
 #display favorite classes
+@unverified_user
 @login_required(login_url='login')
 def favoriteClasses(request):
     notifications = UserNotifications(request)
@@ -276,6 +278,8 @@ def favoriteClasses(request):
     return render(request, 'physio-slim/favorites.html', context)
 
 # Unsubscribe from a class
+@unverified_user
+@login_required(login_url='login')
 def unSubscribeFromClass(request, class_id):
     classs = Class.objects.get(id=class_id)
     branch = request.user.branch_id
@@ -310,7 +314,6 @@ def unSubscribeFromClass(request, class_id):
 def clinics(request, br_id):
     branch = Branch.objects.get(id=br_id)
     clinic = Clinic.objects.filter(branch=br_id)
-    print(clinic)
     context = {'clinics': clinic, 'branch': branch}
     return render(request, 'physio-slim/br_clinics.html', context)
 
@@ -347,12 +350,16 @@ def trainers(request, br_id):
     return render(request, 'physio-slim/trainers.html', context)
 
 # Showing notifications
+@unverified_user
+@login_required(login_url='login')
 def UserNotifications(request):
     notification = Notifications.objects.filter(to_user = request.user)
     notification.user_seen = True
     return notification
 
 # Redirect to notifications
+@unverified_user
+@login_required(login_url='login')
 def ClassNotifications(request,notification_id,class_id):
     notification = Notifications.objects.get(id = notification_id)
     classs = Class.objects.get(id=class_id)
@@ -361,6 +368,8 @@ def ClassNotifications(request,notification_id,class_id):
     notification.save()
     return redirect('classes',branch)
 
+@unverified_user
+@login_required(login_url='login')
 def EventNotifications(request,notification_id,event_id):
     notification = Notifications.objects.get(id = notification_id)
     event = Event.objects.get(id = event_id)
@@ -368,6 +377,8 @@ def EventNotifications(request,notification_id,event_id):
     notification.save()
     return redirect('home')
 
+@unverified_user
+@login_required(login_url='login')
 def TrainerNotifications(request,notification_id,trainer_id):
     notification = Notifications.objects.get(id = notification_id)
     trainer = PersonalTrainer.objects.get(id = trainer_id)
@@ -375,6 +386,8 @@ def TrainerNotifications(request,notification_id,trainer_id):
     notification.save()
     return render(request, 'physio-slim/trainers.html')
 
+@unverified_user
+@login_required(login_url='login')
 def OfferNotifications(request,notification_id,offer_id):
     notification = Notifications.objects.get(id = notification_id)
     offer = Offer.objects.get(id = offer_id)
@@ -382,6 +395,8 @@ def OfferNotifications(request,notification_id,offer_id):
     notification.save()
     return redirect('home')
 
+@unverified_user
+@login_required(login_url='login')
 def MOfferNotifications(request,notification_id,offer_id):
     notification = Notifications.objects.get(id = notification_id)
     offer = MainOffer.objects.get(id = offer_id)
@@ -390,6 +405,8 @@ def MOfferNotifications(request,notification_id,offer_id):
     return redirect('main-offers')
 
 #Removing Notification
+@unverified_user
+@login_required(login_url='login')
 def RemoveNotifications(request, notification_id):
     notification = Notifications.objects.get(id = notification_id)  
     # notification.user_seen = True
