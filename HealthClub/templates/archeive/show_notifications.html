@@ -16,6 +16,9 @@
         {% elif notification.notification_type == 4 %}
             <li><a href="{% url 'OfferNotifications' notification.id notification.Offer.id %}">New {{notification.Offer}} Offer ! </a></li>
             <span class="dropdown-item-close" onclick="removeNotification(`{% url 'RemoveNotifications' notification.id %}`, `{{ request.path }}`)">&times;</span>
+        {% elif notification.notification_type == 5 %}
+            <li><a href="{% url 'MOfferNotifications' notification.id notification.MainOffer.id %}">New {{notification.MainOffer}} Offer ! </a></li>
+            <span class="dropdown-item-close" onclick="removeNotification(`{% url 'RemoveNotifications' notification.id %}`, `{{ request.path }}`)">&times;</span>
         {% endif %}
     {% endfor %}
     </ul>

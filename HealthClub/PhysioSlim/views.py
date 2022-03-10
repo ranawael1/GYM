@@ -379,21 +379,23 @@ def EventNotifications(request,notification_id,event_id):
 
 @unverified_user
 @login_required(login_url='login')
-def TrainerNotifications(request,notification_id,trainer_id):
+def TrainerNotifications(request,notification_id,trainer_id,branch_id):
     notification = Notifications.objects.get(id = notification_id)
     trainer = PersonalTrainer.objects.get(id = trainer_id)
+    branch = Branch.objects.get(id = branch_id)
     notification.user_seen = True
     notification.save()
-    return render(request, 'physio-slim/trainers.html')
+    return redirect('branch',br_id=branch_id)
 
 @unverified_user
 @login_required(login_url='login')
-def OfferNotifications(request,notification_id,offer_id):
+def OfferNotifications(request,notification_id,offer_id,branch_id):
     notification = Notifications.objects.get(id = notification_id)
     offer = Offer.objects.get(id = offer_id)
+    branch = Branch.objects.get(id = branch_id)
     notification.user_seen = True
     notification.save()
-    return redirect('home')
+    return redirect('branch',br_id=branch_id)
 
 @unverified_user
 @login_required(login_url='login')

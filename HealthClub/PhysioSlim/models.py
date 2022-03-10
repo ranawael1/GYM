@@ -94,7 +94,7 @@ class MainOffer(models.Model):
         created = not self.id 
         super().save(*args,**kwargs)
         if created :
-            notification = Notifications.objects.create(notification_type=4,Offer=self)
+            notification = Notifications.objects.create(notification_type=5,MainOffer=self)
             notification.to_user.set(users)
             notification.save()
 
@@ -116,7 +116,7 @@ class PersonalTrainer(models.Model):
         created = not self.id 
         super().save(*args,**kwargs)
         if created :
-            notification = Notifications.objects.create(notification_type=3,PersonalTrainer=self)
+            notification = Notifications.objects.create(notification_type=3,trainer=self)
             notification.to_user.set(users)
             notification.save()
 

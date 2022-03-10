@@ -39,8 +39,9 @@ urlpatterns = [
     # path('showNotifications/', views.showNotifications, name='showNotifications'),
     path('EventNotifications/<notification_id>/<event_id>', views.EventNotifications, name='EventNotifications'),
     path('ClassNotifications/<notification_id>/<class_id>', views.ClassNotifications, name='ClassNotifications'),
-    path('TrainerNotifications/<notification_id>/<trainer_id>', views.TrainerNotifications, name='TrainerNotifications'),
-    path('OfferNotifications/<notification_id>/<offer_id>', views.OfferNotifications, name='OfferNotifications'),
+    path('TrainerNotifications/<notification_id>/<trainer_id>/<branch_id>', views.TrainerNotifications, name='TrainerNotifications'),
+    path('OfferNotifications/<notification_id>/<offer_id>/<branch_id>', views.OfferNotifications, name='OfferNotifications'),
+    path('MOfferNotifications/<notification_id>/<offer_id>', views.MOfferNotifications, name='MOfferNotifications'),
     path('RemoveNotifications/<notification_id>', views.RemoveNotifications, name='RemoveNotifications'),
    
    
