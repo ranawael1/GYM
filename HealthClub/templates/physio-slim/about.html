@@ -2,8 +2,7 @@
 {% load static %}
 {% block body %}
 
-	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner" style="background-image:url({% static 'images/login1.jpg' %}); " data-stellar-background-ratio="0.5">
-            
+	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner" style="background-image:url({% static 'images/login1.jpg' %}); " data-stellar-background-ratio="0.5">     
 		<div class="overlay"></div>
 		<div class="container">
 			<div class="row">
@@ -23,7 +22,7 @@
 		<div class="container">
 			<div class="row animate-box">
 				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
-					<h2>Happy Clients</h2>
+					<h2>About Us</h2>
 				</div>
 			</div>
 			<div class="row">
@@ -33,25 +32,15 @@
 							<div class="item">
 								<div class="testimony-slide active text-center">
 									<figure>
-										<img src="images/person3.jpg" alt="user">
+										<img src="{% static 'images/about1.jpeg' %}" alt="Owner">
 									</figure>
-									<span>Jean Doe, via <a href="#" class="twitter">Twitter</a></span>
+									<span>Dr. Mahmoud Mostafa Okel <a href="{% url 'contact' %}" class="twitter">Contact Us.</a></span>
 									<blockquote>
-										<p>&ldquo;Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.&rdquo;</p>
+										<p>&ldquo; Specialized in Physical Therapy. &rdquo;</p>
 									</blockquote>
 								</div>
 							</div>
-							<div class="item">
-								<div class="testimony-slide active text-center">
-									<figure>
-										<img src="images/person3.jpg" alt="user">
-									</figure>
-									<span>John Doe, via <a href="#" class="twitter">Twitter</a></span>
-									<blockquote>
-										<p>&ldquo;Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.&rdquo;</p>
-									</blockquote>
-								</div>
-							</div>
+							
 							<div class="item">
 								<div class="testimony-slide active text-center">
 									<figure>

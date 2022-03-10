@@ -1,7 +1,7 @@
 from . import verify
 from importlib.resources import contents
 from django.shortcuts import redirect, render
-from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer, ClassSubscribers, Notifications,Gallery
+from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer
 # decorators and authentication
 from .decorators import unauthenticated_user, unverified_user
 # send email
@@ -145,12 +145,15 @@ def logoutUser(request):
 # Home
 def home(request):
     gallery = Gallery.objects.all()[0:4]
-    branches = Branch.objects.all()
+    offers= MainOffer.objects.all()[0:4]
+    branches = Branch.objects.all()[0:4]
+
+    print(offers)
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        context = {'gallery' : gallery , 'notifications' : notifications, 'branches' : branches }
+        context = {'gallery' : gallery ,'offers':offers ,'notifications' : notifications, 'branches' : branches }
     else: 
-        context = {'gallery' : gallery,  'branches' : branches }
+        context = {'gallery' : gallery , 'offers':offers}
     return render(request,'physio-slim/index.html', context)
    
 #Gallery
@@ -162,6 +165,15 @@ def gallery(request):
     else: 
         context = {'gallery' : gallery }
     return render(request,'physio-slim/gallery.html', context)
+
+def main_offers(request):
+    offers = MainOffer.objects.all()
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'offers': offers, 'notifications' : notifications }
+    else: 
+        context = {'offers': offers }
+    return render(request, 'physio-slim/m_offers.html', context)
 
 # branch home page 
 #Contact Page
@@ -247,20 +259,20 @@ def subscribeToClass(request, class_id):
         request.user.save()
        
     # send email to the management to contact the subscriber
-    # send_mail(
-    #     'New user subscribed!',
-    #     f'The user: {request.user} \n has subscribed to: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
-    #     'physio.slim2@gmail.com',
-    #     ['physio.slim2@gmail.com'],
-    #     fail_silently=False,)
-    #     # send email confirming subscription
-    # send_mail(
-    #     'Subscription Successful!',
-    #     f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
+    send_mail(
+        'New user subscribed!',
+        f'The user: {request.user} \n has subscribed to: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
+        'physio.slim2@gmail.com',
+        ['physio.slim2@gmail.com'],
+        fail_silently=False,)
+        # send email confirming subscription
+    send_mail(
+        'Subscription Successful!',
+        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
         
-    #     'physio.slim2@gmail.com',
-    #     [f'{email}'],
-    #     fail_silently=False,)
+        'physio.slim2@gmail.com',
+        [f'{email}'],
+        fail_silently=False,)
     return redirect('classes', branch)
 
 #display favorite classes
@@ -295,20 +307,20 @@ def unSubscribeFromClass(request, class_id):
             request.user.save()
     context = {'classes': classs, 'branch': branch, 'branches': branches}
     # send email to the management to confirm the unsubscription
-    # send_mail(
-    #     'User unsubscribed!',
-    #     f'The user: {request.user} \n unsubscribed from: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
-    #     'physio.slim2@gmail.com',
-    #     ['physio.slim2@gmail.com'],
-    #     fail_silently=False,)
-    #     # send email confirming the unsubscription
-    # send_mail(
-    #     'Unsubscription',
-    #     f'Hello {request.user},\n sorry to here that you unsubscribed from our {classs} class, \n you might receive a call from our side to have a further discussion \n Br, \n Physio-Slim management.', 
+    send_mail(
+        'User unsubscribed!',
+        f'The user: {request.user} \n unsubscribed from: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
+        'physio.slim2@gmail.com',
+        ['physio.slim2@gmail.com'],
+        fail_silently=False,)
+        # send email confirming the unsubscription
+    send_mail(
+        'Unsubscription',
+        f'Hello {request.user},\n sorry to here that you unsubscribed from our {classs} class, \n you might receive a call from our side to have a further discussion \n Br, \n Physio-Slim management.', 
         
-    #     'physio.slim2@gmail.com',
-    #     [f'{email}'],
-    #     fail_silently=False,)
+        'physio.slim2@gmail.com',
+        [f'{email}'],
+        fail_silently=False,)
 
     return redirect('classes', branch)
 
@@ -345,6 +357,8 @@ def trainers(request, br_id):
     else: 
         context = {'trainers': trainers, 'branch': branch, 'branches':branches }
     return render(request, 'physio-slim/trainers.html', context)
+
+
 
 
 ##Showing notifications
@@ -390,6 +404,12 @@ def OfferNotifications(request,notification_id,offer_id):
     notification.user_seen = True
     notification.save()
     return redirect('home')
+def MOfferNotifications(request,notification_id,offer_id):
+    notification = Notifications.objects.get(id = notification_id)
+    offer = MainOffer.objects.get(id = offer_id)
+    notification.user_seen = True
+    notification.save()
+    return redirect('main-offers')
 
 #Removing Notification
 def RemoveNotifications(request, notification_id):

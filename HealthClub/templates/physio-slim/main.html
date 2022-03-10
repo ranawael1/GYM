@@ -118,7 +118,7 @@
 											{% endif %}
 										</ul>
 									</li>
-									{% if request.user.is_superuser %}
+									{% if not request.user.is_superuser %}
 									{% block bell %}
 									{% include 'physio-slim/bell.html' %}
 									{% endblock %}
