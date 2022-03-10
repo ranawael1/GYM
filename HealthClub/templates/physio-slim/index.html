@@ -197,6 +197,36 @@
 			</div>
 		</div>
 	</div>
-<!-- end oher features -->
+ <!-- end oher features -->
+ <!-- start of events  -->
+ <div id="fh5co-gallery">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box">
+				<h2>Gym  Events </h2>
+			</div>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<div class="row row-bottom-padded-md">
+			<div class="col-md-12">
+				<ul id="fh5co-portfolio-list " >
+				{% for event in events %}
+					<li class="one-third animate-box col-6" data-animate-effect="fadeIn" style="background-image: url({{MEDIA_URL}}/{{event.photo}});">
+						<a href="{% url 'event' event.id %}">
+							<div class="case-studies-summary">
+								<h2>{{event.event}}</h2>
+								<span>{{event.description}}</span>
+							</div>
+						</a>
+					</li>
+				{% endfor %}
+				</ul>		
+			</div>
+		</div>
+	</div>
+</div>
+ <!-- end of events  -->
+
 
 {% endblock %}
