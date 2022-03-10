@@ -1,0 +1,41 @@
+{% extends 'physio-slim/main.html' %} {% load static %} {% block body %}
+
+<div class="fh5co-loader"></div>
+
+<div id="fh5co-gallery">
+    <div class="container">
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box">
+				<h2>Gym  Events </h2>
+			</div>
+		</div>
+	</div>
+
+  <div id="fh5co-services" class="fh5co-bg-section">
+    <div class="container">
+      <div class="row">
+        {% for event in events %}
+
+        <div class="col-md-4 text-center animate-box">
+          <div class="services">
+            <span
+              ><img
+                class="img-responsive image"
+                src="{{MEDIA_URL}}/{{event.photo}} "
+                alt=""
+            /></span>
+
+            <h3>{{event.event}}</h3>
+
+            <p>{{event.description}}</p>
+            <p><a href="{% url 'event' event.id %}" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
+
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}
+</div>

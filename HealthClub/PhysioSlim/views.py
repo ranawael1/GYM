@@ -172,6 +172,17 @@ def main_offers(request):
     else: 
         context = {'offers': offers }
     return render(request, 'physio-slim/m_offers.html', context)
+# Event Page 
+def events(request):
+    branches=Branch.objects.all()
+    events = Event.objects.all()
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = { 'events': events , 'notifications':notifications,'branches':branches}
+    else:
+        context = {'events':events, 'branches':branches}
+    return render(request, 'physio-slim/events.html', context)
+
 
 #Contact Page
 def contact(request):
@@ -208,6 +219,8 @@ def profile(request):
         # print(form.errors)
     context = {'form':form,'branches':branches,'notifications':notifications}
     return render(request,'physio-slim/profile.html', context)
+
+
 
 
 # Branch Page
@@ -342,7 +355,7 @@ def event_details(request, ev_id  ):
     events= Event.objects.filter(id= ev_id)
     print(events)
     context = {'events': events, 'branch': branch , 'branches':branches}
-    return render(request, 'physio-slim/Events.html', context)
+    return render(request, 'physio-slim/event.html', context)
 
 # offers Branch page
 def offers(request, br_id):
