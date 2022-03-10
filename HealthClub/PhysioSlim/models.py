@@ -20,7 +20,12 @@ POSITION = (
 
 DAYS = (
     (None, 'chosse your training days'),
+    ('1 day ', '1 day'),
+    ('2 days ', '2 days'),
     ('3 days ', '3 days'),
+    ('4 days ', '4 days'),
+    ('5 days ', '5 days'),
+    ('6 days ', '6 days'),
     ('Everyday', 'Everyday'),
 )
 class Branch(models.Model):

@@ -18,13 +18,13 @@ urlpatterns = [
     #success
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset/password_reset_done.html'), name="password_reset_complete"),
     #Home Page
-    path('home/',views.home, name='home'),
+    path('',views.home, name='home'),
     path('contact/', views.contact, name='contact'), 
     path('about/', views.about, name='about'),  
     path('gallery/', views.gallery, name='gallery'), 
     path('branch/<br_id>', views.branch, name='branch'),
     #User page
-    path('profile/<user_id>', views.profile, name='profile'),
+    path('profile/', views.profile, name='profile'),
 
     #Branch Pages
     path('branch-classes/<br_id>', views.classes, name='classes'),

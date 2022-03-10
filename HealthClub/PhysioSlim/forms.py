@@ -2,6 +2,8 @@ from dataclasses import Field
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .models import User, Branch, Offer, Event, Clinic
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
+
 #a modified UserCreationForm so we can add a new field(email)
 class CreateUserForm(UserCreationForm):
     class Meta:
@@ -18,6 +20,53 @@ class CreateUserForm(UserCreationForm):
             'gender': forms.Select(attrs={'class': 'form-control'}),
             'branch': forms.Select(attrs={'class': 'form-control'}),
             }
+
+class EditUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'phone','avatar', 'age', 'membership_num']
+        help_texts = {
+            'password ':(''),
+        }
+  
+    def clean_email(self):
+        username = self.cleaned_data.get('username')
+        email = self.cleaned_data.get('email')
+        print(username)
+        if email and User.objects.filter(email=email).exclude(username=username).count():
+            pass
+        else:
+            try:
+                User.objects.get(email=email)
+                raise forms.ValidationError('This email address is already in use. Please supply a different email address.')
+            except:
+                pass
+        return email
+    
+    def clean_phone(self):
+        username = self.cleaned_data.get('username')
+        phone = self.cleaned_data.get('phone')
+        if phone and User.objects.filter(phone=phone).exclude(username=username).count():
+            pass
+        else:
+            try:
+                User.objects.get(phone=phone)
+                raise forms.ValidationError('This phone number is already in use. Please supply a different phone.')
+            except:
+                pass
+        return phone
+
+    def save(self, commit=True):
+        user = super(EditUserForm, self).save(commit=False)
+        user.email = self.cleaned_data['email']
+        user.phone = self.cleaned_data['phone']
+        print(self.cleaned_data['phone'])
+        user.avatar = self.cleaned_data['avatar']
+
+        if commit:
+            user.save()
+        return user
+
 
 class VerifyForm(forms.Form):
     code = forms.CharField(max_length=8, required=True, help_text='Enter code')
