@@ -207,21 +207,19 @@
 			</div>
 		</div>
 	</div>
-	<div class="container-fluid">
-		<div class="row row-bottom-padded-md">
-			<div class="col-md-12">
-				<ul id="fh5co-portfolio-list " >
+	<div id="fh5co-services" class="fh5co-bg-section">
+		<div class="container">
+			<div class="row">
 				{% for event in events %}
-					<li class="one-third animate-box col-6" data-animate-effect="fadeIn" style="background-image: url({{MEDIA_URL}}/{{event.photo}});">
-						<a href="{% url 'event' event.id %}">
-							<div class="case-studies-summary">
-								<h2>{{event.event}}</h2>
-								<span>{{event.description}}</span>
-							</div>
-						</a>
-					</li>
+				<div class=" col-md-4 col-md-offset-1 text-center animate-box">
+					<div class="services">
+						<span><img class="img-responsive" src="{{MEDIA_URL}}/{{event.photo}}" alt="" style="width: 45%;"></span>
+						<h3>{{event.event}}</h3>
+						<p>{{event.description}}</p>
+						<p><a href="{% url 'event' event.id %}" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
+					</div>
+				</div>
 				{% endfor %}
-				</ul>		
 			</div>
 		</div>
 	</div>

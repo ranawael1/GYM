@@ -146,7 +146,7 @@ def home(request):
     gallery = Gallery.objects.all()[0:4]
     offers= MainOffer.objects.all()[0:4]
     branches = Branch.objects.all()[0:4]
-    events = Event.objects.all()[0:2]
+    events = Event.objects.all()
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
         context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches }
