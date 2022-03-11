@@ -1,5 +1,7 @@
 {% extends 'physio-slim/main.html' %}
 {% load static %}
+{% load socialaccount %}
+
 {% block head %}
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
 <link href="assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
@@ -10,7 +12,7 @@
 
 <div class="row">
     <div class="col-7 d-flex justify-content-center align-items-center">
-        <div class="col-8">
+        <div class="col-8 form">
             <form method="POST" action="" enctype="multipart/form-data"> {% csrf_token %}
                 <h1>REGISTER</h1>
                 <div class="inset " id="first">
@@ -111,6 +113,11 @@
                             </p>                
                 </div>
             </form>
+            <form method="post" action="{% provider_login_url 'google' %}" class="d-flex justify-content-center align-items-center">
+                {% csrf_token %}
+                <span>Or Signup with</span>
+                <button type="submit"  class="btn "><i class="fa-brands fa-google text-danger"></i></button>
+              </form>
 
         </div>
 

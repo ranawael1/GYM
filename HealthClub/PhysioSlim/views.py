@@ -2,9 +2,9 @@ from multiprocessing import context
 from django.shortcuts import redirect, render
 from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer
 # decorators and authentication
-from .decorators import unauthenticated_user, unverified_user
+from .decorators import unauthenticated_user, unverified_user, google_activated
 # forms
-from .forms import  CreateUserForm, EditUserForm, VerifyForm
+from .forms import  CreateUserForm, EditUserForm, VerifyForm, activateAccount
 # authentication
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -32,6 +32,7 @@ from . import verify
 
 
 #Register
+@google_activated
 @unverified_user
 @unauthenticated_user
 def register(request):
@@ -98,7 +99,22 @@ def reverify_code(request):
     context = {'form': form}
     return render(request, 'physio-slim/verify.html', context)
 
+# activate google account
+def activate(request):
+    notifications = UserNotifications(request)
+    branches = Branch.objects.all()
+    user = User.objects.get(id=request.user.id)
+    form = activateAccount(instance=user)
+    if request.method == 'POST':
+        form = activateAccount(request.POST ,request.FILES ,instance = user)
+        if form.is_valid():
+            edit = form.save()
+            return redirect("verify-code")
+        # print(form.errors)
+    context = {'form':form,'branches':branches,'notifications':notifications}
+    return render(request,'physio-slim/activate.html', context)
 # login
+@google_activated
 @unverified_user
 @unauthenticated_user
 def loginUser(request):
@@ -205,6 +221,7 @@ def about(request):
     return render(request,'physio-slim/about.html', context)
 
 # User page
+@google_activated
 @login_required(login_url='login')
 def profile(request):
     notifications = UserNotifications(request)
@@ -263,6 +280,7 @@ def classes(request, br_id):
 #     return render(request, 'physio-slim/schedule.html',context )
 
 # subscribe to a Class
+@google_activated
 @unverified_user
 @login_required(login_url='login')
 def subscribeToClass(request, class_id):
@@ -293,6 +311,7 @@ def subscribeToClass(request, class_id):
     return redirect('classes', branch)
 
 #display favorite classes
+@google_activated
 @unverified_user
 @login_required(login_url='login')
 def favoriteClasses(request):
@@ -309,6 +328,7 @@ def favoriteClasses(request):
     return render(request, 'physio-slim/favorites.html', context)
 
 # Unsubscribe from a class
+@google_activated
 @unverified_user
 @login_required(login_url='login')
 def unSubscribeFromClass(request, class_id):
@@ -382,6 +402,7 @@ def trainers(request, br_id):
     return render(request, 'physio-slim/trainers.html', context)
 
 # Showing notifications
+@google_activated
 @unverified_user
 @login_required(login_url='login')
 def UserNotifications(request):
@@ -390,6 +411,7 @@ def UserNotifications(request):
     return notification
 
 # Redirect to notifications
+@google_activated
 @unverified_user
 @login_required(login_url='login')
 def ClassNotifications(request,notification_id,class_id):
@@ -400,6 +422,7 @@ def ClassNotifications(request,notification_id,class_id):
     notification.save()
     return redirect('classes',branch)
 
+@google_activated
 @unverified_user
 @login_required(login_url='login')
 def EventNotifications(request,notification_id,event_id):
@@ -409,6 +432,7 @@ def EventNotifications(request,notification_id,event_id):
     notification.save()
     return redirect('home')
 
+@google_activated
 @unverified_user
 @login_required(login_url='login')
 def TrainerNotifications(request,notification_id,trainer_id,branch_id):
@@ -419,6 +443,7 @@ def TrainerNotifications(request,notification_id,trainer_id,branch_id):
     notification.save()
     return redirect('branch',br_id=branch_id)
 
+@google_activated
 @unverified_user
 @login_required(login_url='login')
 def OfferNotifications(request,notification_id,offer_id,branch_id):
@@ -429,6 +454,7 @@ def OfferNotifications(request,notification_id,offer_id,branch_id):
     notification.save()
     return redirect('branch',br_id=branch_id)
 
+@google_activated
 @unverified_user
 @login_required(login_url='login')
 def MOfferNotifications(request,notification_id,offer_id):
@@ -439,6 +465,7 @@ def MOfferNotifications(request,notification_id,offer_id):
     return redirect('main-offers')
 
 #Removing Notification
+@google_activated
 @unverified_user
 @login_required(login_url='login')
 def RemoveNotifications(request, notification_id):
