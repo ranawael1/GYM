@@ -86,7 +86,13 @@ class activateAccount(forms.ModelForm):
             user = User.objects.get(username=username)
             pass
         except:
-            username = username+random.random(0,9999)
+            while True:
+                username = username+random.random(0,9999)
+                try:
+                    user = User.objects.get(username=username)
+                    break
+                except:
+                    pass
         return username
     
     def clean_phone(self):
