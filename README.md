@@ -17,7 +17,7 @@ Users don't have to sign up to view the gym branches,trainers, classes and clini
 git clone https://github.com/ranawael1/GYM.git
 ```
 - The project doesn't include the settings.py, but you can download it from this link.
-[settings.zip](https://github.com/shahdhesham5/Django_Blog/files/8089427/settings.zip)
+[settings.zip]()
 - Make sure to install
     -   `pip install fontawesomefree`
     -   `pip install pymysql`
