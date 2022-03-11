@@ -11,7 +11,12 @@
     <div class="col-7 d-flex justify-content-center align-items-center ">
         <form method="POST" action="" enctype="multipart/form-data" class="form"> {% csrf_token %}
         <div class="row px-2">
+            {% for message in messages %}
+						<span  style='display: none;' id="messages" class="">{{message}}</span>
+
+			{% endfor %}
             <h1 class="text-uppercase">Complete registration</h1>
+
             <p>
                 <!-- <input type="text" name="" id="" value="{{user.socialaccount_set.all.0.get_avatar_url}}"> -->
                 <div class="file-field">
