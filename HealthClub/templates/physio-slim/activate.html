@@ -8,10 +8,10 @@
 
 {% block body %}
 <div class="row d-flex justify-content-center align-items-center">
-    <div class="col-7 d-flex justify-content-center align-items-center">
+    <div class="col-7 d-flex justify-content-center align-items-center ">
         <form method="POST" action="" enctype="multipart/form-data" class="form"> {% csrf_token %}
         <div class="row px-2">
-            <h1 class="text-uppercase">Edit Profile</h1>
+            <h1 class="text-uppercase">Complete registration</h1>
             <p>
                 <!-- <input type="text" name="" id="" value="{{user.socialaccount_set.all.0.get_avatar_url}}"> -->
                 <div class="file-field">
@@ -33,14 +33,23 @@
                         <label>Username</label>
                         <input type="text" name="username" placeholder="Enter username..." required value="{{request.user.username}}">
                     </p>
-                    <p>
-                        <label>Email</label>
-                        <input type="email" name="email" placeholder="Enter email..." required value="{{request.user.email}}">
-                    </p>
+                   
                     <p>
                         <label>Phone</label>
                         <input type="tel" name="phone" placeholder="Enter phone..." required value="{{request.user.phone}}">
                     </p>
+                   <p>
+                    <label>Branch</label>
+                    <select name="branch" class="form-control" required="" id="id_branch">  
+                        {% for x, y in form.fields.branch.choices %}
+                        {% if not x %}
+                        <option value="" selected>Choose your branch</option>
+                        {% else %}
+                            <option value="{{ x }}">{{ y }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                   </p>
             </div>
             <div class="inset col-6" id="second" >
                 <p>
@@ -52,11 +61,20 @@
                     <input type="text" name="membership_num" placeholder="Enter membership number" {% if requset.user.membership_num %}value="{{request.user.membership_num}}"{% endif %}>
                 </p>
                 
-                <p>
-                    <a href="{% url 'reset_password' %}" class="forget">Reset password ?</a>
-                </p>
                 
+                <p>
+                    <label>Gender</label>
+                    <select name="gender" class="form-control" required="" id="id_gender">
+                        {% for x, y in form.fields.gender.choices %}
+                        {% if not x %}
+                        <option value="" selected>Choose your gender</option>
+                        {% else %}
+                            <option value="{{ x }}">{{ y }}</option>
+                            {% endif %}
+                        {% endfor %}
 
+                    </select>
+                </p>
             </div>
             <div class="px-5">
                 {% if form.errors %}
@@ -72,7 +90,7 @@
 
               
             <p class="p-container">
-                <input class="submit" id="submit" type="submit" value="Edit" >
+                <input class="submit" id="submit" type="submit" value="Register" >
             </p>                
      
 

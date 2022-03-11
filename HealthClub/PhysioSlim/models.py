@@ -1,8 +1,20 @@
+import imp
+from math import pi
+from urllib import request
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils import timezone
 from django.core.validators import FileExtensionValidator
+from django.core.signals import request_finished
+from django.dispatch import receiver
+from allauth.account.signals import user_signed_up
+import urllib.parse as urlparse
+from urllib.request import urlopen
+from io import BytesIO
+import os
+from django.core.files import File
+
 # import schedule
 # import time
 GENDER = (
@@ -41,17 +53,46 @@ class Branch(models.Model):
 class User(AbstractUser):
     phone = PhoneNumberField(unique=True, null=False, blank=False)
     is_verified = models.BooleanField(default=False)
-    age = models.IntegerField()
+    is_activated = models.BooleanField(default=True)
+    age = models.IntegerField(blank=True, null=True)
     gender = models.CharField(choices=GENDER, max_length=20)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= True)
     membership_num = models.CharField(max_length=50, null= True, blank=True)
     is_subscribed = models.BooleanField(default=False)
-    avatar= models.ImageField(upload_to='avatars/',null=True, default='static/avatars/default.jpg', blank=True)
+    picture= models.ImageField(upload_to='avatars/',null=True, default='static/profile/default.jpg', blank=True, max_length=1000)
+
 
     REQUIRED_FIELDS = ['age', 'gender', 'phone', 'email']
 
+    @receiver(user_signed_up)
+    def populate_profile(sociallogin, user, **kwargs):
 
-   
+        user.profile = User()
+
+        # if sociallogin.account.provider == 'facebook':
+        #     user_data = user.socialaccount_set.filter(provider='facebook')[0].extra_data
+        #     picture_url = "http://graph.facebook.com/" + sociallogin.account.uid + "/picture?type=large"
+        #     email = user_data['email']
+        #     full_name = user_data['name']
+
+        if sociallogin.account.provider == 'google':
+            print("goooooooooogle")
+            user_data = user.socialaccount_set.filter(provider='google')[0].extra_data
+            print('goooooooooogle tany')
+            picture_url = user_data['picture']
+
+            email = user_data['email']
+            print(picture_url)
+        user.email = email
+        user.is_activated = False
+        avatar = urlopen(picture_url)
+        
+        from django.template.defaultfilters import slugify
+        from django.core.files.base import ContentFile
+        user.picture.save(slugify(user.username + " social") + '.jpg', 
+                ContentFile(avatar.read()))
+        user.save()
+
     # def delete_not_verifed_users(self):
     #     print("checkkkkk deleteeeee")
     #     if self.is_verified == False:
@@ -73,10 +114,10 @@ class Offer(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
 
-    
+
     def save(self,*args,**kwargs):
         users = User.objects.all()
-        created = not self.id 
+        created = not self.id
         super().save(*args,**kwargs)
         if created :
             notification = Notifications.objects.create(notification_type=4,Offer=self)
@@ -101,7 +142,7 @@ class MainOffer(models.Model):
 
     def save(self,*args,**kwargs):
         users = User.objects.all()
-        created = not self.id 
+        created = not self.id
         super().save(*args,**kwargs)
         if created :
             notification = Notifications.objects.create(notification_type=5,MainOffer=self)
@@ -125,7 +166,7 @@ class PersonalTrainer(models.Model):
 
     def save(self,*args,**kwargs):
         users = User.objects.all()
-        created = not self.id 
+        created = not self.id
         super().save(*args,**kwargs)
         if created :
             notification = Notifications.objects.create(notification_type=3,trainer=self)
@@ -145,7 +186,7 @@ class Event(models.Model):
 
     def save(self,*args,**kwargs):
         users = User.objects.all()
-        created = not self.id 
+        created = not self.id
         super().save(*args,**kwargs)
         if created :
             notification = Notifications.objects.create(notification_type=2,Event=self)
@@ -180,10 +221,10 @@ class Class(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo=models.ImageField(upload_to='Classes/', null=True, blank=True )
     icon = models.FileField(upload_to='Classes/', null=True, blank=True , default='static/avatars/default.jpg' ,validators=[FileExtensionValidator(['jpg', 'svg'])])
-    
+
     def save(self,*args,**kwargs):
         users = User.objects.all()
-        created = not self.id 
+        created = not self.id
         super().save(*args,**kwargs)
         if created :
             notification = Notifications.objects.create(notification_type=1,Class=self)
@@ -192,12 +233,12 @@ class Class(models.Model):
     class Meta:
         ordering = ('-id',)
 
-        
+
 
     def __str__(self):
         return self.Class
-    
-    
+
+
 class Clinic(models.Model):
     clinic = models.CharField(max_length=50, null=False, unique=True)
     description = models.CharField(max_length=1000, null=False)
@@ -205,12 +246,12 @@ class Clinic(models.Model):
     photo = models.ImageField(upload_to='clinics/', null=True, blank=True)
 
     def __str__(self):
-        return self.clinic 
+        return self.clinic
 
     class Meta:
         ordering = ('-id',)
 
-  
+
 #testing favorites
 class ClassSubscribers(models.Model):
     subscriber = models.ForeignKey(User, on_delete=models.CASCADE)

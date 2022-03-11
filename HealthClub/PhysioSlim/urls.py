@@ -7,6 +7,8 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('verify/', views.verify_code, name='verify-code'),  
     path('re-verify/', views.reverify_code, name='re-verify'),
+    # complete data in reistration with google
+    path('activate/', views.activate, name='activate'),
     path('login/', views.loginUser, name='login'),
     path('logout/', views.logoutUser, name='logout'),
     #reset password form
