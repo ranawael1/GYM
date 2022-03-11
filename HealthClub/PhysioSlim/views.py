@@ -151,7 +151,7 @@ def home(request):
         notifications = UserNotifications(request)
         context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches }
     else: 
-        context = {'gallery' : gallery , 'offers':offers ,'events':events}
+        context = {'gallery' : gallery , 'offers':offers ,'events':events,'branches':branches}
     return render(request,'physio-slim/index.html', context)
    
 #Gallery
