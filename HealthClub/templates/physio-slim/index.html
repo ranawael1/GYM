@@ -90,8 +90,8 @@
 		  <div class="col-md-3 animate-box">
 			<div class="price-box">
 			  <h2 class="pricing-plan">{{offer.name}}</h2>
-			  <div class="price"><sup class="currency"></sup>{{offer.discount}} % 
-				<h5>  Starting from {{offer.created_on}} </h5>
+			  <div class="price"><sup class="currency"></sup> {{offer.discount}} % 
+				<h5 class='pt-3'>  Starting from {{offer.created_on}} </h5>
 				<h5>  Untill {{offer.due|timeuntil}} </h5>
 				<small>
 					{% if offer.number_of_months is 1 %}

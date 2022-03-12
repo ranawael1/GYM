@@ -195,9 +195,11 @@ class Event(models.Model):
 
     def __str__(self):
         return self.event
-
+    
     class Meta:
         ordering = ('-created_on',)
+    
+# class scheduel(models.Model):
 
 
 class Notifications(models.Model):
@@ -231,7 +233,7 @@ class Class(models.Model):
             notification.to_user.set(users)
             notification.save()
     class Meta:
-        ordering = ('-id',)
+        ordering = ('id',)
 
 
 
