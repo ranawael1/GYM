@@ -43,7 +43,7 @@ def register(request):
             try:
                 verify.send(phone)
                 user.save()
-                login(request, user)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('verify-code')
             except:
                 error = {
@@ -55,6 +55,7 @@ def register(request):
                 context = {'form': form}
                 return render(request, 'physio-slim/register.html', context)
         else:
+            # print(form.errors)
             context = {'form': form}
             return render(request, 'physio-slim/register.html', context)
     context = {'form': form}
@@ -113,11 +114,11 @@ def activate(request):
             user = form.save(commit=False)   
             phone = form.cleaned_data.get('phone')
             # verification phone
-            print(phone)
+            # print(phone)
             try:
                 verify.send(phone)
                 user.save()
-                print("suser")
+                # print("suser")
                 return redirect('verify-code')
             except:
                 error = {
@@ -261,14 +262,13 @@ def profile(request):
     form = EditUserForm(instance=user)
     if request.method == 'POST':
         form = EditUserForm(request.POST ,request.FILES ,instance = user)
-        print('valid or not')
+        # print('valid or not')
         if form.is_valid():
-            edit = form.save(commit=False)
-            print('valid')
+            edit = form.save(request, commit=False)
+            # print('valid')
             phone = form.cleaned_data.get('phone')
-            print(edit.phone)
-            if edit.phone != phone:
-                edit.phone = phone
+            # print('is verified')
+            if not edit.is_verified:
                 edit.save()
                 return redirect("verify-code")    
             else:

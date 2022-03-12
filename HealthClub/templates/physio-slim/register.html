@@ -108,9 +108,9 @@
                 </div>
 
                 <div class="">
-                    <button type="submit" id="next" class="btn next text-light" style="float: right;" onclick="changeForm()">Next <i
+                    <button  id="next" class="btn next text-light" style="float: right;" onclick="changeForm()">Next <i
                             class="fa-solid fa-chevron-right"></i></button>
-                    <button type="submit" id="back" class="btn next text-light" onclick="changeForm()" style="display: none;"><i
+                    <button  id="back" class="btn next text-light" onclick="changeForm()" style="display: none;"><i
                             class="fa-solid fa-chevron-left"></i> Back</button>
 
                             <p class="p-container">
@@ -185,7 +185,7 @@
                 submit.style.display = 'none'
            }    
         else {
-            if(!username){
+            if(!username || !email || !password1 || !password2 || !phone || !branch){
                 console.log(username)
                 // message.innerHTML = 'Fill all Fields'
             }
