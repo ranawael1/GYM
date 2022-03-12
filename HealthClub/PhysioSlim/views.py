@@ -1,3 +1,4 @@
+from django.shortcuts import redirect, render
 from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants
 # decorators and authentication
 from .decorators import authenticated_user, verified_user, unverified_user, google_activated, google_unactivated
