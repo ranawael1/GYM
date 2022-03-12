@@ -1,5 +1,3 @@
-from dataclasses import Field
-import imp
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .models import User, Branch, Offer, Event, Clinic, Class
@@ -53,22 +51,18 @@ class EditUserForm(forms.ModelForm):
                 User.objects.get(phone=phone)
                 raise forms.ValidationError('This phone number is already in use. Please supply a different phone.')
             except:
-                pass
+                pass     
         return phone
 
-    def save(self, commit=True):
+    def save(self, request, commit=True):
+        userOld = User.objects.get(id = request.user.id)
+        # print(userOld, 'okkkkk')
         user = super(EditUserForm, self).save(commit=False)
         phone = self.cleaned_data['phone']
-        if user.phone != phone:
-            try:
-                verify.send(phone)
-            except:
-                error = {
-                    "error": {
-                        "statusCode": 429,
-                        "message": "Rate limit is exceeded. Try again later"
-                    }
-                }
+        # print(user.is_verified)
+        if phone != userOld.phone:
+            user.is_verified = False
+            verify.send(phone)
         return user
 
 class activateAccount(forms.ModelForm):
