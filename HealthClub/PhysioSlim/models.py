@@ -52,9 +52,10 @@ class Branch(models.Model):
 
 class User(AbstractUser):
     phone = PhoneNumberField(unique=True, null=False, blank=False)
+    email = models.EmailField(unique=True)
     is_verified = models.BooleanField(default=False)
     is_activated = models.BooleanField(default=True)
-    age = models.IntegerField(blank=True, null=True)
+    age = models.DateTimeField(default=None, null=True)
     gender = models.CharField(choices=GENDER, max_length=20)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= True)
     membership_num = models.CharField(max_length=50, null= True, blank=True)
@@ -62,7 +63,7 @@ class User(AbstractUser):
     picture= models.ImageField(upload_to='avatars/',null=True, default='static/profile/default.jpg', blank=True, max_length=1000)
 
 
-    REQUIRED_FIELDS = ['age', 'gender', 'phone', 'email']
+    REQUIRED_FIELDS = ['phone', 'email']
 
     @receiver(user_signed_up)
     def populate_profile(sociallogin, user, **kwargs):

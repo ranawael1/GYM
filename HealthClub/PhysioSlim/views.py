@@ -1,3 +1,4 @@
+from builtins import print
 from django.shortcuts import redirect, render
 from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer
 # decorators and authentication
@@ -55,8 +56,7 @@ def register(request):
                 context = {'form': form}
                 return render(request, 'physio-slim/register.html', context)
         else:
-            errors = form.errors
-            context = {'form': form, 'messages': errors}
+            context = {'form': form}
             return render(request, 'physio-slim/register.html', context)
     context = {'form': form}
     return render(request, 'physio-slim/register.html', context)
@@ -95,7 +95,7 @@ def verify_code(request):
 @verified_user
 @login_required(login_url='login')
 def reverify_code(request):
-    verify.resend(request.user.phone)
+    verify.send(request.user.phone)
     form = VerifyForm()
     context = {'form': form}
     return render(request, 'physio-slim/verify.html', context)
@@ -111,8 +111,24 @@ def activate(request):
     if request.method == 'POST':
         form = activateAccount(request.POST ,request.FILES ,instance = user)
         if form.is_valid():
-            edit = form.save()
-            return redirect("verify-code")
+            user = form.save(commit=False)   
+            phone = form.cleaned_data.get('phone')
+            # verification phone
+            print(phone)
+            try:
+                verify.send(phone)
+                user.save()
+                print("suser")
+                return redirect('verify-code')
+            except:
+                error = {
+                    "error": {
+                        "statusCode": 429,
+                        "message": "Rate limit is exceeded. Try again later"
+                    }
+                }
+            context = {'form':form,'branches':branches,'notifications':notifications}
+            return render(request, 'physio-slim/activate.html', context)
         # print(form.errors)
     context = {'form':form,'branches':branches,'notifications':notifications}
     return render(request,'physio-slim/activate.html', context)
@@ -234,9 +250,19 @@ def profile(request):
     form = EditUserForm(instance=user)
     if request.method == 'POST':
         form = EditUserForm(request.POST ,request.FILES ,instance = user)
+        print('valid or not')
         if form.is_valid():
-            edit = form.save()
-            return redirect("home")
+            edit = form.save(commit=False)
+            print('valid')
+            phone = form.cleaned_data.get('phone')
+            print(edit.phone)
+            if edit.phone != phone:
+                edit.phone = phone
+                edit.save()
+                return redirect("verify-code")    
+            else:
+                edit.save()
+                return redirect("home")
         # print(form.errors)
     context = {'form':form,'branches':branches,'notifications':notifications}
     return render(request,'physio-slim/profile.html', context)
