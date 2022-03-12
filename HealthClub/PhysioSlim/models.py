@@ -71,6 +71,7 @@ class Offer(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE )
     photo = models.ImageField(upload_to='offer/', null=True, blank=True )
     created_on = models.DateTimeField(default=timezone.now)
+    # due = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
    
     
@@ -142,7 +143,8 @@ class Event(models.Model):
     photo = models.ImageField(upload_to='events/', null=True, blank=True)
     created_on = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
-
+    completed = models.BooleanField(default=False)
+    
     def save(self,*args,**kwargs):
         users = User.objects.all()
         created = not self.id 

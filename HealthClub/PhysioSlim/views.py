@@ -13,6 +13,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 # verify phone 
 from . import verify
+from datetime import datetime, timezone
 
 # rest framework
 # from .decorators import verification_required
@@ -149,8 +150,7 @@ def home(request):
     events = Event.objects.all()[0:3]
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        events = removeEvent(request)
-        print(events)
+        event = removeEvent(request)
         context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches }
     else: 
         context = {'gallery' : gallery , 'offers':offers ,'events':events}
@@ -159,12 +159,20 @@ def home(request):
 #remove event
 def removeEvent(request):
     events = Event.objects.all()
-    for i in events.id :
-        print(i.due)
-        if i.due == 0 :
-            print(i.due)
-            i.delete()
-    return redirect(request, 'physio-slim/index.html')
+    for event in events :
+        print("here")
+        print(event.due.time()) #01:39:00
+        # print(event.due)  #2022-03-11 01:39:00+00:00
+        # print(event.due.minute)  #39
+        now = datetime.now()
+        print(now.time()) #14:36:25.375134
+        # print(now.hour) #14
+
+        # if now.time() - event.due.time() >= 0 :
+        #     print("completed")
+        #     event.delete()
+        #     print("Deleted")
+    return events
 
 
 #Gallery
