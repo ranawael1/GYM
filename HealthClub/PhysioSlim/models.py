@@ -181,6 +181,7 @@ class Event(models.Model):
     event = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=1000, null=False)
     photo = models.ImageField(upload_to='events/', null=True, blank=True)
+    num_of_participants = models.IntegerField(blank=True, null=True)
     created_on = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
 
@@ -198,6 +199,12 @@ class Event(models.Model):
 
     class Meta:
         ordering = ('-created_on',)
+
+class EventParticipants(models.Model):
+    participant = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+
 
 
 class Notifications(models.Model):

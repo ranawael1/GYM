@@ -1,5 +1,6 @@
+from venv import EnvBuilder
 from django.shortcuts import redirect, render
-from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer
+from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants
 # decorators and authentication
 from .decorators import authenticated_user, verified_user, unverified_user, google_activated, google_unactivated
 # forms
@@ -204,6 +205,18 @@ def events(request):
     return render(request, 'physio-slim/events.html', context)
 
 
+#going to an event
+def goingtToEvent(request, event_id):
+    event = Event.objects.get(id=event_id)
+    participant = EventParticipants.objects.create(participant=request.user, event=event)
+    return redirect ('event',event_id)
+
+#not going to an event
+def notGoingtToEvent(request, event_id):
+    event = Event.objects.get(id=event_id)
+    event_praticipant = EventParticipants.objects.get(participant=request.user, event_id=event)
+    event_praticipant.delete()
+    return redirect ('event',event_id)
 #Contact Page
 def contact(request):
     branches = Branch.objects.all()
@@ -372,11 +385,28 @@ def clinics(request, br_id):
 
 # !!!!!!!!!!!!!!!! Notifications!!!!!!!!!!!!!!!!!
 # Event Detailes Page
-def event_details(request, ev_id  ):
+def event_details(request, ev_id):
     branches=Branch.objects.all()
-    events= Event.objects.filter(id= ev_id)
-    print(events)
-    context = {'events': events, 'branch': branch , 'branches':branches}
+    event= Event.objects.filter(id = ev_id)
+    hide_going_to_option=False
+    #original available places
+    try:
+        original_num_of_participants = list(Event.objects.filter(id=ev_id).values_list('num_of_participants', flat=True))[0]
+        going_to = False
+        #getting this event participants so far
+        this_event_participants = EventParticipants.objects.filter(event_id=ev_id).values_list('participant_id', flat=True)
+        #turn it into a list 
+        this_event_participants_list = list(this_event_participants)
+        #available places
+        available_places = original_num_of_participants - len(this_event_participants_list) 
+        #change the going to flag to True if the user was found in the previous list 
+        if request.user.id in this_event_participants_list:
+            going_to = True
+        context = {'event': event, 'branch': branch , 'branches':branches,'going_to':going_to,
+        'available_places':available_places,'hide_going_to_option':hide_going_to_option,'this_event_participants':this_event_participants}
+    except:
+        hide_going_to_option = True
+        context = {'event': event, 'branch': branch , 'branches':branches,'hide_going_to_option':hide_going_to_option}
     return render(request, 'physio-slim/event.html', context)
 
 # offers Branch page
