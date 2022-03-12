@@ -40,6 +40,16 @@ DAYS = (
     ('6 days ', '6 days'),
     ('Everyday', 'Everyday'),
 )
+# WEEKDAYS= (
+#     (None, 'chosse the class days'),
+#     ('Saturday', 'Saturday'),
+#     ('Sunday', 'Sunday'),
+#     ('Monday ', 'Monday'),
+#     ('Tuesday ', 'Tuesday'),
+#     ('Wednesday', 'Wednesday'),
+#     ('Thursday', 'Thursday'),
+#     ('Friday', 'Friday'),
+# )
 class Branch(models.Model):
     name = models.CharField(max_length=50, null=True)
     address = models.CharField(max_length=50, null=True)
@@ -201,7 +211,6 @@ class Event(models.Model):
     class Meta:
         ordering = ('-created_on',)
     
-# class scheduel(models.Model):
 
 class EventParticipants(models.Model):
     participant = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -225,10 +234,18 @@ class Notifications(models.Model):
     class Meta:
         ordering = ('-created_on',)
 
+class Class_days(models.Model):
+    class_days = models.CharField(max_length=20, default=None)
+    def __str__(self):
+        return self.class_days  
+    class Meta:
+        ordering = ('id',)
+
 class Class(models.Model):
     Class = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=500, null=False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    # class_days = models.ManyToManyField(Class_days, related_name='Class_days', blank=True)
     photo=models.ImageField(upload_to='Classes/', null=True, blank=True )
     icon = models.FileField(upload_to='Classes/', null=True, blank=True , default='static/avatars/default.jpg' ,validators=[FileExtensionValidator(['jpg', 'svg'])])
 
@@ -270,6 +287,17 @@ class ClassSubscribers(models.Model):
     #     return self.subscriber
     # def __str__(self):
     #     return self.favclass
+
+class sechdule(models.Model):
+    day = models.ForeignKey(Class_days , on_delete=models.CASCADE)
+    classes =models.ForeignKey(Class , on_delete=models.CASCADE)
+    branch =models.ForeignKey(Branch , on_delete=models.CASCADE)
+    From = models.TimeField()
+    To = models.TimeField()
+    
+   
+
+
 
 
 class Gallery(models.Model):
