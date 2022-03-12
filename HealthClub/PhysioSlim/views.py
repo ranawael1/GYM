@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer
+from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants
 # decorators and authentication
 from .decorators import authenticated_user, verified_user, unverified_user, google_activated, google_unactivated
 # forms
@@ -55,8 +55,7 @@ def register(request):
                 context = {'form': form}
                 return render(request, 'physio-slim/register.html', context)
         else:
-            errors = form.errors
-            context = {'form': form, 'messages': errors}
+            context = {'form': form}
             return render(request, 'physio-slim/register.html', context)
     context = {'form': form}
     return render(request, 'physio-slim/register.html', context)
@@ -95,7 +94,7 @@ def verify_code(request):
 @verified_user
 @login_required(login_url='login')
 def reverify_code(request):
-    verify.resend(request.user.phone)
+    verify.send(request.user.phone)
     form = VerifyForm()
     context = {'form': form}
     return render(request, 'physio-slim/verify.html', context)
@@ -111,8 +110,24 @@ def activate(request):
     if request.method == 'POST':
         form = activateAccount(request.POST ,request.FILES ,instance = user)
         if form.is_valid():
-            edit = form.save()
-            return redirect("verify-code")
+            user = form.save(commit=False)   
+            phone = form.cleaned_data.get('phone')
+            # verification phone
+            print(phone)
+            try:
+                verify.send(phone)
+                user.save()
+                print("suser")
+                return redirect('verify-code')
+            except:
+                error = {
+                    "error": {
+                        "statusCode": 429,
+                        "message": "Rate limit is exceeded. Try again later"
+                    }
+                }
+            context = {'form':form,'branches':branches,'notifications':notifications}
+            return render(request, 'physio-slim/activate.html', context)
         # print(form.errors)
     context = {'form':form,'branches':branches,'notifications':notifications}
     return render(request,'physio-slim/activate.html', context)
@@ -169,7 +184,7 @@ def home(request):
         notifications = UserNotifications(request)
         context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches }
     else: 
-        context = {'gallery' : gallery , 'offers':offers ,'events':events}
+        context = {'gallery' : gallery , 'offers':offers ,'events':events,'branches':branches}
     return render(request,'physio-slim/index.html', context)
    
 #Gallery Page
@@ -204,6 +219,18 @@ def events(request):
     return render(request, 'physio-slim/events.html', context)
 
 
+#going to an event
+def goingtToEvent(request, event_id):
+    event = Event.objects.get(id=event_id)
+    participant = EventParticipants.objects.create(participant=request.user, event=event)
+    return redirect ('event',event_id)
+
+#not going to an event
+def notGoingtToEvent(request, event_id):
+    event = Event.objects.get(id=event_id)
+    event_praticipant = EventParticipants.objects.get(participant=request.user, event_id=event)
+    event_praticipant.delete()
+    return redirect ('event',event_id)
 #Contact Page
 def contact(request):
     branches = Branch.objects.all()
@@ -234,9 +261,19 @@ def profile(request):
     form = EditUserForm(instance=user)
     if request.method == 'POST':
         form = EditUserForm(request.POST ,request.FILES ,instance = user)
+        print('valid or not')
         if form.is_valid():
-            edit = form.save()
-            return redirect("home")
+            edit = form.save(commit=False)
+            print('valid')
+            phone = form.cleaned_data.get('phone')
+            print(edit.phone)
+            if edit.phone != phone:
+                edit.phone = phone
+                edit.save()
+                return redirect("verify-code")    
+            else:
+                edit.save()
+                return redirect("home")
         # print(form.errors)
     context = {'form':form,'branches':branches,'notifications':notifications}
     return render(request,'physio-slim/profile.html', context)
@@ -372,11 +409,28 @@ def clinics(request, br_id):
 
 # !!!!!!!!!!!!!!!! Notifications!!!!!!!!!!!!!!!!!
 # Event Detailes Page
-def event_details(request, ev_id  ):
+def event_details(request, ev_id):
     branches=Branch.objects.all()
-    events= Event.objects.filter(id= ev_id)
-    print(events)
-    context = {'events': events, 'branch': branch , 'branches':branches}
+    event= Event.objects.filter(id = ev_id)
+    hide_going_to_option=False
+    #original available places
+    try:
+        original_num_of_participants = list(Event.objects.filter(id=ev_id).values_list('num_of_participants', flat=True))[0]
+        going_to = False
+        #getting this event participants so far
+        this_event_participants = EventParticipants.objects.filter(event_id=ev_id).values_list('participant_id', flat=True)
+        #turn it into a list 
+        this_event_participants_list = list(this_event_participants)
+        #available places
+        available_places = original_num_of_participants - len(this_event_participants_list) 
+        #change the going to flag to True if the user was found in the previous list 
+        if request.user.id in this_event_participants_list:
+            going_to = True
+        context = {'event': event, 'branch': branch , 'branches':branches,'going_to':going_to,
+        'available_places':available_places,'hide_going_to_option':hide_going_to_option,'this_event_participants':this_event_participants}
+    except:
+        hide_going_to_option = True
+        context = {'event': event, 'branch': branch , 'branches':branches,'hide_going_to_option':hide_going_to_option}
     return render(request, 'physio-slim/event.html', context)
 
 # offers Branch page

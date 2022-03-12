@@ -52,9 +52,10 @@ class Branch(models.Model):
 
 class User(AbstractUser):
     phone = PhoneNumberField(unique=True, null=False, blank=False)
+    email = models.EmailField(unique=True)
     is_verified = models.BooleanField(default=False)
     is_activated = models.BooleanField(default=True)
-    age = models.IntegerField(blank=True, null=True)
+    age = models.DateTimeField(default=None, null=True)
     gender = models.CharField(choices=GENDER, max_length=20)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= True)
     membership_num = models.CharField(max_length=50, null= True, blank=True)
@@ -62,7 +63,7 @@ class User(AbstractUser):
     picture= models.ImageField(upload_to='avatars/',null=True, default='static/profile/default.jpg', blank=True, max_length=1000)
 
 
-    REQUIRED_FIELDS = ['age', 'gender', 'phone', 'email']
+    REQUIRED_FIELDS = ['phone', 'email']
 
     @receiver(user_signed_up)
     def populate_profile(sociallogin, user, **kwargs):
@@ -181,6 +182,7 @@ class Event(models.Model):
     event = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=1000, null=False)
     photo = models.ImageField(upload_to='events/', null=True, blank=True)
+    num_of_participants = models.IntegerField(blank=True, null=True)
     created_on = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
 
@@ -200,6 +202,12 @@ class Event(models.Model):
         ordering = ('-created_on',)
     
 # class scheduel(models.Model):
+
+class EventParticipants(models.Model):
+    participant = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+
 
 
 class Notifications(models.Model):
@@ -268,6 +276,6 @@ class Gallery(models.Model):
     name = models.CharField(max_length=50, null=True)
     description = models.CharField(max_length=1000, null=True)
     img = models.ImageField(upload_to='gallery/')
-    # def __str__(self):
-    #     return self.name
-
+    def __str__(self):
+        return self.name
+    
