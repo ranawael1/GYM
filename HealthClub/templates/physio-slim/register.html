@@ -10,17 +10,17 @@
 
 {% block body %}
 
-<div class="row">
-    <div class="col-7 d-flex justify-content-center align-items-center">
+<div class="row d-flex justify-content-center">
+    <div class="col-5 d-flex justify-content-center align-items-center">
         <div class="col-8 form">
             <form method="POST" action="" enctype="multipart/form-data"> {% csrf_token %}
                 <h1>REGISTER</h1>
                 <div class="inset " id="first">
                     <p>
-                        <input type="text" name="username" placeholder="Enter username..." required>
+                        <input type="text" name="username" placeholder="Enter username..." required value="{{form.username.value|default_if_none:''}}">
                     </p>
                     <p>
-                        <input type="email" name="email" placeholder="Enter email..." required>
+                        <input type="email" name="email" placeholder="Enter email..." required value="{{form.email.value|default_if_none:''}}">
                     </p>
                     <p>
                         <input type="password" name="password1" placeholder="password..." required>
@@ -29,24 +29,24 @@
                         <input type="password" name="password2" placeholder="confirm password..." required>
                     </p>
                     <p>
-                        <input type="tel" name="phone" placeholder="Enter phone..." required>
+                        <input type="tel" name="phone" placeholder="Enter phone..." required value="{{form.phone.value|default_if_none:''}}">
                     </p>
                     <p>
-                        <select name="branch" class="form-control" required="" id="id_branch">  
+                        <select name="branch" class="" required="" id="id_branch">  
                             {% for x, y in form.fields.branch.choices %}
                             {% if not x %}
-                            <option value="" selected>Choose your branch</option>
+                            <option value="" {% if form.branch.value == '' %}selected{% endif %}>Choose your branch </option>
                             {% else %}
-                                <option value="{{ x }}">{{ y }}</option>
-                                {% endif %}
+                                <option value="{{ x }}" {% if form.branch.value == x|slugify %}selected{% endif %}>{{ y  }}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </p>
                     {% if form.errors %}
                         {% for field in form %}
                             {% for error in field.errors %}
-                            <div class="text-danger">
-                                <p>{{ error|escape }}</p>
+                            <div class="text-danger" >
+                                <p id="message">{{ error|escape }}</p>
                             </div>
                             {% endfor %}
                         {% endfor %}
@@ -54,33 +54,38 @@
                 </div>
                 <div class="inset " id="second" style="display: none;">
                     <p>
-
-                    <div class="file-field">
-                        <div class="mb-4 d-flex flex-column  align-items-center">
-                            <img src="{% static 'profile/default.jpg' %}"
-                                class="rounded-circle avatar-pic" id='avatar' style=" object-fit: cover;
-                                width:150px;
-                                height:150px;" alt="avatar">
-                            <label for="file-upload" class="custom-file-upload mt-3">
-                                <i class="fa fa-cloud-upload"></i> Add Photo
-                            </label>
-                            <input id="file-upload" type="file" name="avatar" onchange="changeAvatar()"
-                                accept="image/*" />
+                       <input type="hidden" value="{{form.picture.value}}" id="imageCheck">
+                        <div class="file-field">
+                            <div class="mb-4 d-flex flex-column  align-items-center">
+                                <!-- <img {% if form.picture.value == 'static/profile/default.jpg' %}
+                                src="{% static 'profile/default.jpg' %}"
+                                {% else %}
+                                src=""
+                                {% endif %} -->
+                                <img 
+                                    src="{% static 'profile/default.jpg' %}"
+                                    class="rounded-circle avatar-pic" id='avatar' style=" object-fit: cover;
+                                    width:150px;
+                                    height:150px;" alt="avatar">
+                                <label for="file-upload" class="custom-file-upload mt-3">
+                                    <i class="fa fa-cloud-upload"></i> Add Photo
+                                </label>
+                                <input id="file-upload" type="file" name="picture" onchange="changeAvatar()"
+                                    accept="image/*" />
+                            </div>
                         </div>
-                    </div>
-
                     </p>
                     <p>
-                        <input type="number" name="age" placeholder="Enter age..." required min="1">
+                        <input type="date" name="age" placeholder="Enter age..." required min="1" value="{{form.age.value}}">
                     </p>
                     <p>
-                        <select name="gender" class="form-control" required="" id="id_gender">
+                        <select name="gender" class="" required="" id="id_gender">
                             {% for x, y in form.fields.gender.choices %}
                             {% if not x %}
-                            <option value="" selected>Choose your gender</option>
+                            <option value="" {% if form.gender.value == '' %}selected{% endif %}>Choose your gender </option>
                             {% else %}
-                                <option value="{{ x }}">{{ y }}</option>
-                                {% endif %}
+                                <option value="{{ x }}" {% if form.gender.value == x|slugify %}selected{% endif %}>{{ y  }}</option>
+                            {% endif %}
                             {% endfor %}
 
                         </select>
@@ -88,7 +93,7 @@
 
                     <p>
                         <label for="id_membership_num">If you have(optional):</label>
-                        <input type="text" name="membership_num" placeholder="Enter membership number">
+                        <input type="text" name="membership_num" placeholder="Enter membership number" value="{{form.membership_num.value}}">
                     </p>
                     {% if form.errors %}
                         {% for field in form %}
@@ -102,10 +107,10 @@
 
                 </div>
 
-                <div class="p-container">
-                    <button type="submit" id="next" class="btn next text-light" style="float: right;" onclick="changeForm()">Next <i
+                <div class="">
+                    <button  id="next" class="btn next text-light" style="float: right;" onclick="changeForm()">Next <i
                             class="fa-solid fa-chevron-right"></i></button>
-                    <button type="submit" id="back" class="btn next text-light" onclick="changeForm()" style="display: none;"><i
+                    <button  id="back" class="btn next text-light" onclick="changeForm()" style="display: none;"><i
                             class="fa-solid fa-chevron-left"></i> Back</button>
 
                             <p class="p-container">
@@ -113,19 +118,23 @@
                             </p>                
                 </div>
             </form>
-            <form method="post" action="{% provider_login_url 'google' %}" class="d-flex justify-content-center align-items-center">
-                {% csrf_token %}
-                <span>Or Signup with</span>
-                <button type="submit"  class="btn "><i class="fa-brands fa-google text-danger"></i></button>
-              </form>
+           
+			
 
         </div>
-
+        
     </div>
 
-    <div class="col-5">
-        <img src="{% static 'images/login.jpg' %}" style="width: 100%; float: right;">
-    </div>
+    <div class="col-5 d-flex align-items-center">
+        <form method="post" action="{% provider_login_url 'google' %}" class="signup col-10">
+            {% csrf_token %}				
+            <div class="inset text-center">OR</div>
+            <p class="p-container inset pt-4">
+                <button type="submit" class="bg-danger text-light google  d-flex justify-content-center align-items-center"><i class="fa-brands fa-google text-light m-2"></i> Signup with Google</button>
+            </p>
+        </form>
+        <!-- <img src="{% static 'images/login.jpg' %}" style="width: 100%; float: right;"> -->
+    </div> 
 </div>
 
 
@@ -133,10 +142,24 @@
 
 
 <script>
+//     window.onload = (event)=>{
+
+    
+//     var img = document.getElementById("avatar")
+//     var image = document.getElementById("imageCheck").value
+//     console.log(image)
+//     if (image!="static/profile/default.jpg"){
+
+//         img.src = 'http://webpage.com/images/'+image
+//         console.log(img.src)
+//     }
+// }
     function changeAvatar() {
         var img = document.getElementById("avatar")
         var avatar = document.getElementById("file-upload")
+        console.log(avatar)
         img.src = URL.createObjectURL(avatar.files[0])
+        console.log(avatar.files[0])
 
     }
     function changeForm() {
@@ -145,26 +168,42 @@
         var next = document.getElementById("next")
         var back = document.getElementById("back")
         var submit = document.getElementById("submit")
+        var username = document.getElementsByName('username')[0].value
+        var email = document.getElementsByName('email')[0].value
+        var password1 = document.getElementsByName('password1')[0].value
+        var password2 = document.getElementsByName('password2')[0].value
+        var phone = document.getElementsByName('phone')[0].value
+        var branch = document.getElementById('id_branch')
+        branch = branch.options[branch.selectedIndex].value
+        var message = document.getElementById('message')
 
         if (next.style.display == "none") {
-            first.style.display = 'block'
-            next.style.display = 'inline-block'
-            second.style.display = 'none'
-            back.style.display = 'none'
-            submit.style.display = 'none'
-
-
-
-        }
+                first.style.display = 'block'
+                next.style.display = 'inline-block'
+                second.style.display = 'none'
+                back.style.display = 'none'
+                submit.style.display = 'none'
+           }    
         else {
-            first.style.display = 'none'
-            next.style.display = 'none'
-            second.style.display = 'block'
-            back.style.display = 'inline-block'
-            submit.style.display = 'inline-block'
-
+            if(!username || !email || !password1 || !password2 || !phone || !branch){
+                console.log(username)
+                // message.innerHTML = 'Fill all Fields'
+            }
+            else{
+                first.style.display = 'none'
+                next.style.display = 'none'
+                second.style.display = 'block'
+                back.style.display = 'inline-block'
+                submit.style.display = 'inline-block'
+            }
         }
+            
+
+
+    
+        // (!username || !email || !password1 || !password2 || !phone || !branch)
     }
+        
 </script>
 
 

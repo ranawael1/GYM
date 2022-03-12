@@ -10,43 +10,48 @@
 {% block body %}
 
 
-<div class="row">
-	<div class="col-5 d-flex justify-content-center align-items-center">
+<div class="row d-flex justify-content-center">
+	<div class="col-5 d-flex justify-content-center align-items-center ">
 		<div class="col-10 form">
 			<form method="POST" action=""> {% csrf_token %}
 				<h1>LOGIN</h1>
 				<div class="inset">
 					<p>
 						<label for="username">USERNAME OR EMAIL</label>
-						<input type="text" name="username" placeholder="username or email..." >
+						<input type="text" name="username" placeholder="username or email...">
 					</p>
 					<p>
 						<label for="password">PASSWORD</label>
 						<input type="password" name="password" placeholder="password...">
 					</p>
 					{% for message in messages %}
-						<p id="messages" class="text-danger">{{message}}</p>
+					<p id="messages" class="text-danger">{{message}}</p>
 					{% endfor %}
-					<a href="{% url 'reset_password' %}" class="forget">Forgot password ?</a>
-					
+					<a href="{% url 'reset_password' %}" class="forget float-end">Forgot password ?</a>
+
 				</div>
-				
+
 				<p class="p-container">
 					<input class="submit" type="submit" value="Login">
 				</p>
-				</form>
-				<form method="post" action="{% provider_login_url 'google' %}" class="d-flex justify-content-center align-items-center">
-					{% csrf_token %}
-					<span>Or Login with</span>
-					<button type="submit"  class="btn "><i class="fa-brands fa-google text-danger"></i></button>
-				  </form>
-		</div>
+			</form>
 		
+			<form method="post" action="{% provider_login_url 'google' %}">
+				{% csrf_token %}
+				
+				<div class="inset text-center">OR</div>
+				<p class="p-container">
+					<button type="submit" class="bg-danger text-light google  d-flex justify-content-center align-items-center"><i class="fa-brands fa-google text-light m-2"></i> Login with Google</button>
+				</p>
+			</form>
+			
+
+		</div>
 	</div>
 
-	<div class="col-7">
+	<!-- <div class="col-7 flex-grow-1">
 		<img src="{% static 'images/login1.jpg' %}" style="width: 100%;">
-	</div>
+	</div> -->
 </div>
 
 

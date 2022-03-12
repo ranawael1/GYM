@@ -30,6 +30,8 @@ urlpatterns = [
     # Event pages
     path('event/<ev_id>', views.event_details, name='event'),
     path('events/', views.events, name='events'),
+    path('going-to-event/<event_id>', views.goingtToEvent, name='going-to-event'),
+    path('not-going-to-event/<event_id>', views.notGoingtToEvent, name='not-going-to-event'),
 
     #Branch Pages
     path('branch-classes/<br_id>', views.classes, name='classes'),
