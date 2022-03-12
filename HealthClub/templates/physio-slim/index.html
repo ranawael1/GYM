@@ -216,12 +216,13 @@
 			{% for event in events %}
 			<div class="col-lg-4 col-md-4">
 				<div class="fh5co-blog animate-box">
-					<a href="{% url 'event' event.id %}"><img style="height: 40vh;" src="{{MEDIA_URL}}/{{event.photo}}" alt="Hello"></a>
+					<a href="{% url 'event' event.id %}"><img style="height: 40vh;" src="{{MEDIA_URL}}/{{event.photo}}" alt="Event"></a>
 					<div class="blog-text">
 						<h3><a href="{% url 'event' event.id %}">{{event.event}}</a></h3>
 						<span class="posted_on">Valid for {{event.due|timeuntil}} from now!</span>
 						<!-- <span class="comment"><a href="">21<i class="icon-speech-bubble"></i></a></span> -->
 						<p>{{event.description}}.</p>
+						
 						<a href="{% url 'event' event.id %}" class="btn btn-primary">Book Now</a>
 					</div> 
 				</div>

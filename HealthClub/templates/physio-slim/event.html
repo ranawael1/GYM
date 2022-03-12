@@ -1,32 +1,55 @@
 {% extends 'physio-slim/main.html' %}
 {% load static %}
 {% block body %}
-	
-	<div id="fh5co-gallery">
-		<div class="container">
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box">
-                        <h2>Gym Events </h2>
-                    </div>
-                </div>
-             {% for event in events %}
-                <div class="row g-0 my-4">
-                  <div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box ">
-                    <div class="card-body">
-                      <h3 class="card-title"> {{ event.event }}</h3>
-                      <p class="card-text">{{event.description}}.</p>
-                      <!-- <p class="card-text">{{event.created_on}}</p> -->
-                      <p class="card-text">This Event is valid for <span class="card-text" style="color: #fde303; font-size: 30px;"> {{event.due|timeuntil}} </span> from now !</p>
-                    </div>
-                  </div>
-                  <div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box " >
-                    <img src="{{MEDIA_URL}}/{{event.photo}}"  style="height: 50vh;  align-items: center;" alt="...">
-                  </div>
-                 
-                </div>
-              {% endfor %}
-            </div>
-        </div>
-	
-{% endblock %}
 
+<div id="fh5co-gallery">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box">
+        <h2>Gym Events </h2>
+      </div>
+    </div>
+    {% for event in event %}
+    <div class="row g-0 my-4">
+      <div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box ">
+        <div class="card-body">
+          <h3 class="card-title"> {{ event.event }}</h3>
+          <p class="card-text">{{event.description}}.</p>
+          <!-- <p class="card-text">{{event.created_on}}</p> -->
+          {% if event.due %}
+          <p class="card-text">This Event is valid for <span class="card-text" style="color: #fde303; font-size: 30px;">
+              {{event.due|timeuntil}} </span> from now !</p>
+          {% endif %}
+
+          <!-- if the event doesnt have a limited participants number -->
+          {% if not hide_going_to_option %}
+            {% if available_places == 0 %}
+              <b>No places available</b>
+            {% else %}
+            <b>Available places:</b> {{available_places}}</p>
+            {% endif %}
+                {% if going_to %}
+                    <p><a href="{% url 'not-going-to-event' event.id %}" class="btn"
+                        style="background-color: #e67e22; color:white">changed my mind</a></p>
+                {% else %}
+                  {% if available_places == 0 and not request.user in this_event_participants %}
+                      <p><a class="btn btn-primary btn-outline btn-sm py-3" disabled>Going to?</a></p>
+                  {% else %}    
+                      <a href="{% url 'going-to-event' event.id %}" class="btn btn-primary btn-outline btn-sm">Going to?</a>
+                  {% endif %}
+                {% endif %}
+          {% endif %}
+
+
+        </div>
+      </div>
+      <div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box ">
+        <img src="{{MEDIA_URL}}/{{event.photo}}" style="height: 50vh;  align-items: center;" alt="">
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
