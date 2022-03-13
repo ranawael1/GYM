@@ -202,10 +202,10 @@ def removeEvent(request):
         print(now.time()) #14:36:25.375134
         # print(now.hour) #14
 
-        # if now.time() - event.due.time() >= 0 :
-        #     print("completed")
-        #     event.delete()
-        #     print("Deleted")
+        if now - event.due >= 0 :
+            print("completed")
+            event.delete()
+            print("Deleted")
     return events
 
 
