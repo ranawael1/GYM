@@ -107,7 +107,8 @@
 											width:40px;
 											height:40px;" alt="avatar"></a>
 										<ul class="dropdown">
-											{% if request.user.is_superuser %}
+												<li>{{request.user}}</li>		
+												<li><hr class="dropdown-divider"></li>									{% if request.user.is_superuser %}
 												<li><a href="/admin/" target="_blank">Manage site </a></li>
 												<li><a href="{% url 'profile' %}">Edit Profile</a></li>
 												<li><a href="{% url 'logout' %}">Logout</a></li>

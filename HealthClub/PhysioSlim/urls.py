@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework import routers
 from django.contrib.auth import views as auth_views
 from . import views
 
@@ -56,6 +57,8 @@ urlpatterns = [
     path('MOfferNotifications/<notification_id>/<offer_id>', views.MOfferNotifications, name='MOfferNotifications'),
     path('RemoveNotifications/<notification_id>', views.RemoveNotifications, name='RemoveNotifications'),
    
+    #class subscribers API
+    path('class-subscribers/<class_id>', views.classSubscribers, name='class-subscribers'),
    
     # #rest_framework
     # path('users/', views.users, name='users'),
