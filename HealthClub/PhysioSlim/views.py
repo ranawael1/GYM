@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants,sechdule
+from .models import Class_days, Schedule, User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants,Schedule
 # decorators and authentication
 from .decorators import authenticated_user, verified_user, unverified_user, google_activated, google_unactivated
 # forms
@@ -313,9 +313,10 @@ def classes(request, br_id):
 # # schedule of class
 def class_scheduale(request,cl_id ):
     branches = Branch.objects.all()
+    days= Class_days.objects.all()
     classes= Class.objects.get(id=cl_id)
-    classs = sechdule.objects.filter(classes=cl_id)
-    context= {'branches':branches , 'classes':classes , 'class':classs}
+    classs = Schedule.objects.filter(classes=cl_id)
+    context= {'branches':branches ,'days':days, 'classes':classes , 'class':classs}
     return render(request, 'physio-slim/schedule.html',context )
 
 # subscribe to a Class

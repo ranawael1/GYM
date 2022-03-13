@@ -3,6 +3,7 @@ from math import pi
 from urllib import request
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.forms import MultipleHiddenInput
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils import timezone
 from django.core.validators import FileExtensionValidator
@@ -288,12 +289,15 @@ class ClassSubscribers(models.Model):
     # def __str__(self):
     #     return self.favclass
 
-class sechdule(models.Model):
+
+class Schedule(models.Model):
     day = models.ForeignKey(Class_days , on_delete=models.CASCADE)
     classes =models.ForeignKey(Class , on_delete=models.CASCADE)
     branch =models.ForeignKey(Branch , on_delete=models.CASCADE)
     From = models.TimeField()
     To = models.TimeField()
+    class Meta:
+        ordering = ('day',)
     
    
 
