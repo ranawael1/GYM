@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User,Branch,Offer,PersonalTrainer,Event,Class,Clinic
+from .models import User,Branch,Offer,PersonalTrainer,Event,Class,Clinic,ClassSubscribers
 from rest_framework.validators import UniqueValidator
 
 
@@ -67,4 +67,8 @@ class LoginSerializer(serializers.ModelSerializer):
   
         
 
-        
+#classes subscribers 
+# class ClassSubscribersSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ClassSubscribers
+#         fields = '__all__'

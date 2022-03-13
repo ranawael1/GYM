@@ -12,6 +12,9 @@ from django.contrib import messages
 from django.core.mail import send_mail
 # verify phone 
 from . import verify
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .serializers import UserSerializer
 
 # rest framework
 # from .decorators import verification_required
@@ -546,8 +549,13 @@ def RemoveNotifications(request, notification_id):
   
 
 
-
-
+#class Subscirbers API
+@api_view(['GET',])
+def classSubscribers(request, class_id):
+    subscribers_id = list(ClassSubscribers.objects.filter(favclass_id=class_id).values_list('subscriber_id', flat=True))
+    subscribers_data = User.objects.filter(id__in = subscribers_id)
+    subscribers_ser = UserSerializer(subscribers_data, many=True)
+    return Response(subscribers_ser.data)
 
 
 
