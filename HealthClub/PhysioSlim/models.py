@@ -235,7 +235,7 @@ class Notifications(models.Model):
     class Meta:
         ordering = ('-created_on',)
 
-class Class_days(models.Model):
+class Working_days(models.Model):
     class_days = models.CharField(max_length=20, default=None)
     def __str__(self):
         return self.class_days  
@@ -291,7 +291,7 @@ class ClassSubscribers(models.Model):
 
 
 class Schedule(models.Model):
-    day = models.ForeignKey(Class_days , on_delete=models.CASCADE)
+    day = models.ForeignKey(Working_days , on_delete=models.CASCADE)
     classes =models.ForeignKey(Class , on_delete=models.CASCADE)
     branch =models.ForeignKey(Branch , on_delete=models.CASCADE)
     From = models.TimeField()
