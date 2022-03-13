@@ -408,29 +408,45 @@ def clinics(request, br_id):
     return render(request, 'physio-slim/br_clinics.html', context)
 
 # !!!!!!!!!!!!!!!! Notifications!!!!!!!!!!!!!!!!!
+
 # Event Detailes Page
 def event_details(request, ev_id):
     branches=Branch.objects.all()
     event= Event.objects.filter(id = ev_id)
-    hide_going_to_option=False
-    #original available places
+    #using this flag in case the event doesn't have a limited participants then no need to show 'going to' option
+    hide_going_to_option = False
+    #try, because if the event doesnt have a limited number, then it will give an error
     try:
+        going_to = False 
+        #original available places
         original_num_of_participants = list(Event.objects.filter(id=ev_id).values_list('num_of_participants', flat=True))[0]
-        going_to = False
-        #getting this event participants so far
+        #getting the participants IDs to this event so far
         this_event_participants = EventParticipants.objects.filter(event_id=ev_id).values_list('participant_id', flat=True)
-        #turn it into a list 
+        #turn it into a list so we can get its length (number of participants)
         this_event_participants_list = list(this_event_participants)
         #available places
         available_places = original_num_of_participants - len(this_event_participants_list) 
-        #change the going to flag to True if the user was found in the previous list 
+        #change the going_to flag to True if the user was found in the (this_event_participants_list)
+        #going_to flag will be used to give the user the option to undo the 'going to' option
         if request.user.id in this_event_participants_list:
             going_to = True
-        context = {'event': event, 'branch': branch , 'branches':branches,'going_to':going_to,
-        'available_places':available_places,'hide_going_to_option':hide_going_to_option,'this_event_participants':this_event_participants}
+        context = { 
+                    'event': event, 
+                    'branch': branch , 
+                    'branches':branches,
+                    'hide_going_to_option':hide_going_to_option, 
+                    'going_to':going_to,
+                    'available_places':available_places,
+                    'this_event_participants':this_event_participants,
+                }
     except:
         hide_going_to_option = True
-        context = {'event': event, 'branch': branch , 'branches':branches,'hide_going_to_option':hide_going_to_option}
+        context = {
+                    'event': event, 
+                    'branch': branch ,
+                    'branches':branches,
+                    'hide_going_to_option':hide_going_to_option,
+                }
     return render(request, 'physio-slim/event.html', context)
 
 # offers Branch page

@@ -21,14 +21,17 @@
               {{event.due|timeuntil}} </span> from now !</p>
           {% endif %}
 
-          <!-- if the event have a limited participants number -->
-          {% if not request.user.is_superuser %}
+          <!-- if the event have a limited participants number, will display the available places and the 'Going To' option -->
+          
             {% if not hide_going_to_option %}
-              {% if available_places == 0 %}
-                <b>No places available</b>
-              {% else %}
-              <b>Available places:</b> {{available_places}}</p>
-              {% endif %}
+                {% if available_places == 0 %}
+                    <b>No places available</b>
+                {% else %}
+                    <b>Available places:</b> {{available_places}}</p>
+                {% endif %}
+
+                <!-- if the user is admin they can't see the 'Going To' option-->
+                {% if not request.user.is_superuser %}
                   {% if going_to %}
                       <p><a href="{% url 'not-going-to-event' event.id %}" class="btn"
                           style="background-color: #e67e22; color:white">changed my mind</a></p>
@@ -39,8 +42,8 @@
                         <a href="{% url 'going-to-event' event.id %}" class="btn btn-primary btn-outline btn-sm">Going to?</a>
                     {% endif %}
                   {% endif %}
+                {% endif %}
             {% endif %}
-          {% endif %}
 
 
         </div>
