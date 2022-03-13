@@ -340,12 +340,12 @@ def subscribeToClass(request, class_id):
         ['physio.slim2@gmail.com'],
         fail_silently=False,)
         # send email confirming subscription
-    send_mail(
-        'Subscription Successful!',
-        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
-        'physio.slim2@gmail.com',
-        [f'{email}'],
-        fail_silently=False,)
+    # send_mail(
+    #     'Subscription Successful!',
+    #     f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
+    #     'physio.slim2@gmail.com',
+    #     [f'{email}'],
+    #     fail_silently=False,)
     return redirect('classes', branch)
 
 #display favorite classes
@@ -391,12 +391,12 @@ def unSubscribeFromClass(request, class_id):
         ['physio.slim2@gmail.com'],
         fail_silently=False,)
         # send email confirming the unsubscription
-    send_mail(
-        'Unsubscription',
-        f'Hello {request.user},\n sorry to here that you unsubscribed from our {classs} class, \n you might receive a call from our side to have a further discussion \n Br, \n Physio-Slim management.', 
-        'physio.slim2@gmail.com',
-        [f'{email}'],
-        fail_silently=False,)
+    # send_mail(
+    #     'Unsubscription',
+    #     f'Hello {request.user},\n sorry to here that you unsubscribed from our {classs} class, \n you might receive a call from our side to have a further discussion \n Br, \n Physio-Slim management.', 
+    #     'physio.slim2@gmail.com',
+    #     [f'{email}'],
+    #     fail_silently=False,)
     return redirect('classes', branch)
 
 # !!!!!!!!!!!!!!!! Notifications!!!!!!!!!!!!!!!!!
