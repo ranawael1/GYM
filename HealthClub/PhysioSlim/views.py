@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants
+from .models import Working_days, Schedule, User,Working_days, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants,Schedule
 # decorators and authentication
 from .decorators import authenticated_user, verified_user, unverified_user, google_activated, google_unactivated
 # forms
@@ -204,11 +204,12 @@ def gallery(request):
 #Main offers Page
 def main_offers(request):
     offers = MainOffer.objects.all()
+    branches = Branch.objects.all()
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        context = {'offers': offers, 'notifications' : notifications }
+        context = {'offers': offers, 'notifications' : notifications, 'branches':branches }
     else: 
-        context = {'offers': offers }
+        context = {'offers': offers, 'branches':branches }
     return render(request, 'physio-slim/m_offers.html', context)
 
 # Event Page 
@@ -314,11 +315,13 @@ def classes(request, br_id):
     return render(request, 'physio-slim/classes.html', context)
 
 # # schedule of class
-# def class_scheduale(request,cl_id ):
-#     branches = Branch.objects.all()
-#     classes = Class.objects.get(id=cl_id)
-#     context= {'branches':branches , 'classes':classes }
-#     return render(request, 'physio-slim/schedule.html',context )
+def class_scheduale(request,cl_id ):
+    branches = Branch.objects.all()
+    days= Working_days.objects.all()
+    classes= Class.objects.get(id=cl_id)
+    classs = Schedule.objects.filter(classes=cl_id)
+    context= {'branches':branches ,'days':days, 'classes':classes , 'class':classs}
+    return render(request, 'physio-slim/schedule.html',context )
 
 # subscribe to a Class
 @google_unactivated
@@ -415,6 +418,7 @@ def clinics(request, br_id):
 # Event Detailes Page
 def event_details(request, ev_id):
     branches=Branch.objects.all()
+    notifications = UserNotifications(request)
     event= Event.objects.filter(id = ev_id)
     #using this flag in case the event doesn't have a limited participants then no need to show 'going to' option
     hide_going_to_option = False
@@ -438,6 +442,7 @@ def event_details(request, ev_id):
                     'branch': branch , 
                     'branches':branches,
                     'hide_going_to_option':hide_going_to_option, 
+                    'notifications':notifications,
                     'going_to':going_to,
                     'available_places':available_places,
                     'this_event_participants':this_event_participants,
@@ -448,6 +453,7 @@ def event_details(request, ev_id):
                     'event': event, 
                     'branch': branch ,
                     'branches':branches,
+                    'notifications':notifications,
                     'hide_going_to_option':hide_going_to_option,
                 }
     return render(request, 'physio-slim/event.html', context)

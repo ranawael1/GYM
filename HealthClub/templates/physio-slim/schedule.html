@@ -1,0 +1,22 @@
+{{classes}} in {{classes.branch}}<br> <br>
+<!-- {% for day in days %}
+ {{day}} : 
+ {% endfor %} -->
+saturday
+ {% for class in class %}
+ <br>
+ {% if class.day.id == 1 %}
+
+ {{class.From}} : {{class.To}}
+ {% endif %}
+{% endfor %}
+Sunday
+<br>
+{% for class in class %}
+{% if class.day.id == 2 %}
+  {{class.From}} : {{class.To}}<br>
+
+{% endif %}
+
+ {% endfor %}
+

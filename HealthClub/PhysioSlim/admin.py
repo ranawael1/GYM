@@ -1,7 +1,7 @@
 from csv import list_dialects
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User,Branch,Offer,PersonalTrainer,Event,Clinic, Class,ClassSubscribers ,Notifications,Gallery,MainOffer, EventParticipants
+from .models import Working_days, User,Branch,Offer,PersonalTrainer,Event,Clinic, Class,ClassSubscribers ,Notifications,Gallery,MainOffer,Schedule,EventParticipants
 
 class ClinicAdmin(admin.ModelAdmin):
     list_display = ('clinic', 'branch')
@@ -18,8 +18,8 @@ class ClassSubscribersAdmin(admin.ModelAdmin):
 class ClassAdmin(admin.ModelAdmin):
     list_display = ('Class','branch')
 
-# class OfferAdmin(admin.ModelAdmin):
-#     list_display = ('name','branch')
+class ScheduleAdmin(admin.ModelAdmin):
+    list_display = ('classes','day','branch' , 'From','To')
 
 class EventParticipantsAdmin(admin.ModelAdmin):
     list_display = ('participant','event')
@@ -31,6 +31,8 @@ admin.site.register(EventParticipants, EventParticipantsAdmin)
 admin.site.register(Branch)
 admin.site.register(Offer)
 admin.site.register(Event)
+admin.site.register(Working_days)
+admin.site.register(Schedule,ScheduleAdmin)
 admin.site.register(Class,ClassAdmin)
 admin.site.register(Clinic,ClinicAdmin)
 admin.site.register(PersonalTrainer,TrainerAdmin)

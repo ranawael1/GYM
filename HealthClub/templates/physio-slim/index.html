@@ -78,15 +78,19 @@
 				<p></p>
 			</div>
 		</div>
+	</div>
+	<div class="container">
 		<div class="row">
 			<div class="pricing">
 				{% for offer in offers %}
 				<div class="col-md-3 animate-box">
 					<div class="price-box">
 						<h2 class="pricing-plan">{{offer.name}}</h2>
-						<div class="price"><sup class="currency"></sup>{{offer.discount}} %
-							<h5> Starting from {{offer.created_on}} </h5>
+						<div class="price"><sup class="currency"></sup> {{offer.discount}} %
+							{% if offer.due %}
+							<h5 class='pt-3'> Starting from {{offer.created_on}} </h5>
 							<h5> Untill {{offer.due|timeuntil}} </h5>
+							{% endif %}
 							<small>
 								{% if offer.number_of_months is 1 %}
 								per month
@@ -112,6 +116,8 @@
 			More <i class="icon-arrow-right"></i>
 		</a>
 	</div>
+
+</div>
 </div>
 
 
@@ -193,7 +199,7 @@
 					</a>
 				</div>
 			</div>
-			
+
 		</div>
 
 	</div>

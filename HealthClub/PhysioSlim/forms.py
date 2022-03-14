@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import User, Branch, Offer, Event, Clinic
+from .models import  Schedule, User, Branch, Offer, Event, Clinic, Class
 from .  import verify
 import random
 from datetime import date
@@ -140,3 +140,17 @@ class ClinicForm(forms.ModelForm):
     class Meta:
         model = Clinic
         fields = ('__all__')
+
+class ClassForm(forms.ModelForm):
+    class Meta:
+        model = Class 
+        fields =('__all__')
+        # widgets = {
+        #     'class_days': forms.CheckboxSelectMultiple(attrs={'class': 'form-select'}),
+        #     }
+        
+class sechduleForm(forms.ModelForm):
+    class Meta:
+        model = Schedule
+        fields =('__all__')
+       

@@ -40,6 +40,8 @@ urlpatterns = [
     path('branch-trainers/<br_id>', views.trainers, name='trainers'),
     path('offers/<br_id>', views.offers, name='offers'),
     path('main-offers', views.main_offers, name='main-offers'),
+    path('schedule/<cl_id>', views.class_scheduale, name='schedule'),
+
 
     
     #Class Subscrib
