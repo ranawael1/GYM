@@ -14,7 +14,7 @@ from django.core.mail import send_mail
 from . import verify
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer
+from .serializers import BranchSerializer, UserSerializer, ClassSerializer
 
 # rest framework
 # from .decorators import verification_required
@@ -549,8 +549,25 @@ def RemoveNotifications(request, notification_id):
   
 
 
+
+
+# APIs
+# branches
+@api_view(['GET'])
+def branches(request):
+    branches = Branch.objects.filter()
+    branches_ser = BranchSerializer(branches, many=True)
+    return Response(branches_ser.data)
+
+#display all classes
+@api_view(['GET'])
+def allClasses(request, branch_id):
+    classes = Class.objects.filter(branch=branch_id)
+    classes_ser = ClassSerializer(classes, many=True)
+    return Response(classes_ser.data)
+
 #class Subscirbers API
-@api_view(['GET',])
+@api_view(['GET'])
 def classSubscribers(request, class_id):
     subscribers_id = list(ClassSubscribers.objects.filter(favclass_id=class_id).values_list('subscriber_id', flat=True))
     subscribers_data = User.objects.filter(id__in = subscribers_id)

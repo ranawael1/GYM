@@ -1,5 +1,3 @@
-import imp
-from math import pi
 from urllib import request
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -13,6 +11,7 @@ import urllib.parse as urlparse
 from urllib.request import urlopen
 from io import BytesIO
 import os
+from datetime import date
 from django.core.files import File
 
 # import schedule
@@ -64,7 +63,7 @@ class User(AbstractUser):
 
 
     REQUIRED_FIELDS = ['phone', 'email']
-
+    
     @receiver(user_signed_up)
     def populate_profile(sociallogin, user, **kwargs):
 
@@ -77,11 +76,8 @@ class User(AbstractUser):
         #     full_name = user_data['name']
 
         if sociallogin.account.provider == 'google':
-            print("goooooooooogle")
             user_data = user.socialaccount_set.filter(provider='google')[0].extra_data
-            print('goooooooooogle tany')
             picture_url = user_data['picture']
-
             email = user_data['email']
             print(picture_url)
         user.email = email

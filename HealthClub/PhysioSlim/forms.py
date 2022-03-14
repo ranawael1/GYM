@@ -3,6 +3,7 @@ from django import forms
 from .models import User, Branch, Offer, Event, Clinic
 from .  import verify
 import random
+from datetime import date
 
 class CreateUserForm(UserCreationForm):
     class Meta:
