@@ -12,11 +12,9 @@
         <form method="POST" action="" enctype="multipart/form-data" class="form"> {% csrf_token %}
         <div class="row px-2">
             {% for message in messages %}
-						<span  style='display: none;' id="messages" class="">{{message}}</span>
-
+				<span  style='display: none;' id="messages" class="">{{message}}</span>
 			{% endfor %}
             <h1 class="text-uppercase">Complete registration</h1>
-
             <p>
                 <!-- <input type="text" name="" id="" value="{{user.socialaccount_set.all.0.get_avatar_url}}"> -->
                 <div class="file-field">
@@ -36,22 +34,21 @@
             <div class="inset col-6" id="first">
                     <p>
                         <label>Username</label>
-                        <input type="text" name="username" placeholder="Enter username..." required value="{{request.user.username}}">
+                        <input type="text" name="username" placeholder="Enter username..." required value="{{form.username.value}}">
                     </p>
-                   
                     <p>
                         <label>Phone</label>
-                        <input type="tel" name="phone" placeholder="Enter phone..." required value="{{request.user.phone}}">
+                        <input type="tel" name="phone" placeholder="Enter phone..." required value="{{form.phone.value}}">
                     </p>
                    <p>
                     <label>Branch</label>
-                    <select name="branch" class="form-control" required="" id="id_branch">  
+                    <select name="branch" class="" required="" id="id_branch">  
                         {% for x, y in form.fields.branch.choices %}
                         {% if not x %}
-                        <option value="" selected>Choose your branch</option>
+                        <option value="" {% if form.branch.value == '' %}selected{% endif %}>Choose your branch </option>
                         {% else %}
-                            <option value="{{ x }}">{{ y }}</option>
-                            {% endif %}
+                            <option value="{{ x }}" {% if form.branch.value == x|slugify %}selected{% endif %}>{{ y  }}</option>
+                        {% endif %}
                         {% endfor %}
                     </select>
                    </p>
@@ -59,23 +56,23 @@
             <div class="inset col-6" id="second" >
                 <p>
                     <label>Age</label>
-                    <input type="number" name="age" placeholder="Enter age..." required min="1"value="{{request.user.age}}" >
+                    <input type="date" name="age" placeholder="Enter age..." required min="1" value="{{form.age.value}}">
                 </p>
                 <p>
-                    <label for="id_membership_num">membership No.(optional):</label>
-                    <input type="text" name="membership_num" placeholder="Enter membership number" {% if requset.user.membership_num %}value="{{request.user.membership_num}}"{% endif %}>
+                    <label for="id_membership_num">Membership No.(optional):</label>
+                    <input type="text" name="membership_num" placeholder="Enter membership number" {% if requset.user.membership_num %}value="{{form.membership_num.value}}"{% endif %}>
                 </p>
                 
                 
                 <p>
                     <label>Gender</label>
-                    <select name="gender" class="form-control" required="" id="id_gender">
+                    <select name="gender" class="" required="" id="id_gender">
                         {% for x, y in form.fields.gender.choices %}
                         {% if not x %}
-                        <option value="" selected>Choose your gender</option>
+                        <option value="" {% if form.gender.value == '' %}selected{% endif %}>Choose your gender </option>
                         {% else %}
-                            <option value="{{ x }}">{{ y }}</option>
-                            {% endif %}
+                            <option value="{{ x }}" {% if form.gender.value == x|slugify %}selected{% endif %}>{{ y  }}</option>
+                        {% endif %}
                         {% endfor %}
 
                     </select>
@@ -95,7 +92,7 @@
 
               
             <p class="p-container">
-                <input class="submit" id="submit" type="submit" value="Register" >
+                <input class="submit" id="submit" type="submit" value="Activate" >
             </p>                
      
 

@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer
+from .models import Working_days, Schedule, User,Working_days, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants,Schedule
 # decorators and authentication
 from .decorators import authenticated_user, verified_user, unverified_user, google_activated, google_unactivated
 # forms
@@ -12,6 +12,9 @@ from django.contrib import messages
 from django.core.mail import send_mail
 # verify phone 
 from . import verify
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .serializers import UserSerializer
 
 # rest framework
 # from .decorators import verification_required
@@ -43,7 +46,7 @@ def register(request):
             try:
                 verify.send(phone)
                 user.save()
-                login(request, user)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('verify-code')
             except:
                 error = {
@@ -55,8 +58,8 @@ def register(request):
                 context = {'form': form}
                 return render(request, 'physio-slim/register.html', context)
         else:
-            errors = form.errors
-            context = {'form': form, 'messages': errors}
+            # print(form.errors)
+            context = {'form': form}
             return render(request, 'physio-slim/register.html', context)
     context = {'form': form}
     return render(request, 'physio-slim/register.html', context)
@@ -95,7 +98,7 @@ def verify_code(request):
 @verified_user
 @login_required(login_url='login')
 def reverify_code(request):
-    verify.resend(request.user.phone)
+    verify.send(request.user.phone)
     form = VerifyForm()
     context = {'form': form}
     return render(request, 'physio-slim/verify.html', context)
@@ -111,8 +114,24 @@ def activate(request):
     if request.method == 'POST':
         form = activateAccount(request.POST ,request.FILES ,instance = user)
         if form.is_valid():
-            edit = form.save()
-            return redirect("verify-code")
+            user = form.save(commit=False)   
+            phone = form.cleaned_data.get('phone')
+            # verification phone
+            # print(phone)
+            try:
+                verify.send(phone)
+                user.save()
+                # print("suser")
+                return redirect('verify-code')
+            except:
+                error = {
+                    "error": {
+                        "statusCode": 429,
+                        "message": "Rate limit is exceeded. Try again later"
+                    }
+                }
+            context = {'form':form,'branches':branches,'notifications':notifications}
+            return render(request, 'physio-slim/activate.html', context)
         # print(form.errors)
     context = {'form':form,'branches':branches,'notifications':notifications}
     return render(request,'physio-slim/activate.html', context)
@@ -169,7 +188,7 @@ def home(request):
         notifications = UserNotifications(request)
         context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches }
     else: 
-        context = {'gallery' : gallery , 'offers':offers ,'events':events}
+        context = {'gallery' : gallery , 'offers':offers ,'events':events,'branches':branches}
     return render(request,'physio-slim/index.html', context)
    
 #Gallery Page
@@ -204,6 +223,18 @@ def events(request):
     return render(request, 'physio-slim/events.html', context)
 
 
+#going to an event
+def goingtToEvent(request, event_id):
+    event = Event.objects.get(id=event_id)
+    participant = EventParticipants.objects.create(participant=request.user, event=event)
+    return redirect ('event',event_id)
+
+#not going to an event
+def notGoingtToEvent(request, event_id):
+    event = Event.objects.get(id=event_id)
+    event_praticipant = EventParticipants.objects.get(participant=request.user, event_id=event)
+    event_praticipant.delete()
+    return redirect ('event',event_id)
 #Contact Page
 def contact(request):
     branches = Branch.objects.all()
@@ -234,9 +265,18 @@ def profile(request):
     form = EditUserForm(instance=user)
     if request.method == 'POST':
         form = EditUserForm(request.POST ,request.FILES ,instance = user)
+        # print('valid or not')
         if form.is_valid():
-            edit = form.save()
-            return redirect("home")
+            edit = form.save(request, commit=False)
+            # print('valid')
+            phone = form.cleaned_data.get('phone')
+            # print('is verified')
+            if not edit.is_verified:
+                edit.save()
+                return redirect("verify-code")    
+            else:
+                edit.save()
+                return redirect("home")
         # print(form.errors)
     context = {'form':form,'branches':branches,'notifications':notifications}
     return render(request,'physio-slim/profile.html', context)
@@ -274,11 +314,13 @@ def classes(request, br_id):
     return render(request, 'physio-slim/classes.html', context)
 
 # # schedule of class
-# def class_scheduale(request,cl_id ):
-#     branches = Branch.objects.all()
-#     classes = Class.objects.get(id=cl_id)
-#     context= {'branches':branches , 'classes':classes }
-#     return render(request, 'physio-slim/schedule.html',context )
+def class_scheduale(request,cl_id ):
+    branches = Branch.objects.all()
+    days= Working_days.objects.all()
+    classes= Class.objects.get(id=cl_id)
+    classs = Schedule.objects.filter(classes=cl_id)
+    context= {'branches':branches ,'days':days, 'classes':classes , 'class':classs}
+    return render(request, 'physio-slim/schedule.html',context )
 
 # subscribe to a Class
 @google_unactivated
@@ -303,12 +345,12 @@ def subscribeToClass(request, class_id):
         ['physio.slim2@gmail.com'],
         fail_silently=False,)
         # send email confirming subscription
-    send_mail(
-        'Subscription Successful!',
-        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
-        'physio.slim2@gmail.com',
-        [f'{email}'],
-        fail_silently=False,)
+    # send_mail(
+    #     'Subscription Successful!',
+    #     f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
+    #     'physio.slim2@gmail.com',
+    #     [f'{email}'],
+    #     fail_silently=False,)
     return redirect('classes', branch)
 
 #display favorite classes
@@ -354,12 +396,12 @@ def unSubscribeFromClass(request, class_id):
         ['physio.slim2@gmail.com'],
         fail_silently=False,)
         # send email confirming the unsubscription
-    send_mail(
-        'Unsubscription',
-        f'Hello {request.user},\n sorry to here that you unsubscribed from our {classs} class, \n you might receive a call from our side to have a further discussion \n Br, \n Physio-Slim management.', 
-        'physio.slim2@gmail.com',
-        [f'{email}'],
-        fail_silently=False,)
+    # send_mail(
+    #     'Unsubscription',
+    #     f'Hello {request.user},\n sorry to here that you unsubscribed from our {classs} class, \n you might receive a call from our side to have a further discussion \n Br, \n Physio-Slim management.', 
+    #     'physio.slim2@gmail.com',
+    #     [f'{email}'],
+    #     fail_silently=False,)
     return redirect('classes', branch)
 
 # !!!!!!!!!!!!!!!! Notifications!!!!!!!!!!!!!!!!!
@@ -371,12 +413,45 @@ def clinics(request, br_id):
     return render(request, 'physio-slim/br_clinics.html', context)
 
 # !!!!!!!!!!!!!!!! Notifications!!!!!!!!!!!!!!!!!
+
 # Event Detailes Page
-def event_details(request, ev_id  ):
+def event_details(request, ev_id):
     branches=Branch.objects.all()
-    events= Event.objects.filter(id= ev_id)
-    print(events)
-    context = {'events': events, 'branch': branch , 'branches':branches}
+    event= Event.objects.filter(id = ev_id)
+    #using this flag in case the event doesn't have a limited participants then no need to show 'going to' option
+    hide_going_to_option = False
+    #try, because if the event doesnt have a limited number, then it will give an error
+    try:
+        going_to = False 
+        #original available places
+        original_num_of_participants = list(Event.objects.filter(id=ev_id).values_list('num_of_participants', flat=True))[0]
+        #getting the participants IDs to this event so far
+        this_event_participants = EventParticipants.objects.filter(event_id=ev_id).values_list('participant_id', flat=True)
+        #turn it into a list so we can get its length (number of participants)
+        this_event_participants_list = list(this_event_participants)
+        #available places
+        available_places = original_num_of_participants - len(this_event_participants_list) 
+        #change the going_to flag to True if the user was found in the (this_event_participants_list)
+        #going_to flag will be used to give the user the option to undo the 'going to' option
+        if request.user.id in this_event_participants_list:
+            going_to = True
+        context = { 
+                    'event': event, 
+                    'branch': branch , 
+                    'branches':branches,
+                    'hide_going_to_option':hide_going_to_option, 
+                    'going_to':going_to,
+                    'available_places':available_places,
+                    'this_event_participants':this_event_participants,
+                }
+    except:
+        hide_going_to_option = True
+        context = {
+                    'event': event, 
+                    'branch': branch ,
+                    'branches':branches,
+                    'hide_going_to_option':hide_going_to_option,
+                }
     return render(request, 'physio-slim/event.html', context)
 
 # offers Branch page
@@ -476,8 +551,13 @@ def RemoveNotifications(request, notification_id):
   
 
 
-
-
+#class Subscirbers API
+@api_view(['GET',])
+def classSubscribers(request, class_id):
+    subscribers_id = list(ClassSubscribers.objects.filter(favclass_id=class_id).values_list('subscriber_id', flat=True))
+    subscribers_data = User.objects.filter(id__in = subscribers_id)
+    subscribers_ser = UserSerializer(subscribers_data, many=True)
+    return Response(subscribers_ser.data)
 
 
 

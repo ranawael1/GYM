@@ -23,7 +23,7 @@
                         <label for="file-upload" class="custom-file-upload mt-3">
                             <i class="fa fa-cloud-upload"></i> Edit Photo
                         </label>
-                        <input id="file-upload" type="file" name="avatar" onchange="changeAvatar()"
+                        <input id="file-upload" type="file" name="picture" onchange="changeAvatar()"
                             accept="image/*" />
                     </div>
                 </div>
@@ -45,7 +45,7 @@
             <div class="inset col-6" id="second" >
                 <p>
                     <label>Age</label>
-                    <input type="number" name="age" placeholder="Enter age..." required min="1"value="{{request.user.age}}" >
+                    <input type="date" name="age" placeholder="Enter age..." value="{{request.user.age|date:'Y-m-d'}}">
                 </p>
                 <p>
                     <label for="id_membership_num">membership No.(optional):</label>

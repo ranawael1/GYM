@@ -1,13 +1,9 @@
-from dataclasses import Field
-import imp
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from django.shortcuts import redirect
-from .models import User, Branch, Offer, Event, Clinic
+from .models import  Schedule, User, Branch, Offer, Event, Clinic, Class
 from .  import verify
 import random
 
-#a modified UserCreationForm so we can add a new field(email)
 class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
@@ -35,7 +31,6 @@ class EditUserForm(forms.ModelForm):
     def clean_email(self):
         username = self.cleaned_data.get('username')
         email = self.cleaned_data.get('email')
-        print(username)
         if email and User.objects.filter(email=email).exclude(username=username).count():
             pass
         else:
@@ -56,20 +51,18 @@ class EditUserForm(forms.ModelForm):
                 User.objects.get(phone=phone)
                 raise forms.ValidationError('This phone number is already in use. Please supply a different phone.')
             except:
-                verify.send(phone)
-                global check_phone
-                check_phone = True
+                pass     
         return phone
 
-    def save(self, commit=True):
+    def save(self, request, commit=True):
+        userOld = User.objects.get(id = request.user.id)
+        # print(userOld, 'okkkkk')
         user = super(EditUserForm, self).save(commit=False)
-        user.email = self.cleaned_data['email']
-        user.phone = self.cleaned_data['phone']
-        if commit:
-            user.save()
-        if check_phone is True:
-            print("checkkk trueee")
-            return redirect('verify-code')
+        phone = self.cleaned_data['phone']
+        # print(user.is_verified)
+        if phone != userOld.phone:
+            user.is_verified = False
+            verify.send(phone)
         return user
 
 class activateAccount(forms.ModelForm):
@@ -105,9 +98,7 @@ class activateAccount(forms.ModelForm):
                 User.objects.get(phone=phone)
                 raise forms.ValidationError('This phone number is already in use. Please supply a different phone.')
             except:
-                verify.send(phone)
-                global check_phone
-                check_phone = True
+                pass
         return phone
 
     def save(self, commit=True):
@@ -116,9 +107,6 @@ class activateAccount(forms.ModelForm):
         user.is_activated = True
         if commit:
             user.save()
-        if check_phone is True:
-            print("checkkk trueee")
-            return redirect('verify-code')
         return user
 
 class VerifyForm(forms.Form):
@@ -151,3 +139,17 @@ class ClinicForm(forms.ModelForm):
     class Meta:
         model = Clinic
         fields = ('__all__')
+
+class ClassForm(forms.ModelForm):
+    class Meta:
+        model = Class 
+        fields =('__all__')
+        # widgets = {
+        #     'class_days': forms.CheckboxSelectMultiple(attrs={'class': 'form-select'}),
+        #     }
+        
+class sechduleForm(forms.ModelForm):
+    class Meta:
+        model = Schedule
+        fields =('__all__')
+       

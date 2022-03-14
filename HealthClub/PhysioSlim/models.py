@@ -3,6 +3,7 @@ from math import pi
 from urllib import request
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.forms import MultipleHiddenInput
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils import timezone
 from django.core.validators import FileExtensionValidator
@@ -40,6 +41,16 @@ DAYS = (
     ('6 days ', '6 days'),
     ('Everyday', 'Everyday'),
 )
+# WEEKDAYS= (
+#     (None, 'chosse the class days'),
+#     ('Saturday', 'Saturday'),
+#     ('Sunday', 'Sunday'),
+#     ('Monday ', 'Monday'),
+#     ('Tuesday ', 'Tuesday'),
+#     ('Wednesday', 'Wednesday'),
+#     ('Thursday', 'Thursday'),
+#     ('Friday', 'Friday'),
+# )
 class Branch(models.Model):
     name = models.CharField(max_length=50, null=True)
     address = models.CharField(max_length=50, null=True)
@@ -52,9 +63,10 @@ class Branch(models.Model):
 
 class User(AbstractUser):
     phone = PhoneNumberField(unique=True, null=False, blank=False)
+    email = models.EmailField(unique=True)
     is_verified = models.BooleanField(default=False)
     is_activated = models.BooleanField(default=True)
-    age = models.IntegerField(blank=True, null=True)
+    age = models.DateTimeField(default=None, null=True)
     gender = models.CharField(choices=GENDER, max_length=20)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= True)
     membership_num = models.CharField(max_length=50, null= True, blank=True)
@@ -62,7 +74,7 @@ class User(AbstractUser):
     picture= models.ImageField(upload_to='avatars/',null=True, default='static/profile/default.jpg', blank=True, max_length=1000)
 
 
-    REQUIRED_FIELDS = ['age', 'gender', 'phone', 'email']
+    REQUIRED_FIELDS = ['phone', 'email']
 
     @receiver(user_signed_up)
     def populate_profile(sociallogin, user, **kwargs):
@@ -181,6 +193,7 @@ class Event(models.Model):
     event = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=1000, null=False)
     photo = models.ImageField(upload_to='events/', null=True, blank=True)
+    num_of_participants = models.IntegerField(blank=True, null=True)
     created_on = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
 
@@ -195,9 +208,16 @@ class Event(models.Model):
 
     def __str__(self):
         return self.event
-
+    
     class Meta:
         ordering = ('-created_on',)
+    
+
+class EventParticipants(models.Model):
+    participant = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+
 
 
 class Notifications(models.Model):
@@ -215,10 +235,18 @@ class Notifications(models.Model):
     class Meta:
         ordering = ('-created_on',)
 
+class Working_days(models.Model):
+    class_days = models.CharField(max_length=20, default=None)
+    def __str__(self):
+        return self.class_days  
+    class Meta:
+        ordering = ('id',)
+
 class Class(models.Model):
     Class = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=500, null=False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    # class_days = models.ManyToManyField(Class_days, related_name='Class_days', blank=True)
     photo=models.ImageField(upload_to='Classes/', null=True, blank=True )
     icon = models.FileField(upload_to='Classes/', null=True, blank=True , default='static/avatars/default.jpg' ,validators=[FileExtensionValidator(['jpg', 'svg'])])
 
@@ -231,7 +259,7 @@ class Class(models.Model):
             notification.to_user.set(users)
             notification.save()
     class Meta:
-        ordering = ('-id',)
+        ordering = ('id',)
 
 
 
@@ -262,10 +290,24 @@ class ClassSubscribers(models.Model):
     #     return self.favclass
 
 
+class Schedule(models.Model):
+    day = models.ForeignKey(Working_days , on_delete=models.CASCADE)
+    classes =models.ForeignKey(Class , on_delete=models.CASCADE)
+    branch =models.ForeignKey(Branch , on_delete=models.CASCADE)
+    From = models.TimeField()
+    To = models.TimeField()
+    class Meta:
+        ordering = ('day',)
+    
+   
+
+
+
+
 class Gallery(models.Model):
     name = models.CharField(max_length=50, null=True)
     description = models.CharField(max_length=1000, null=True)
     img = models.ImageField(upload_to='gallery/')
-    # def __str__(self):
-    #     return self.name
-
+    def __str__(self):
+        return self.name
+    

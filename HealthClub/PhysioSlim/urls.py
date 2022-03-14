@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework import routers
 from django.contrib.auth import views as auth_views
 from . import views
 
@@ -30,6 +31,8 @@ urlpatterns = [
     # Event pages
     path('event/<ev_id>', views.event_details, name='event'),
     path('events/', views.events, name='events'),
+    path('going-to-event/<event_id>', views.goingtToEvent, name='going-to-event'),
+    path('not-going-to-event/<event_id>', views.notGoingtToEvent, name='not-going-to-event'),
 
     #Branch Pages
     path('branch-classes/<br_id>', views.classes, name='classes'),
@@ -37,6 +40,8 @@ urlpatterns = [
     path('branch-trainers/<br_id>', views.trainers, name='trainers'),
     path('offers/<br_id>', views.offers, name='offers'),
     path('main-offers', views.main_offers, name='main-offers'),
+    path('schedule/<cl_id>', views.class_scheduale, name='schedule'),
+
 
     
     #Class Subscrib
@@ -52,6 +57,8 @@ urlpatterns = [
     path('MOfferNotifications/<notification_id>/<offer_id>', views.MOfferNotifications, name='MOfferNotifications'),
     path('RemoveNotifications/<notification_id>', views.RemoveNotifications, name='RemoveNotifications'),
    
+    #class subscribers API
+    path('class-subscribers/<class_id>', views.classSubscribers, name='class-subscribers'),
    
     # #rest_framework
     # path('users/', views.users, name='users'),
