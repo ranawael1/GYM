@@ -248,7 +248,7 @@ class Class(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     # class_days = models.ManyToManyField(Class_days, related_name='Class_days', blank=True)
     photo=models.ImageField(upload_to='Classes/', null=True, blank=True )
-    icon = models.FileField(upload_to='Classes/', null=True, blank=True , default='static/avatars/default.jpg' ,validators=[FileExtensionValidator(['jpg', 'svg'])])
+    icon = models.FileField(upload_to='Classes/', null=True, blank=True , default='static/icons/exercise.svg' ,validators=[FileExtensionValidator(['svg', 'jpg', ])])
 
     def save(self,*args,**kwargs):
         users = User.objects.all()
