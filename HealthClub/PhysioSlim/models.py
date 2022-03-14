@@ -192,7 +192,7 @@ class PersonalTrainer(models.Model):
 class Event(models.Model):
     event = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=1000, null=False)
-    photo = models.ImageField(upload_to='events/', null=True, blank=True)
+    photo = models.ImageField(upload_to='events/', null=True, blank=True , default='static/icons/new_event.jpg' ,validators=[FileExtensionValidator(['svg', 'jpg', ])])
     num_of_participants = models.IntegerField(blank=True, null=True)
     created_on = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
@@ -247,7 +247,7 @@ class Class(models.Model):
     description = models.CharField(max_length=500, null=False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     # class_days = models.ManyToManyField(Class_days, related_name='Class_days', blank=True)
-    photo=models.ImageField(upload_to='Classes/', null=True, blank=True )
+    photo=models.ImageField(upload_to='Classes/', null=True, blank=True, )
     icon = models.FileField(upload_to='Classes/', null=True, blank=True , default='static/icons/exercise.svg' ,validators=[FileExtensionValidator(['svg', 'jpg', ])])
 
     def save(self,*args,**kwargs):
