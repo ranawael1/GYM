@@ -55,6 +55,15 @@ urlpatterns = [
     path('RemoveNotifications/<notification_id>', views.RemoveNotifications, name='RemoveNotifications'),
    
    
+    #paypal checkout
+    path('OfferPayment/<offer_id>', views.OfferPayment, name='OfferPayment'),
+    path('MainOfferPayment/<mainoffer_id>', views.MainOfferPayment, name='MainOfferPayment'),
+    path('ClassPayment/<class_id>', views.ClassPayment, name='ClassPayment'),
+    path('EventPayment/<event_id>', views.EventPayment, name='EventPayment'),
+    path('paypal-return', views.paypal_return, name='paypal-return'),
+    path('paypal-cancel', views.paypal_cancel, name='paypal-cancel'),
+
+
     # #rest_framework
     # path('users/', views.users, name='users'),
     # path('user/<user_id>', views.user, name='user'),

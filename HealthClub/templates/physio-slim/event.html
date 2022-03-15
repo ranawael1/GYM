@@ -36,6 +36,7 @@
                       <p><a class="btn btn-primary btn-outline btn-sm py-3" disabled>Going to?</a></p>
                   {% else %}    
                       <a href="{% url 'going-to-event' event.id %}" class="btn btn-primary btn-outline btn-sm">Going to?</a>
+                      <a href="{% url 'EventPayment' event.id %}" class="btn btn-select-plan btn-sm">Pay Now</a>
                   {% endif %}
                 {% endif %}
           {% endif %}

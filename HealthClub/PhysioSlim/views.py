@@ -13,7 +13,15 @@ from django.core.mail import send_mail
 # verify phone 
 from . import verify
 from datetime import datetime, timezone
-
+#checkout
+from django.http import JsonResponse
+import json
+#django paypal
+from django.views.generic import FormView, TemplateView
+from django.urls import reverse
+from paypal.standard.forms import PayPalPaymentsForm
+from django.conf import settings
+import uuid
 # rest framework
 # from .decorators import verification_required
 # from rest_framework import permissions
@@ -23,13 +31,109 @@ from datetime import datetime, timezone
 # from django.contrib.auth.models import AnonymousUser
 # from urllib.parse import urlparse
 # from urllib import parse
-#from django.http import HttpResponse
-# import json
 
 # Notifications
 # from channels.layers import get_channel_layer #broadcast (not used)
 #from asgiref.sync import async_to_sync
 
+#home
+def home(request):
+    gallery = Gallery.objects.all()[0:4]
+    offers= MainOffer.objects.all()[0:4]
+    branches = Branch.objects.all()[0:4]
+    events = Event.objects.all()[0:3]
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches}
+    else: 
+        context = {'gallery' : gallery , 'offers':offers ,'events':events,'branches':branches}
+    return render(request,'physio-slim/index.html', context)
+
+def paypal_return(request):
+    messages.success(request, 'You\'ve successfully made a payment!')
+    return redirect('home')
+
+
+def paypal_cancel(request):
+    messages.error(request, 'You\'ve canceled a payment!')
+    return redirect('home')
+    template_name = 'paypal_cancel.html'
+
+def OfferPayment(request, offer_id):
+    offer = Offer.objects.get(id = offer_id)
+    host = request.get_host()
+    paypal_dict = {
+            "business": settings.PAYPAL_RECEIVER_EMAIL,
+            "amount": 'offer.price',
+            "currency_code": "USD",
+            "item_name": 'offer.name',
+            "invoice": str(uuid.uuid4( )),
+            "notify_url": f'http://{host}{reverse("paypal-ipn")}',
+            "return_url": f'http://{host}{reverse("paypal-return")}',
+            "cancel_return": f'http://{host}{reverse("paypal-cancel")}',
+            "lc": 'EN',
+            "no_shipping": '1',
+        }
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    context = {'form':form, 'offer':offer}
+    return render(request,'physio-slim/paypal_form.html', context)
+
+def MainOfferPayment(request,mainoffer_id):
+    offer = MainOffer.objects.get(id = offer_id)
+    host = request.get_host()
+    paypal_dict = {
+            "business": settings.PAYPAL_RECEIVER_EMAIL,
+            "amount": 'offer.price',
+            "currency_code": "USD",
+            "item_name": 'offer.name',
+            "invoice": str(uuid.uuid4( )),
+            "notify_url": f'http://{host}{reverse("paypal-ipn")}',
+            "return_url": f'http://{host}{reverse("paypal-return")}',
+            "cancel_return": f'http://{host}{reverse("paypal-cancel")}',
+            "lc": 'EN',
+            "no_shipping": '1',
+        }
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    context = {'form':form, 'offer':offer}
+    return render(request,'physio-slim/paypal_form.html', context)
+
+def ClassPayment(request,class_id):
+    Class = Class.objects.get(id = class_id)
+    host = request.get_host()
+    paypal_dict = {
+            "business": settings.PAYPAL_RECEIVER_EMAIL,
+            "amount": 'Class.price',
+            "currency_code": "USD",
+            "item_name": 'Class.name',
+            "invoice": str(uuid.uuid4( )),
+            "notify_url": f'http://{host}{reverse("paypal-ipn")}',
+            "return_url": f'http://{host}{reverse("paypal-return")}',
+            "cancel_return": f'http://{host}{reverse("paypal-cancel")}',
+            "lc": 'EN',
+            "no_shipping": '1',
+        }
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    context = {'form':form, 'Class':Class }
+    return render(request,'physio-slim/paypal_form.html', context)
+
+def EventPayment(request,event_id):
+    event = Event.objects.get(id = event_id)
+    host = request.get_host()
+    paypal_dict = {
+            "business": settings.PAYPAL_RECEIVER_EMAIL,
+            "amount": 'event.price',
+            "currency_code": "USD",
+            "item_name": 'event.name',
+            "invoice": str(uuid.uuid4( )),
+            "notify_url": f'http://{host}{reverse("paypal-ipn")}',
+            "return_url": f'http://{host}{reverse("paypal-return")}',
+            "cancel_return": f'http://{host}{reverse("paypal-cancel")}',
+            "lc": 'EN',
+            "no_shipping": '1',
+        }
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    context = {'form':form, 'event':event}
+    return render(request,'physio-slim/paypal_form.html', context)
 
 #Register
 @authenticated_user
@@ -177,36 +281,24 @@ def logoutUser(request):
     return redirect('home')
 
 # Home
-def home(request):
-    gallery = Gallery.objects.all()[0:4]
-    offers= MainOffer.objects.all()[0:4]
-    branches = Branch.objects.all()[0:4]
-    events = Event.objects.all()[0:3]
-    if not request.user.is_anonymous : 
-        notifications = UserNotifications(request)
-        event = removeEvent(request)
-        context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches }
-    else: 
-        context = {'gallery' : gallery , 'offers':offers ,'events':events,'branches':branches}
-    return render(request,'physio-slim/index.html', context)
 
 #remove event
-def removeEvent(request):
-    events = Event.objects.all()
-    for event in events :
-        print("here")
-        print(event.due.time()) #01:39:00
-        # print(event.due)  #2022-03-11 01:39:00+00:00
-        # print(event.due.minute)  #39
-        now = datetime.now()
-        print(now.time()) #14:36:25.375134
-        # print(now.hour) #14
+# def removeEvent(request):
+#     events = Event.objects.all()
+#     for event in events :
+#         print("here")
+#         # print(event.due.time()) #01:39:00
+#         print(event.due)  #2022-03-11 01:39:00+00:00
+#         # print(event.due.minute)  #39
+#         now = datetime.now()
+#         # print(now.time()) #14:36:25.375134
+#         # print(now.hour) #14
 
-        if now - event.due >= 0 :
-            print("completed")
-            event.delete()
-            print("Deleted")
-    return events
+#         if now - event.due >= 0 :
+#             print("completed")
+#             event.delete()
+#             print("Deleted")
+#     return events
 
 
 #Gallery
@@ -550,11 +642,20 @@ def RemoveNotifications(request, notification_id):
     return redirect('home')
   
 
+#checkout
+# def checkout(request,offer_id):
+#     offer = Offer.objects.get(id=offer_id)
+#     context = {'offer':offer}
+#     return render(request,'physio-slim/checkout.html', context)
 
-
-
-
-
+# def paymentComplete(request):
+# 	body = json.loads(request.body)
+# 	print('BODY:', body)
+#     offer = Offer.objects.get(id=body['offerID'])
+#     payments = Payments.objects.create( 
+#         offer = offer
+#     )
+# 	return JsonResponse('Payment completed!', safe=False)
 
 
 # def showNotifications(request):

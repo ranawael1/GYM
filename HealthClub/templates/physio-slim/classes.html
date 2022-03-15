@@ -45,6 +45,7 @@
 							<a href="{% url 'subscribe-to-class' class.id %}">
 								<button class="btn btn-primary btn-outline btn-sm">Add to favorites <i class="fa-regular fa-face-smile-beam"></i></button>
 							</a>
+							<a href="{% url 'ClassPayment' class.id %}" class="btn btn-select-plan btn-sm">Pay Now</a>
 							{% endif %}
 						{% endif %}
 					{% endif %}

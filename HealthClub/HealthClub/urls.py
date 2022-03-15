@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', include('PhysioSlim.urls')),
+    path('paypal/', include('paypal.standard.ipn.urls')),
     
 
 ]+ static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

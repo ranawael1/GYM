@@ -107,6 +107,7 @@ class User(AbstractUser):
 class Offer(models.Model):
     name = models.CharField(max_length=50, null=True)
     num_of_class = models.IntegerField()
+    price = models.FloatField(null=True)
     discount = models.IntegerField()
     days_num = models.CharField(choices=DAYS, max_length=20,null=True)
     number_of_months= models.IntegerField(null=True)
@@ -135,6 +136,7 @@ class Offer(models.Model):
 class MainOffer(models.Model):
     name = models.CharField(max_length=50, null=True)
     num_of_class = models.IntegerField()
+    price = models.FloatField(null=True)
     discount = models.IntegerField()
     days_num = models.CharField(choices=DAYS, max_length=20, null=True)
     number_of_months= models.IntegerField(null=True)
@@ -187,6 +189,7 @@ class Event(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
     completed = models.BooleanField(default=False)
+    price = models.FloatField(null=True)
     
     def save(self,*args,**kwargs):
         users = User.objects.all()
@@ -221,6 +224,7 @@ class Notifications(models.Model):
     MainOffer = models.ForeignKey('MainOffer',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
     created_on = models.DateTimeField(default=timezone.now)
     user_seen = models.BooleanField(default=False)
+ 
 
     class Meta:
         ordering = ('-created_on',)
@@ -231,7 +235,7 @@ class Class(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo=models.ImageField(upload_to='Classes/', null=True, blank=True )
     icon = models.FileField(upload_to='Classes/', null=True, blank=True , default='static/avatars/default.jpg' ,validators=[FileExtensionValidator(['jpg', 'svg'])])
-
+    price = models.FloatField(null=True)
     def save(self,*args,**kwargs):
         users = User.objects.all()
         created = not self.id
@@ -279,3 +283,12 @@ class Gallery(models.Model):
     def __str__(self):
         return self.name
     
+class PaymentCheckOut(models.Model):
+    offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
+    main_offer = models.ForeignKey(MainOffer, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    Class = models.ForeignKey(Class, on_delete=models.CASCADE)
+    created_on = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.id
