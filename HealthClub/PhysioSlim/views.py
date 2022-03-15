@@ -390,12 +390,12 @@ def unSubscribeFromClass(request, class_id):
             request.user.save()
     context = {'classes': classs, 'branch': branch, 'branches': branches}
     # send email to the management to confirm the unsubscription
-    send_mail(
-        'User unsubscribed!',
-        f'The user: {request.user} \n unsubscribed from: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
-        'physio.slim2@gmail.com',
-        ['physio.slim2@gmail.com'],
-        fail_silently=False,)
+    # send_mail(
+    #     'User unsubscribed!',
+    #     f'The user: {request.user} \n unsubscribed from: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
+    #     'physio.slim2@gmail.com',
+    #     ['physio.slim2@gmail.com'],
+    #     fail_silently=False,)
         # send email confirming the unsubscription
     # send_mail(
     #     'Unsubscription',
