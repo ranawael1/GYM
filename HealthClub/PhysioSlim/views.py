@@ -204,11 +204,12 @@ def gallery(request):
 #Main offers Page
 def main_offers(request):
     offers = MainOffer.objects.all()
+    branches = Branch.objects.all()
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        context = {'offers': offers, 'notifications' : notifications }
+        context = {'offers': offers, 'notifications' : notifications, 'branches':branches }
     else: 
-        context = {'offers': offers }
+        context = {'offers': offers, 'branches':branches }
     return render(request, 'physio-slim/m_offers.html', context)
 
 # Event Page 
@@ -417,6 +418,7 @@ def clinics(request, br_id):
 # Event Detailes Page
 def event_details(request, ev_id):
     branches=Branch.objects.all()
+    notifications = UserNotifications(request)
     event= Event.objects.filter(id = ev_id)
     #using this flag in case the event doesn't have a limited participants then no need to show 'going to' option
     hide_going_to_option = False
@@ -440,6 +442,7 @@ def event_details(request, ev_id):
                     'branch': branch , 
                     'branches':branches,
                     'hide_going_to_option':hide_going_to_option, 
+                    'notifications':notifications,
                     'going_to':going_to,
                     'available_places':available_places,
                     'this_event_participants':this_event_participants,
@@ -450,6 +453,7 @@ def event_details(request, ev_id):
                     'event': event, 
                     'branch': branch ,
                     'branches':branches,
+                    'notifications':notifications,
                     'hide_going_to_option':hide_going_to_option,
                 }
     return render(request, 'physio-slim/event.html', context)
