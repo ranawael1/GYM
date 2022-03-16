@@ -295,8 +295,14 @@ def branch(request, br_id):
         context = {'branch': branch, 'classes': classes,
                'clinics': clinics, 'offers': offers, 'trainers': trainers, 'notifications' : notifications, 'branches':branches}
     else :
-        context = {'branch': branch, 'classes': classes,
-               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'branches':branches}
+        context = {
+                'branch': branch, 
+                'classes': classes,
+                'clinics': clinics, 
+                'offers': offers, 
+                'trainers': trainers, 
+                'branches':branches
+                }
     return render(request, 'physio-slim/branch.html', context)
 
 #Classes Branch page
@@ -304,14 +310,14 @@ def classes(request, br_id):
     branches = Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
     classes = Class.objects.filter(branch=br_id)
-    notifications = UserNotifications(request)
     if not request.user.is_anonymous:
+        notifications = UserNotifications(request)
         all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
         context = {'classes': classes, 'branch': branch,
                 'branches': branches, 'all_subscribers':all_subscribers, 'notifications' : notifications  }
     else:
         context = {'classes': classes, 'branch': branch,
-                'branches': branches }
+                'branches': branches, }
     return render(request, 'physio-slim/classes.html', context)
 
 # # schedule of class
@@ -390,12 +396,12 @@ def unSubscribeFromClass(request, class_id):
             request.user.save()
     context = {'classes': classs, 'branch': branch, 'branches': branches}
     # send email to the management to confirm the unsubscription
-    send_mail(
-        'User unsubscribed!',
-        f'The user: {request.user} \n unsubscribed from: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
-        'physio.slim2@gmail.com',
-        ['physio.slim2@gmail.com'],
-        fail_silently=False,)
+    # send_mail(
+    #     'User unsubscribed!',
+    #     f'The user: {request.user} \n unsubscribed from: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
+    #     'physio.slim2@gmail.com',
+    #     ['physio.slim2@gmail.com'],
+    #     fail_silently=False,)
         # send email confirming the unsubscription
     # send_mail(
     #     'Unsubscription',
