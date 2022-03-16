@@ -326,7 +326,22 @@ def class_scheduale(request,cl_id ):
     days= Working_days.objects.all()
     classes= Class.objects.get(id=cl_id)
     classs = Schedule.objects.filter(classes=cl_id)
-    context= {'branches':branches ,'days':days, 'classes':classes , 'class':classs}
+    if not request.user.is_anonymous:
+        notifications = UserNotifications(request)
+        context= {
+            'branches':branches,
+            'days':days,
+            'classes':classes,
+            'class':classs, 
+            'notifications':notifications,
+            }
+    else:
+        context= {
+            'branches':branches,
+            'days':days,
+            'classes':classes,
+            'class':classs
+            }
     return render(request, 'physio-slim/schedule.html',context )
 
 # subscribe to a Class
