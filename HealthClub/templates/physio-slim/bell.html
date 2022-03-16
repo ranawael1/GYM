@@ -5,7 +5,9 @@
 <div class = "notification ">
   <div class = "notBtn" href = "#">
     <!--Number supports double digets and automaticly hides itself when there is nothing between divs -->
-    <div class = "number">{{ notifications.count }}</div>
+    {% if not notifications.count == 0 %}
+      <div class = "number">{{ notifications.count }}</div>
+    {% endif %}
     <i class="fas fa-bell"></i>
       <div class = "box">
         <div class = "display">
