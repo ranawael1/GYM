@@ -16,3 +16,14 @@
 .purple-background{
     background-color: #663399 !important;
 }
+.black-gray{
+    color: #0a0a0a;
+}
+.black-background{
+    background-color: #0a0a0a !important;
+}
+.background-gray:hover{
+    background-color: #212121 !important;
+    --bs-table-hover-color: none; 
+    color: #fff !important;
+}

@@ -12,9 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id','username', 'email','password', 'age', 'gender', 'phone',)
     
-    def get_age(self, age):
-        ageNow = date.today()-age
-        return int((ageNow).days/365.25)
+    
 
 
 class VerifySerializer(serializers.Serializer):
@@ -52,7 +50,10 @@ class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
         fields = '__all__'
-
+class ClassNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Class
+        fields = ('Class',)
 
 class ClinicSerializer(serializers.ModelSerializer):
     class Meta:

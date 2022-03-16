@@ -12,8 +12,9 @@ import urllib.parse as urlparse
 from urllib.request import urlopen
 from io import BytesIO
 import os
-from datetime import date
+from datetime import datetime
 from django.core.files import File
+from dateutil.relativedelta import relativedelta
 
 # import schedule
 # import time
@@ -65,16 +66,19 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     is_verified = models.BooleanField(default=False)
     is_activated = models.BooleanField(default=True)
-    age = models.DateTimeField(default=None, null=True)
+    birth_date = models.DateTimeField(default=None, null=True)
     gender = models.CharField(choices=GENDER, max_length=20)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= True)
     membership_num = models.CharField(max_length=50, null= True, blank=True)
     is_subscribed = models.BooleanField(default=False)
     picture= models.ImageField(upload_to='avatars/',null=True, default='static/profile/default.jpg', blank=True, max_length=1000)
-
+    age = models.IntegerField()
 
     REQUIRED_FIELDS = ['phone', 'email']
-    
+    @property
+    def get_age(self):
+        return relativedelta(datetime.now(),self.birth_date).years
+
     @receiver(user_signed_up)
     def populate_profile(sociallogin, user, **kwargs):
 
@@ -100,6 +104,10 @@ class User(AbstractUser):
         user.picture.save(slugify(user.username + " social") + '.jpg', 
                 ContentFile(avatar.read()))
         user.save()
+
+    def save(self, *args, **kwargs):
+          self.age = self.get_age
+          super(User, self).save(*args, **kwargs)
 
     # def delete_not_verifed_users(self):
     #     print("checkkkkk deleteeeee")
@@ -191,7 +199,8 @@ class Event(models.Model):
     photo = models.ImageField(upload_to='events/', null=True, blank=True , default='static/icons/new_event.jpg' ,validators=[FileExtensionValidator(['svg', 'jpg', ])])
     num_of_participants = models.IntegerField(blank=True, null=True)
     created_on = models.DateTimeField(default=timezone.now)
-    due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
+    due = models.DateTimeField(blank=True, null=True)
+
 
     def save(self,*args,**kwargs):
         users = User.objects.all()

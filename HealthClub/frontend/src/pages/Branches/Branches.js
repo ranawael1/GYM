@@ -11,56 +11,40 @@ function Branches(props) {
 
     useEffect(() => {
         axios
-            // .get('../api-branches/?format=json')
-            .get(`https://fakestoreapi.com/products/`)
+            .get('../api-branches/?format=json')
+            // .get(`https://fakestoreapi.com/products/`)
 
             .then((res) => {
                 result = res.data
                 setResult(result)
-                console.log(res.data)
-                console.log(result)
-
             }
             )
-
-
-            .catch((err) => console.log(err))
+            .catch((err) => {
+                console.log(err)
+                window.location.href='http://127.0.0.1:8000'
+            })
     }, []
     )
-    // const onSubmit = (e) => {
-    //     e.preventDefault()
-    //     axios.defaults.xsrfHeaderName = "X-CSRFToken";
-    //     axios.defaults.xsrfCookieName = 'csrftoken';
-    //     axios.defaults.withCredentials = true
-    //     axios.post('physio-slim/add-user/', newUser)
-    //         .then((res) => {
-    //             console.log(res.data)
-    //             history.push({
-    //                 pathname: '/data/classes',
-    //                 state: { detail: res.data }
-    //             })
-    //         })
-    //         .catch((err) => { setErrResponse(err.response.data); 
-    //             console.log(err.response.data);
-    //         })
-
-
-    // }
     return (
         <div className='text-center'>
-            <h1 className='yellow-color'> test</h1>
+            <h1 className='yellow-color'> Branches</h1>
 
             {result &&
                 <div className='row'>
                     {result.map((branch,index) =>  (
                         <div className='col-4' key={index}>
-                            <Link to={`/data/classes/${branch.id}`} > <p>{branch.id}</p></Link> 
+                            <Link to={`/data/classes/${branch.id}`} className='text-light'> <p>{branch.name}</p></Link> 
                          </div>
        
                         )
                     )}
                 </div>
             }
+            <div>
+            <Link to={`/data/classes/${branch.id}`} className='text-light'> <p> Back to Classes</p></Link> 
+            <Link to={`/data/classes/${branch.id}`} className='text-light'> <p> Back to Branches</p></Link> 
+
+            </div>
 
         </div>
     );

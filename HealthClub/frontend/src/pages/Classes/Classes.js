@@ -12,29 +12,30 @@ function Classes(props) {
 
     useEffect(() => {
         axios
-        // .get(`../../api-classes/${params.id}?format=json`)
-        .get(`https://fakestoreapi.com/products/`)
+        .get(`../../api-classes/${params.id}?format=json`)
+        // .get(`https://fakestoreapi.com/products/`)
 
         .then((res) =>{
-            console.log(res.data)
-
             result = res.data
             setResult(result)
-            console.log(result)
         })
-        .catch((err) => console.log(err))
+        .catch((err) => {
+            console.log(err)
+            window.location.href='http://127.0.0.1:8000'
+        })
+
     }, [params.id]
     )
 
     return (
-        <div className='text-center'>
+        <div className='text-center '>
             <h1 className='yellow-color'> Classes</h1>
 
             {result &&
                 <div className='row'>
                     {result.map((cla,index) =>  (
                         <div className='col-4' key={index}>
-                            <Link to={`/data/class/${cla.id}`} > <p>{cla.id}</p></Link> 
+                            <Link to={`/data/class/${cla.id}`} className='text-light'> <p >{cla.Class}</p></Link> 
                          </div>
        
                         )

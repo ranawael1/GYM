@@ -1,36 +1,50 @@
 import React from 'react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom'
+import { useParams, useHistory, useLocation } from 'react-router-dom';
 import './../../components/styles/main.css'
 import './../../components/styles/color.css'
 function Users(props) {
+    let history = useHistory()
+    
+    let location = useLocation()
+    console.log(window.location.host)
     const params = useParams();
     let [result, setResult] = useState(null)
+    let [result2, setResult2] = useState(null)
 
     useEffect(() => {
+        let req1 = axios.get(`../../api-class-subscribers/${params.id}?format=json`)
+        let req2 = axios.get(`../../api-class/${params.id}?format=json`)
         axios
-            // .get(`../../api-class-subscribers/${params.id}?format=json`)
-            .get(`https://fakestoreapi.com/products/`)
+            .all([req1, req2])
+            //.get(`https://fakestoreapi.com/products/`)
 
-            .then((res) => {
-                result = res.data
+            .then(axios.spread((res1, res2) => {
+                result = res1.data
+                result2 = res2.data["Class"]
                 setResult(result)
+                setResult2(result2)
                 console.log(result)
-            })
-            .catch((err) => console.log(err))
+                console.log(res2.data['Class'])
+
+            }))
+            .catch((err) => {
+                console.log(err)
+                window.location.href='http://127.0.0.1:8000'
+            }
+            
+            )
     }, [params.id]
     )
 
     return (
         <div className='text-center'>
-            <h1> Class</h1>
+            <h1 className=' text-capitalize text-light'> {result2}</h1>
             {result &&
-                <div className='row'>
-                    <table class="table">
+                    <table className="table table-hover">
                         <thead>
-                            <tr>
+                            <tr className='yellow-background'>
                                 <th>ID</th>
                                 <th>Username</th>
                                 <th>Phone</th>
@@ -38,9 +52,10 @@ function Users(props) {
                                 <th>Gender</th>
                                 <th>Age</th>
                             </tr>
-                        </thead>  <tbody>
+                        </thead>  
+                        <tbody className='black-background'>
                             {result.map((user, index) => (
-                                <tr>
+                                <tr className='text-light background-gray'>
                                     <td>{user.id}</td>
                                     <td>{user.username}</td>
                                     <td>{user.phone}</td>
@@ -48,11 +63,12 @@ function Users(props) {
                                     <td>{user.gender}</td>
                                     <td>{user.age}</td>
                                 </tr>
-                            )
-                            )}</tbody>
+                                )
+                            )}
+                        </tbody>
                     </table>
 
-                </div>
+                
             }
 
         </div>

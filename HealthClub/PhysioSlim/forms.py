@@ -8,7 +8,7 @@ from datetime import date
 class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'phone','picture', 'age', 'gender' , 'branch', 'membership_num']
+        fields = ['username', 'email', 'password1', 'password2', 'phone','picture', 'birth_date', 'gender' , 'branch', 'membership_num']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.TextInput(attrs={'class': 'form-control'}),
@@ -16,7 +16,7 @@ class CreateUserForm(UserCreationForm):
             'password2': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.NumberInput(attrs={'class': 'form-control'}),
             'picture': forms.FileInput(attrs={'class': 'form-control'}),
-            'age': forms.NumberInput(attrs={'class': 'form-control'}),
+            'birth_date': forms.NumberInput(attrs={'class': 'form-control'}),
             'gender': forms.Select(attrs={'class': 'form-control'}),
             'branch': forms.Select(attrs={'class': 'form-control'}),
             }
@@ -24,7 +24,7 @@ class CreateUserForm(UserCreationForm):
 class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'phone','picture', 'age', 'membership_num']
+        fields = ['username', 'email', 'phone','picture', 'birth_date', 'membership_num']
         help_texts = {
             'password ':(''),
         }
@@ -69,7 +69,7 @@ class EditUserForm(forms.ModelForm):
 class activateAccount(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'phone','picture', 'age', 'membership_num','branch', 'gender']
+        fields = ['username', 'phone','picture', 'birth_date', 'membership_num','branch', 'gender']
         help_texts = {
             'password ':(''),
         }

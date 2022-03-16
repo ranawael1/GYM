@@ -1,7 +1,8 @@
+from time import gmtime
 from django.shortcuts import redirect, render
 from .models import Working_days, Schedule, User,Working_days, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants,Schedule
 # decorators and authentication
-from .decorators import authenticated_user, verified_user, unverified_user, google_activated, google_unactivated
+from .decorators import authenticated_user, verified_user, unverified_user, google_activated, google_unactivated, admin_only
 # forms
 from .forms import  CreateUserForm, EditUserForm, VerifyForm, activateAccount
 # authentication
@@ -14,7 +15,11 @@ from django.core.mail import send_mail
 from . import verify
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import BranchSerializer, UserSerializer, ClassSerializer
+from .serializers import BranchSerializer, UserSerializer, ClassSerializer, ClassNameSerializer
+
+
+import datetime
+from django.utils import timezone
 
 # rest framework
 # from .decorators import verification_required
@@ -183,14 +188,34 @@ def home(request):
     gallery = Gallery.objects.all()[0:4]
     offers= MainOffer.objects.all()[0:4]
     branches = Branch.objects.all()[0:4]
-    events = Event.objects.all()[0:3]
+    # ev = removeEvent()
+    events = Event.objects.filter(due__gt=datetime.datetime.now())
+    print(events)
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
         context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches }
     else: 
         context = {'gallery' : gallery , 'offers':offers ,'events':events,'branches':branches}
     return render(request,'physio-slim/index.html', context)
-   
+
+#remove event
+# def removeEvent():
+#     events = Event.objects.all()
+#     for event in events :
+#         now = datetime.datetime.now()
+#         days =( now.date() - event.due.date()).days
+#         time = now.time() < event.due.time()
+#         print(now.time(),event.due.time() )
+#         print(days, time)
+#         if  days > 0 :
+#             event.delete()
+#             print("Deleted")
+#         elif days == 0:
+#             if time:
+#                 event.delete()
+#                 print("Deleted")  
+#     return events
+
 #Gallery Page
 def gallery(request):
     gallery = Gallery.objects.all()
@@ -559,6 +584,7 @@ def RemoveNotifications(request, notification_id):
 
 # APIs
 # branches
+@admin_only
 @api_view(['GET'])
 def branches(request):
     branches = Branch.objects.filter()
@@ -566,6 +592,7 @@ def branches(request):
     return Response(branches_ser.data)
 
 #display all classes
+@admin_only
 @api_view(['GET'])
 def allClasses(request, branch_id):
     classes = Class.objects.filter(branch=branch_id)
@@ -573,13 +600,20 @@ def allClasses(request, branch_id):
     return Response(classes_ser.data)
 
 #class Subscirbers API
+@admin_only
 @api_view(['GET'])
 def classSubscribers(request, class_id):
     subscribers_id = list(ClassSubscribers.objects.filter(favclass_id=class_id).values_list('subscriber_id', flat=True))
     subscribers_data = User.objects.filter(id__in = subscribers_id)
     subscribers_ser = UserSerializer(subscribers_data, many=True)
     return Response(subscribers_ser.data)
-
+#class name
+@admin_only
+@api_view(['GET'])
+def className(request, class_id):
+    class_data = Class.objects.get(id = class_id)
+    class_ser = ClassNameSerializer(class_data, many=False)
+    return Response(class_ser.data)
 
 
 
