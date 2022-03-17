@@ -55,7 +55,7 @@
 							<li><b> {{offer.days_num }} per week </b></li>
 							<li> {{offer.num_of_class}} class </li>
 						</ul>
-						<a href="{% url 'checkout' offer.id %}" class="btn btn-select-plan btn-sm">Pay Now</a>
+						<a href="{% url 'OfferPayment' offer.id %}" class="btn btn-select-plan btn-sm">Pay Now</a>
 					</div>
 				</div>
 				{% endfor %}

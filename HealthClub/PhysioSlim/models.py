@@ -182,7 +182,7 @@ class PersonalTrainer(models.Model):
 
 
 class Event(models.Model):
-    event = models.CharField(max_length=50, null=False)
+    name = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=1000, null=False)
     photo = models.ImageField(upload_to='events/', null=True, blank=True)
     num_of_participants = models.IntegerField(blank=True, null=True)
@@ -201,7 +201,7 @@ class Event(models.Model):
             notification.save()
 
     def __str__(self):
-        return self.event
+        return self.name
 
     class Meta:
         ordering = ('-created_on',)

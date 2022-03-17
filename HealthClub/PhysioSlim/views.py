@@ -55,18 +55,20 @@ def paypal_return(request):
 
 
 def paypal_cancel(request):
-    messages.error(request, 'You\'ve canceled a payment!')
+    messages.error(request, 'Your payment canceled !')
     return redirect('home')
     template_name = 'paypal_cancel.html'
 
 def OfferPayment(request, offer_id):
     offer = Offer.objects.get(id = offer_id)
+    total = offer.price
+    name = offer.name
     host = request.get_host()
     paypal_dict = {
             "business": settings.PAYPAL_RECEIVER_EMAIL,
-            "amount": 'offer.price',
+            "amount": total,
             "currency_code": "USD",
-            "item_name": 'offer.name',
+            "item_name": name,
             "invoice": str(uuid.uuid4( )),
             "notify_url": f'http://{host}{reverse("paypal-ipn")}',
             "return_url": f'http://{host}{reverse("paypal-return")}',
@@ -79,13 +81,15 @@ def OfferPayment(request, offer_id):
     return render(request,'physio-slim/paypal_form.html', context)
 
 def MainOfferPayment(request,mainoffer_id):
-    offer = MainOffer.objects.get(id = offer_id)
+    offer = MainOffer.objects.get(id = mainoffer_id)
+    total = offer.price
+    name = offer.name
     host = request.get_host()
     paypal_dict = {
             "business": settings.PAYPAL_RECEIVER_EMAIL,
-            "amount": 'offer.price',
+            "amount": total,
             "currency_code": "USD",
-            "item_name": 'offer.name',
+            "item_name": name,
             "invoice": str(uuid.uuid4( )),
             "notify_url": f'http://{host}{reverse("paypal-ipn")}',
             "return_url": f'http://{host}{reverse("paypal-return")}',
@@ -98,13 +102,15 @@ def MainOfferPayment(request,mainoffer_id):
     return render(request,'physio-slim/paypal_form.html', context)
 
 def ClassPayment(request,class_id):
-    Class = Class.objects.get(id = class_id)
+    Class1 = Class.objects.get(id = class_id)
+    total = Class1.price
+    name = Class1.Class
     host = request.get_host()
     paypal_dict = {
             "business": settings.PAYPAL_RECEIVER_EMAIL,
-            "amount": 'Class.price',
+            "amount": total,
             "currency_code": "USD",
-            "item_name": 'Class.name',
+            "item_name": name,
             "invoice": str(uuid.uuid4( )),
             "notify_url": f'http://{host}{reverse("paypal-ipn")}',
             "return_url": f'http://{host}{reverse("paypal-return")}',
@@ -113,17 +119,19 @@ def ClassPayment(request,class_id):
             "no_shipping": '1',
         }
     form = PayPalPaymentsForm(initial=paypal_dict)
-    context = {'form':form, 'Class':Class }
+    context = {'form':form, 'Class1':Class1 }
     return render(request,'physio-slim/paypal_form.html', context)
 
 def EventPayment(request,event_id):
     event = Event.objects.get(id = event_id)
+    total = event.price
+    name = event.name
     host = request.get_host()
     paypal_dict = {
             "business": settings.PAYPAL_RECEIVER_EMAIL,
-            "amount": 'event.price',
+            "amount": total,
             "currency_code": "USD",
-            "item_name": 'event.name',
+            "item_name": name,
             "invoice": str(uuid.uuid4( )),
             "notify_url": f'http://{host}{reverse("paypal-ipn")}',
             "return_url": f'http://{host}{reverse("paypal-return")}',

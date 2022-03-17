@@ -1,6 +1,12 @@
-<html>
-  <body>
+{% extends 'physio-slim/main.html' %}
+{% load static %}
+{% block body %}
+
+<div class="container" style="margin: 5%;">
+  <div class="row">
+    <h3 class="tex-danger">Payment</h3>
     {% csrf_token %}
     {{ form.render }}
-  </body>
-</html>
+  </div>
+</div>
+{% endblock %}
