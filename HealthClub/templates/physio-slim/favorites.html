@@ -29,13 +29,17 @@
 					
 							{% if class.id in all_subscribers %}
 							<a href="{% url 'unsubscribe-from-class' class.id %}">
-								<button class="btn btn-danger">Remove from favorites <i class="fa-regular fa-face-frown"></i></button>
+								<button class="btn btn-danger"><i class="fa-solid fa-thumbs-down"></i></button>
 							</a>
 							{% else %}
 							<a href="{% url 'subscribe-to-class' class.id %}">
-								<button class="btn btn-primary btn-outline btn-sm">Add to favorites <i class="fa-regular fa-face-smile-beam"></i></button>
+								<button class="btn btn-primary btn-outline btn-sm"><i class="fa-solid fa-thumbs-up"></i></button>
 							</a>
 							{% endif %}
+							<a href="{% url 'schedule' class.id %}" class="btn btn-primary btn-outline btn-sm">
+								Details 
+								<i class="icon-arrow-right"></i>
+							</a>
 				</div>
 
 			</div>

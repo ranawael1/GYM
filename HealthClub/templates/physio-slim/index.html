@@ -1,124 +1,125 @@
 {% extends 'physio-slim/main.html' %} {% load static %} {% block body %}
 <div class="fh5co-loader"></div>
 <!-- vedio -->
-<header
-  id="fh5co-header"
-  class="fh5co-cover"
-  role="banner"
-  data-stellar-background-ratio="0.5"
->
-  <video autoplay muted loop id="bg-video">
-    <source
-      src="{% static 'videos/intro.mp4' %}"
-      type="video/mp4"
-    />
-  </video>
-  <div class="overlay">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-8 col-md-offset-2 text-center">
-          <div class="display-t">
-            <div class="display-tc animate-box" data-animate-effect="fadeIn">
-              <h1>Make it a lifestyle not a duty</h1>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<header id="fh5co-header" class="fh5co-cover" role="banner" data-stellar-background-ratio="0.5">
+	<video autoplay muted loop id="bg-video">
+		<source src="{% static 'videos/intro.mp4' %}" type="video/mp4" />
+	</video>
+	<div class="overlay">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2 text-center">
+					<div class="display-t">
+						<div class="display-tc animate-box" data-animate-effect="fadeIn">
+							<h1>Make it a lifestyle not a duty</h1>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </header>
 <!-- end vedio -->
 <!-- three boxes -->
-	<div id="fh5co-services" class="fh5co-bg-section">
-		<div class="container">
-			<div class="row">
-				{% for branch in branches %}
-				<div class="col-md-4 text-center animate-box">
-					<div class="services">
-						<span><img class="img-responsive" src="{% static 'images/fayoum.svg' %}" alt="" style="width: 35%;"></span>
-						<h3>{{branch.name}}</h3>
-						<p>{{branch.description}}</p>
-						<p><a href="{% url 'branch' branch.id %}" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
+<div id="fh5co-services" class="fh5co-bg-section">
+	<div class="container">
+		<div class="row">
+			{% for branch in branches %}
+			<div class="col-md-4 text-center animate-box">
+				<div class="services">
+					<span><img class="img-responsive" src="{% static 'images/fayoum.svg' %}" alt=""
+							style="width: 35%;"></span>
+					<h3>{{branch.name}}</h3>
+					<p>{{branch.description}}</p>
+					<p><a href="{% url 'branch' branch.id %}" class="btn btn-primary btn-outline btn-sm">More <i
+								class="icon-arrow-right"></i></a></p>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+<!-- end boxes -->
+<!-- show trainers -->
+<div id="fh5co-trainer">
+	<div class="container">
+		<div class="row">
+			{% for trainer in trainers %}
+			<div class="col-md-4 col-sm-4 animate-box">
+				<div class="trainer">
+					<a href="#"><img class="img-responsive" src="{{MEDIA_URL}}/{{trainer.photo}}" alt="trainer"></a>
+					<div class="title">
+						<h3><a href="#">{{trainer.name}}</a></h3>
+						<span>{{trainer.bio}}</span>
+						<span>{{trainer.years_of_experience}}</span>
+					</div>
+					<div class="desc text-center">
+						<ul class="fh5co-social-icons">
+							<li><a href="#"><i class="icon-twitter"></i></a></li>
+							<li><a href="#"><i class="icon-facebook"></i></a></li>
+							<li><a href="#"><i class="icon-linkedin"></i></a></li>
+							<li><a href="#"><i class="icon-dribbble"></i></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+
+		</div>
+	</div>
+</div>
+<!-- end trainers -->
+<!-- pricing -->
+<div id="fh5co-pricing">
+	<div class="container">
+		<div class="row animate-box">
+			<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+				<h2> Offers </h2>
+				<p></p>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="pricing">
+				{% for offer in offers %}
+				<div class="col-md-3 animate-box">
+					<div class="price-box">
+						<h2 class="pricing-plan">{{offer.name}}</h2>
+						<div class="price"><sup class="currency"></sup> {{offer.discount}} %
+							{% if offer.due %}
+							<h5 class='pt-3'> Starting from {{offer.created_on}} </h5>
+							<h5> Untill {{offer.due|timeuntil}} </h5>
+							{% endif %}
+							<small>
+								{% if offer.number_of_months is 1 %}
+								per month
+
+								{% elif offer.number_of_months is 12 %}
+								per year
+								{% else %}
+								{{ offer.number_of_months }} months
+								{% endif %}
+							</small>
+						</div>
+						<ul class="classes">
+							<li><b> {{offer.days_num }} per week </b></li>
+							<li> {{offer.num_of_class}} class </li>
+						</ul>
+						<a href="{% url 'contact' %}" class="btn btn-select-plan btn-sm">Select Plan</a>
+						<a href="{% url 'MainOfferPayment' offer.id %}" class="btn btn-select-plan btn-sm">Pay Now</a>
 					</div>
 				</div>
 				{% endfor %}
 			</div>
 		</div>
+		<a href="{% url 'main-offers' %}" class="btn btn-primary btn-outline btn-sm">
+			More <i class="icon-arrow-right"></i>
+		</a>
 	</div>
-<!-- end boxes -->
-<!-- show trainers -->
-	<div id="fh5co-trainer">
-		<div class="container">
-			<div class="row">
-                {% for trainer in trainers %}
-                    <div class="col-md-4 col-sm-4 animate-box">
-                        <div class="trainer">
-                            <a href="#"><img class="img-responsive" src="{{MEDIA_URL}}/{{trainer.photo}}" alt="trainer"></a>
-                            <div class="title">
-                                <h3><a href="#">{{trainer.name}}</a></h3>
-                                <span>{{trainer.bio}}</span>
-                                <span>{{trainer.years_of_experience}}</span>
-                            </div>
-                            <div class="desc text-center">
-                                <ul class="fh5co-social-icons">
-                                    <li><a href="#"><i class="icon-twitter"></i></a></li>
-                                    <li><a href="#"><i class="icon-facebook"></i></a></li>
-                                    <li><a href="#"><i class="icon-linkedin"></i></a></li>
-                                    <li><a href="#"><i class="icon-dribbble"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-				
-			</div>
-		</div>
-	</div>
-	<!-- end trainers -->
-<!-- pricing -->
-<div id="fh5co-pricing">
-	<div class="container">
-	  <div class="row animate-box">
-		<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
-		  <h2> Offers </h2>
-		  <p></p>
-		</div>
-	  </div>
-	  <div class="row">
-		<div class="pricing">
-		  {% for offer in offers %}
-		  <div class="col-md-3 animate-box">
-			<div class="price-box">
-			  <h2 class="pricing-plan">{{offer.name}}</h2>
-			  <div class="price"><sup class="currency"></sup>{{offer.discount}} % 
-				<ul class="classes">
-				<li style="color:#495057 ;">Starting from <b style="color: #fde303;" >{{offer.created_on}}</b>  </li>
-				<li style="color:#495057 ;" >Untill <b style="color: #fde303;" >{{offer.due|timeuntil}} </b> </li>
-				</ul>
-				<small>
-					{% if offer.number_of_months is 1 %}
-						per month 
-					{% elif offer.number_of_months is 12 %}
-						 per year 
-					{% else %}
-						{{ offer.number_of_months }} months
-					{% endif %}
-				</small></div>
-			  <ul class="classes">
-				<li><b> {{offer.days_num  }} per week </b></li>
-				<li>  {{offer.num_of_class}} class </li>
-			  </ul>
-			  <a href="{% url 'MainOfferPayment' offer.id %}" class="btn btn-select-plan btn-sm">Pay Now</a>
-			</div>
-		  </div>
-		  {% endfor %}
-		</div>
-	  </div>
-	  <a href="{% url 'main-offers' %}" class="btn btn-primary btn-outline btn-sm">
-		More <i class="icon-arrow-right"></i>
-	  </a>
-	</div>
-  </div>
+
+</div>
+</div>
 
 
 
@@ -135,34 +136,28 @@
 		<div class="row">
 			<div class="col-md-10 col-md-offset-1">
 				<div class="row animate-box">
-					
+
 					<div class="owl-carousel owl-carousel-fullwidth">
 						<div class="item">
 							<div class="col-md-8 col-md-offset-2 text-center text-uppercase">
 								<h2>Physio care</h2>
 							</div>
 							<video autoplay muted loop id="bg-video" style="object-fit: contain; width: 100%;">
-								<source
-								  src="{% static 'videos/clinic.mp4' %}"
-								  type="video/mp4"
-								/>
-							  </video>	
+								<source src="{% static 'videos/clinic.mp4' %}" type="video/mp4" />
+							</video>
 						</div>
-						
+
 						<div class="item">
 							<div class="col-md-8 col-md-offset-2 text-center text-uppercase">
 								<h2>Physio kids</h2>
 							</div>
 							<div class="testimony-slide active text-center">
 								<video autoplay muted loop id="bg-video" style="object-fit: contain; width: 100%;">
-									<source
-									  src="{% static 'videos/kids.mp4' %}"
-									  type="video/mp4"
-									/>
-								  </video>	
+									<source src="{% static 'videos/kids.mp4' %}" type="video/mp4" />
+								</video>
 							</div>
 
-							
+
 						</div>
 					</div>
 				</div>
@@ -172,40 +167,8 @@
 </div>
 <!-- end oher features -->
 
-<!-- Gallery -->
-	<div id="fh5co-gallery">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box">
-					<h2>Gym gallery</h2>
-					<p>Physio Slim is known as a is professional fitness home. We are here to provide effective and best solutions for all aged people and with high quality and performance equipment and classes.</p>
-					<p><a href="{% url 'gallery' %}" class="btn btn-primary btn-outline btn-sm">More <i class="icon-arrow-right"></i></a></p>
-				</div>
-			</div>
-		</div>
-		<div class="container-fluid">
-			<div class="row row-bottom-padded-md">
-				<div class="col-md-12">
-					<ul id="fh5co-portfolio-list">
-					{% for image in gallery %}
-						<li class="one-third animate-box" data-animate-effect="fadeIn" style="background-image: url({{MEDIA_URL}}/{{image.img}});" >
-							<a href="{% url 'gallery' %}">
-								<div class="case-studies-summary">
-									<h2>{{image.description}}</h2>
-									<span>{{image.name}}</span>
-								</div>
-							</a>
-						</li>
-					{% endfor %}
-					</ul>		
-				</div>
-			</div>
-		</div>
-	</div>
-<!-- end gallery -->
-	
-	
- <div id="fh5co-blog" class="fh5co-bg-section">
+<!-- Events -->
+<div id="fh5co-events">
 	<div class="container">
 		<div class="row animate-box">
 			<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
@@ -217,26 +180,65 @@
 			{% for event in events %}
 			<div class="col-lg-4 col-md-4">
 				<div class="fh5co-blog animate-box">
-					<a href="{% url 'event' event.id %}"><img style="height: 40vh;" src="{{MEDIA_URL}}/{{event.photo}}" alt="Event"></a>
+					<a href="{% url 'event' event.id %}"><img style="height: 40vh;" src="{{MEDIA_URL}}/{{event.photo}}"
+							alt="Event"></a>
 					<div class="blog-text">
 						<h3><a href="{% url 'event' event.id %}">{{event.event}}</a></h3>
 						<span class="posted_on">Valid for {{event.due|timeuntil}} from now!</span>
 						<!-- <span class="comment"><a href="">21<i class="icon-speech-bubble"></i></a></span> -->
-						<p>{{event.description}}.</p>
-						
+						<p>{{event.description}}</p>
+
 						<a href="{% url 'event' event.id %}" class="btn btn-primary">Book Now</a>
-					</div> 
+					</div>
 				</div>
 			</div>
 			{% endfor %}
-			<div class="col-3">
-			<a href="{% url 'events' %}" class="btn btn-primary btn-outline btn-sm">
-				 Show More <i class="icon-arrow-right"></i>
-			  </a>
-			  </div>			
+			<div class="row">
+				<div class="col-3 py-5">
+					<a href="{% url 'events' %}" class="btn btn-primary btn-outline btn-sm">
+						More <i class="icon-arrow-right"></i>
+					</a>
+				</div>
+			</div>
+
 		</div>
-		
+
 	</div>
 </div>
+<!-- end events -->
 
+<!-- Gallery -->
+<div id="fh5co-gallery" class="fh5co-bg-section">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box">
+				<h2>Gym gallery</h2>
+				<p>Physio Slim is known as a is professional fitness home. We are here to provide effective and best
+					solutions for all aged people and with high quality and performance equipment and classes.</p>
+				<p><a href="{% url 'gallery' %}" class="btn btn-primary btn-outline btn-sm">More <i
+							class="icon-arrow-right"></i></a></p>
+			</div>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<div class="row row-bottom-padded-md">
+			<div class="col-md-12">
+				<ul id="fh5co-portfolio-list">
+					{% for image in gallery %}
+					<li class="one-third animate-box" data-animate-effect="fadeIn"
+						style="background-image: url({{MEDIA_URL}}/{{image.img}});">
+						<a href="{% url 'gallery' %}">
+							<div class="case-studies-summary">
+								<h2>{{image.description}}</h2>
+								<span>{{image.name}}</span>
+							</div>
+						</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end gallery -->
 {% endblock %}

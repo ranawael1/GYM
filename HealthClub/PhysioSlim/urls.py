@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework import routers
 from django.contrib.auth import views as auth_views
 from . import views
 
@@ -39,6 +40,8 @@ urlpatterns = [
     path('branch-trainers/<br_id>', views.trainers, name='trainers'),
     path('offers/<br_id>', views.offers, name='offers'),
     path('main-offers', views.main_offers, name='main-offers'),
+    path('schedule/<cl_id>', views.class_scheduale, name='schedule'),
+
 
     
     #Class Subscrib
@@ -63,6 +66,16 @@ urlpatterns = [
     path('paypal-return', views.paypal_return, name='paypal-return'),
     path('paypal-cancel', views.paypal_cancel, name='paypal-cancel'),
 
+
+    #APIs
+    # branches
+    path('api-branches/', views.branches, name='api-branches'),
+    # classes of branch
+    path('api-classes/<branch_id>', views.allClasses, name='api-classes'),
+    # class name
+    path('api-class/<class_id>', views.className, name='api-class'),
+    # class subscribers
+    path('api-class-subscribers/<class_id>', views.classSubscribers, name='api-class-subscribers'),
 
     # #rest_framework
     # path('users/', views.users, name='users'),

@@ -1,7 +1,8 @@
+from time import gmtime
 from django.shortcuts import redirect, render
-from .models import User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants
+from .models import Schedule, User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants,Schedule
 # decorators and authentication
-from .decorators import authenticated_user, verified_user, unverified_user, google_activated, google_unactivated
+from .decorators import authenticated_user, verified_user, unverified_user, google_activated, google_unactivated, admin_only
 # forms
 from .forms import  CreateUserForm, EditUserForm, VerifyForm, activateAccount
 # authentication
@@ -22,6 +23,14 @@ from django.urls import reverse
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import uuid
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .serializers import BranchSerializer, UserSerializer, ClassSerializer, ClassNameSerializer
+
+
+import datetime
+from django.utils import timezone
+
 # rest framework
 # from .decorators import verification_required
 # from rest_framework import permissions
@@ -125,7 +134,7 @@ def ClassPayment(request,class_id):
 def EventPayment(request,event_id):
     event = Event.objects.get(id = event_id)
     total = event.price
-    name = event.name
+    name = event.event
     host = request.get_host()
     paypal_dict = {
             "business": settings.PAYPAL_RECEIVER_EMAIL,
@@ -289,27 +298,39 @@ def logoutUser(request):
     return redirect('home')
 
 # Home
+def home(request):
+    gallery = Gallery.objects.all()[0:4]
+    offers= MainOffer.objects.all()[0:4]
+    branches = Branch.objects.all()[0:4]
+    # ev = removeEvent()
+    events = Event.objects.filter(due__gt=datetime.datetime.now())
+    print(events)
+    if not request.user.is_anonymous : 
+        notifications = UserNotifications(request)
+        context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches }
+    else: 
+        context = {'gallery' : gallery , 'offers':offers ,'events':events,'branches':branches}
+    return render(request,'physio-slim/index.html', context)
 
 #remove event
-# def removeEvent(request):
+# def removeEvent():
 #     events = Event.objects.all()
 #     for event in events :
-#         print("here")
-#         # print(event.due.time()) #01:39:00
-#         print(event.due)  #2022-03-11 01:39:00+00:00
-#         # print(event.due.minute)  #39
-#         now = datetime.now()
-#         # print(now.time()) #14:36:25.375134
-#         # print(now.hour) #14
-
-#         if now - event.due >= 0 :
-#             print("completed")
+#         now = datetime.datetime.now()
+#         days =( now.date() - event.due.date()).days
+#         time = now.time() < event.due.time()
+#         print(now.time(),event.due.time() )
+#         print(days, time)
+#         if  days > 0 :
 #             event.delete()
 #             print("Deleted")
+#         elif days == 0:
+#             if time:
+#                 event.delete()
+#                 print("Deleted")  
 #     return events
 
-
-#Gallery
+#Gallery Page
 def gallery(request):
     gallery = Gallery.objects.all()
     if not request.user.is_anonymous : 
@@ -322,11 +343,12 @@ def gallery(request):
 #Main offers Page
 def main_offers(request):
     offers = MainOffer.objects.all()
+    branches = Branch.objects.all()
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
-        context = {'offers': offers, 'notifications' : notifications }
+        context = {'offers': offers, 'notifications' : notifications, 'branches':branches }
     else: 
-        context = {'offers': offers }
+        context = {'offers': offers, 'branches':branches }
     return render(request, 'physio-slim/m_offers.html', context)
 
 # Event Page 
@@ -412,8 +434,14 @@ def branch(request, br_id):
         context = {'branch': branch, 'classes': classes,
                'clinics': clinics, 'offers': offers, 'trainers': trainers, 'notifications' : notifications, 'branches':branches}
     else :
-        context = {'branch': branch, 'classes': classes,
-               'clinics': clinics, 'offers': offers, 'trainers': trainers, 'branches':branches}
+        context = {
+                'branch': branch, 
+                'classes': classes,
+                'clinics': clinics, 
+                'offers': offers, 
+                'trainers': trainers, 
+                'branches':branches
+                }
     return render(request, 'physio-slim/branch.html', context)
 
 #Classes Branch page
@@ -421,22 +449,36 @@ def classes(request, br_id):
     branches = Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
     classes = Class.objects.filter(branch=br_id)
-    notifications = UserNotifications(request)
     if not request.user.is_anonymous:
+        notifications = UserNotifications(request)
         all_subscribers = ClassSubscribers.objects.filter(subscriber=request.user).values_list('favclass_id', flat=True)
         context = {'classes': classes, 'branch': branch,
                 'branches': branches, 'all_subscribers':all_subscribers, 'notifications' : notifications  }
     else:
         context = {'classes': classes, 'branch': branch,
-                'branches': branches }
+                'branches': branches, }
     return render(request, 'physio-slim/classes.html', context)
 
 # # schedule of class
-# def class_scheduale(request,cl_id ):
-#     branches = Branch.objects.all()
-#     classes = Class.objects.get(id=cl_id)
-#     context= {'branches':branches , 'classes':classes }
-#     return render(request, 'physio-slim/schedule.html',context )
+def class_scheduale(request,cl_id ):
+    branches = Branch.objects.all()
+    classes= Class.objects.get(id=cl_id)
+    classs = Schedule.objects.filter(classes=cl_id)
+    if not request.user.is_anonymous:
+        notifications = UserNotifications(request)
+        context= {
+            'branches':branches,
+            'classes':classes,
+            'class':classs, 
+            'notifications':notifications,
+            }
+    else:
+        context= {
+            'branches':branches,
+            'classes':classes,
+            'class':classs
+            }
+    return render(request, 'physio-slim/schedule.html',context )
 
 # subscribe to a Class
 @google_unactivated
@@ -461,12 +503,12 @@ def subscribeToClass(request, class_id):
         ['physio.slim2@gmail.com'],
         fail_silently=False,)
         # send email confirming subscription
-    send_mail(
-        'Subscription Successful!',
-        f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
-        'physio.slim2@gmail.com',
-        [f'{email}'],
-        fail_silently=False,)
+    # send_mail(
+    #     'Subscription Successful!',
+    #     f'Hello {request.user} Thank you for subscribing to our {classs} class, welcome on board \n you might receive a call from our side to have a further discussion', 
+    #     'physio.slim2@gmail.com',
+    #     [f'{email}'],
+    #     fail_silently=False,)
     return redirect('classes', branch)
 
 #display favorite classes
@@ -505,19 +547,19 @@ def unSubscribeFromClass(request, class_id):
             request.user.save()
     context = {'classes': classs, 'branch': branch, 'branches': branches}
     # send email to the management to confirm the unsubscription
-    send_mail(
-        'User unsubscribed!',
-        f'The user: {request.user} \n unsubscribed from: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
-        'physio.slim2@gmail.com',
-        ['physio.slim2@gmail.com'],
-        fail_silently=False,)
+    # send_mail(
+    #     'User unsubscribed!',
+    #     f'The user: {request.user} \n unsubscribed from: {classs} class, \n branch: {request.user.branch}, \n phone number:{request.user.phone} ',
+    #     'physio.slim2@gmail.com',
+    #     ['physio.slim2@gmail.com'],
+    #     fail_silently=False,)
         # send email confirming the unsubscription
-    send_mail(
-        'Unsubscription',
-        f'Hello {request.user},\n sorry to here that you unsubscribed from our {classs} class, \n you might receive a call from our side to have a further discussion \n Br, \n Physio-Slim management.', 
-        'physio.slim2@gmail.com',
-        [f'{email}'],
-        fail_silently=False,)
+    # send_mail(
+    #     'Unsubscription',
+    #     f'Hello {request.user},\n sorry to here that you unsubscribed from our {classs} class, \n you might receive a call from our side to have a further discussion \n Br, \n Physio-Slim management.', 
+    #     'physio.slim2@gmail.com',
+    #     [f'{email}'],
+    #     fail_silently=False,)
     return redirect('classes', branch)
 
 # !!!!!!!!!!!!!!!! Notifications!!!!!!!!!!!!!!!!!
@@ -529,29 +571,48 @@ def clinics(request, br_id):
     return render(request, 'physio-slim/br_clinics.html', context)
 
 # !!!!!!!!!!!!!!!! Notifications!!!!!!!!!!!!!!!!!
+
 # Event Detailes Page
 def event_details(request, ev_id):
     branches=Branch.objects.all()
+    notifications = UserNotifications(request)
     event= Event.objects.filter(id = ev_id)
-    hide_going_to_option=False
-    #original available places
+    #using this flag in case the event doesn't have a limited participants then no need to show 'going to' option
+    hide_going_to_option = False
+    #try, because if the event doesnt have a limited number, then it will give an error
     try:
+        going_to = False 
+        #original available places
         original_num_of_participants = list(Event.objects.filter(id=ev_id).values_list('num_of_participants', flat=True))[0]
-        going_to = False
-        #getting this event participants so far
+        #getting the participants IDs to this event so far
         this_event_participants = EventParticipants.objects.filter(event_id=ev_id).values_list('participant_id', flat=True)
-        #turn it into a list 
+        #turn it into a list so we can get its length (number of participants)
         this_event_participants_list = list(this_event_participants)
         #available places
         available_places = original_num_of_participants - len(this_event_participants_list) 
-        #change the going to flag to True if the user was found in the previous list 
+        #change the going_to flag to True if the user was found in the (this_event_participants_list)
+        #going_to flag will be used to give the user the option to undo the 'going to' option
         if request.user.id in this_event_participants_list:
             going_to = True
-        context = {'event': event, 'branch': branch , 'branches':branches,'going_to':going_to,
-        'available_places':available_places,'hide_going_to_option':hide_going_to_option,'this_event_participants':this_event_participants}
+        context = { 
+                    'event': event, 
+                    'branch': branch , 
+                    'branches':branches,
+                    'hide_going_to_option':hide_going_to_option, 
+                    'notifications':notifications,
+                    'going_to':going_to,
+                    'available_places':available_places,
+                    'this_event_participants':this_event_participants,
+                }
     except:
         hide_going_to_option = True
-        context = {'event': event, 'branch': branch , 'branches':branches,'hide_going_to_option':hide_going_to_option}
+        context = {
+                    'event': event, 
+                    'branch': branch ,
+                    'branches':branches,
+                    'notifications':notifications,
+                    'hide_going_to_option':hide_going_to_option,
+                }
     return render(request, 'physio-slim/event.html', context)
 
 # offers Branch page
@@ -664,6 +725,42 @@ def RemoveNotifications(request, notification_id):
 #         offer = offer
 #     )
 # 	return JsonResponse('Payment completed!', safe=False)
+
+
+
+# APIs
+# branches
+@admin_only
+@api_view(['GET'])
+def branches(request):
+    branches = Branch.objects.filter()
+    branches_ser = BranchSerializer(branches, many=True)
+    return Response(branches_ser.data)
+
+#display all classes
+@admin_only
+@api_view(['GET'])
+def allClasses(request, branch_id):
+    classes = Class.objects.filter(branch=branch_id)
+    classes_ser = ClassSerializer(classes, many=True)
+    return Response(classes_ser.data)
+
+#class Subscirbers API
+@admin_only
+@api_view(['GET'])
+def classSubscribers(request, class_id):
+    subscribers_id = list(ClassSubscribers.objects.filter(favclass_id=class_id).values_list('subscriber_id', flat=True))
+    subscribers_data = User.objects.filter(id__in = subscribers_id)
+    subscribers_ser = UserSerializer(subscribers_data, many=True)
+    return Response(subscribers_ser.data)
+#class name
+@admin_only
+@api_view(['GET'])
+def className(request, class_id):
+    class_data = Class.objects.get(id = class_id)
+    class_ser = ClassNameSerializer(class_data, many=False)
+    return Response(class_ser.data)
+
 
 
 # def showNotifications(request):

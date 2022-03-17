@@ -1,0 +1,30 @@
+.gray-color{
+    color: #4d4d4d !important;
+}
+.gray-background{
+    background-color: #4d4d4d !important;
+}
+.yellow-color{
+    /* color: #fde303 !important; */
+    color: #F69E26 !important;
+}
+.yellow-background{
+    background-color: #F69E26 !important;
+}
+.purple-color{
+    color: #663399 !important;
+}
+.purple-background{
+    background-color: #663399 !important;
+}
+.black-gray{
+    color: #0a0a0a;
+}
+.black-background{
+    background-color: #0a0a0a !important;
+}
+.background-gray:hover{
+    background-color: #212121 !important;
+    --bs-table-hover-color: none; 
+    color: #fff !important;
+}
