@@ -91,7 +91,7 @@
           <div class="col-md-3 animate-box">
             <div class="price-box">
               <h2 class="pricing-plan">{{offer.name}}</h2>
-              <div class="price"><sup class="currency"></sup>{{offer.discount}} % 
+              <div class="price"><sup class="currency"></sup>{{offer.discount}}% 
                 <ul class="classes">
                   {% if offer.due %}
                   <li style="color:#495057 ;"> Starting from  <b style="color: #fde303;" >{{offer.created_on}} </b> </li>
@@ -113,13 +113,19 @@
                 <li><b> {{offer.days_num  }} per week </b></li>
                 <li>  {{offer.num_of_class}} class </li>
               </ul>
-              <a href="{% url 'contact' %}" class="btn btn-select-plan btn-sm">Select Plan</a>
+              {% if not request.user.is_superuser %}
+                {% if request.user.is_anonymous %}
+                <a href="{% url 'contact' %}" class="btn btn-primary btn-sm">Select Plan</a>
+                {% else %}
+                <a href="{% url 'MainOfferPayment' offer.id %}" class="btn btn-primary btn-sm">Pay Now</a>
+                {% endif %}
+              {% endif %}
             </div>
           </div>
           {% endfor %}
         </div>
       </div>
-      <a href="{% url 'offers' branch.id %}" class="btn btn-primary btn-outline btn-sm">
+      <a href="{% url 'offers' branch.id %}" class="btn btn-primary btn-sm">
         More <i class="icon-arrow-right"></i>
       </a>
     </div>
