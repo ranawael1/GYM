@@ -72,7 +72,7 @@ class User(AbstractUser):
     membership_num = models.CharField(max_length=50, null= True, blank=True)
     is_subscribed = models.BooleanField(default=False)
     picture= models.ImageField(upload_to='avatars/',null=True, default='static/profile/default.jpg', blank=True, max_length=1000)
-    age = models.IntegerField()
+    age = models.IntegerField(null=True)
 
     REQUIRED_FIELDS = ['phone', 'email']
     @property
