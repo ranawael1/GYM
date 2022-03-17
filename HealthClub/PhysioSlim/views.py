@@ -59,14 +59,14 @@ def home(request):
     return render(request,'physio-slim/index.html', context)
 
 def paypal_return(request):
-    messages.success(request, 'You\'ve successfully made a payment!')
+    # messages.success(request, 'You\'ve successfully made a payment!')
     return redirect('home')
 
 
 def paypal_cancel(request):
-    messages.error(request, 'Your payment canceled !')
+    # messages.error(request, 'Your payment canceled !')
     return redirect('home')
-    template_name = 'paypal_cancel.html'
+    # template_name = 'paypal_cancel.html'
 
 def OfferPayment(request, offer_id):
     offer = Offer.objects.get(id = offer_id)
