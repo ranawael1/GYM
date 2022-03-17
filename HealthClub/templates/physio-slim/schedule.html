@@ -22,7 +22,6 @@
     </div>
   </div>
 </header>
-
 <div
   id="fh5co-schedule"
   class="fh5co-bg"
@@ -33,7 +32,7 @@
       <div
         class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box"
       >
-        <h2 style="color: black">{{classes}}</h2>
+        <h2 style="color: black">{{classes.Class}}</h2>
         <p style="color: black">{{classes.branch}}</p>
       </div>
     </div>
@@ -41,7 +40,7 @@
     <div class="row animate-box">
       <div class="fh5co-tabs">
         <ul class="fh5co-tab-nav">
-          <li class="active">
+          <li class="">
             <a href="#" data-tab="1"
               ><span class="visible-xs">S</span
               ><span class="hidden-xs">Sunday</span></a
@@ -86,100 +85,103 @@
           </li>
         </ul>
 
-        <!-- Tabs -->
+
+
+
+        <!-- Tabs -->  
+        
         <div class="fh5co-tab-content-wrap">
-          <div
-            class="fh5co-tab-content tab-content active"
-            data-tab-content="1"
-          >
-            <ul class="class-schedule">
-              {% for class in class %}
-              <li class="text-center">
-                {% if class.day.id ==  1 %}
-                <span
-                  ><img
-                    src="{% static 'images/Alarm.png' %}"
-                    class="img-responsive"
-                    alt=""
-                /></span>
-                <span class="time">{{class.From}} : {{class.To}}</span>
-                {% endif %}
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
+        <ul class="class-schedule border">
+       
+       
+          <li class=" fh5co-tab-content tab-content active" data-tab-content="1"> 
+            {% for class in class %}
+            {% if class.day == 'Sunday' %}
+            <span
+              ><img
+                src="{% static 'images/Alarm.png' %}"
+                class="img-responsive"
+                alt=""
+            /></span>
+            <span class="time">{{class.From}} : {{class.To}}</span>
+            {% endif %}
+            {% endfor %}
+          </li>
+          <li class=" fh5co-tab-content tab-content active" data-tab-content="2"> 
+            {% for class in class %}
+            {% if class.day == 'Monday' %}
+            <span
+              ><img
+                src="{% static 'images/Alarm.png' %}"
+                class="img-responsive"
+                alt=""
+            /></span>
+            <span class="time">{{class.From}} : {{class.To}}</span>
+            {% endif %}
+            {% endfor %}
+          </li>
 
-          <div
-            class="fh5co-tab-content tab-content active"
-            data-tab-content="2"
-          >
-            <ul class="class-schedule">
-              {% for class in class %}
-              <li class="text-center">
-                {% if class.day.id == 2 %}
-                <span
-                  ><img
-                    src="{% static 'images/Alarm.png' %}"
-                    class="img-responsive"
-                    alt=""
-                /></span>
-                <span class="time">{{class.From}} : {{class.To}}</span>
-                {% endif %}
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
+          <li class=" fh5co-tab-content tab-content active" data-tab-content="3"> 
+            {% for class in class %}
+            {% if class.day == 'Tuesday' %}
+            <span
+              ><img
+                src="{% static 'images/Alarm.png' %}"
+                class="img-responsive"
+                alt=""
+            /></span>
+            <span class="time">{{class.From}} : {{class.To}}</span>
+            {% endif %}
+            {% endfor %}
+          </li>
 
-          <div
-            class="fh5co-tab-content tab-content active"
-            data-tab-content="3"
-          >
-            <ul class="class-schedule">
-              {% for class in class %}
-              <li class="text-center">
-                {% if class.day.id == 3 %}
-                <span
-                  ><img
-                    src="{% static 'images/Alarm.png' %}"
-                    class="img-responsive"
-                    alt=""
-                /></span>
-                <span class="time">{{class.From}} : {{class.To}}</span>
-                {% endif %}
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
+          <li class=" fh5co-tab-content tab-content active" data-tab-content="4"> 
+            {% for class in class %}
+            {% if class.day == 'Wednesday' %}
+            <span
+              ><img
+                src="{% static 'images/Alarm.png' %}"
+                class="img-responsive"
+                alt=""
+            /></span>
+            <span class="time">{{class.From}} : {{class.To}}</span>
+            {% endif %}
+            {% endfor %}
+          </li>
 
-          <div
-            class="fh5co-tab-content tab-content active"
-            data-tab-content="4"
-          >
-            <ul class="class-schedule">
-              {% for class in class %}
-              <li class="text-center">
-                {% if class.day.id == 4 %}
-                <span
-                  ><img
-                    src="{% static 'images/Alarm.png' %}"
-                    class="img-responsive"
-                    alt=""
-                /></span>
-                <span class="time">{{class.From}} : {{class.To}}</span>
-                {% endif %}
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
+          <li class=" fh5co-tab-content tab-content active" data-tab-content="5"> 
+            {% for class in class %}
+            {% if class.day == 'Thursday' %}
+            <span
+              ><img
+                src="{% static 'images/Alarm.png' %}"
+                class="img-responsive"
+                alt=""
+            /></span>
+            <span class="time">{{class.From}} : {{class.To}}</span>
+            {% endif %}
+            {% endfor %}
+          </li>
 
-          <div
-            class="fh5co-tab-content tab-content active"
-            data-tab-content="5"
-          >
-            <ul class="class-schedule">
-              {% for class in class %}
-              <li class="text-center">
-                {% if class.day.id == 5 %}
+          <li class=" fh5co-tab-content tab-content active" data-tab-content="6"> 
+            {% for class in class %}
+            {% if class.day == 'Friday' %}
+            <span
+              ><img
+                src="{% static 'images/Alarm.png' %}"
+                class="img-responsive"
+                alt=""
+            /></span>
+            <span class="time">{{class.From}} : {{class.To}}</span>
+            {% endif %}
+            {% endfor %}
+          </li>
+         
+          
+             
+              <li class=" fh5co-tab-content tab-content active" data-tab-content="7"> 
+                {% for class in class %}
+                {% if class.day == 'Saturday' %}
                 <span
                   ><img
                     src="{% static 'images/Alarm.png' %}"
@@ -188,55 +190,18 @@
                 /></span>
                 <span class="time">{{class.From}} : {{class.To}}</span>
                 {% endif %}
+                {% endfor %}
               </li>
-              {% endfor %}
-            </ul>
-          </div>
-
-          <div
-            class="fh5co-tab-content tab-content active"
-            data-tab-content="6"
-          >
-            <ul class="class-schedule">
-              {% for class in class %}
-              <li class="text-center">
-                {% if class.day.id == 6 %}
-                <span
-                  ><img
-                    src="{% static 'images/Alarm.png' %}"
-                    class="img-responsive"
-                    alt=""
-                /></span>
-                <span class="time">{{class.From}} : {{class.To}}</span>
-                {% endif %}
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-
-          <div
-            class="fh5co-tab-content tab-content active"
-            data-tab-content="7"
-          >
-            <ul class="class-schedule">
-              {% for class in class %}
-              <li class="text-center">
-                {% if class.day.id == 7 %}
-                <span
-                  ><img
-                    src="{% static 'images/Alarm.png' %}"
-                    class="img-responsive"
-                    alt=""
-                /></span>
-                <span class="time">{{class.From}} : {{class.To}}</span>
-                {% endif %}
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
-      </div>
+       
+        
+        
+        </ul></div>
+     
+      </div> 
     </div>
   </div>
 </div>
+
+
+
 {% endblock %}

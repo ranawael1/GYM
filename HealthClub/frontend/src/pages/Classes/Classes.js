@@ -29,13 +29,13 @@ function Classes(props) {
 
     return (
         <div className='text-center '>
-            <h1 className='yellow-color'> Classes</h1>
+            <h1 className='yellow-color mb-5'> Classes</h1>
 
             {result &&
                 <div className='row'>
                     {result.map((cla,index) =>  (
                         <div className='col-4' key={index}>
-                            <Link to={`/data/class/${cla.id}`} className='text-light'> <p >{cla.Class}</p></Link> 
+                            <Link to={`/data/class/${cla.id}`} className='text-light text-capitalize'> <h3>{cla.Class}</h3></Link> 
                          </div>
        
                         )

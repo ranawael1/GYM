@@ -27,24 +27,19 @@ function Branches(props) {
     )
     return (
         <div className='text-center'>
-            <h1 className='yellow-color'> Branches</h1>
+            <h1 className='yellow-color mb-5'> Branches</h1>
 
             {result &&
                 <div className='row'>
                     {result.map((branch,index) =>  (
                         <div className='col-4' key={index}>
-                            <Link to={`/data/classes/${branch.id}`} className='text-light'> <p>{branch.name}</p></Link> 
+                            <Link to={`/data/classes/${branch.id}`} className='text-light text-capitalize'> <h3>{branch.name}</h3></Link> 
                          </div>
        
                         )
                     )}
                 </div>
             }
-            <div>
-            <Link to={`/data/classes/${branch.id}`} className='text-light'> <p> Back to Classes</p></Link> 
-            <Link to={`/data/classes/${branch.id}`} className='text-light'> <p> Back to Branches</p></Link> 
-
-            </div>
 
         </div>
     );

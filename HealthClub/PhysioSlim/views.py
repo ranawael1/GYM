@@ -1,6 +1,6 @@
 from time import gmtime
 from django.shortcuts import redirect, render
-from .models import Working_days, Schedule, User,Working_days, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants,Schedule
+from .models import Schedule, User, Branch, Offer, Event, Class, Clinic, PersonalTrainer,ClassSubscribers, Notifications,Gallery,MainOffer,EventParticipants,Schedule
 # decorators and authentication
 from .decorators import authenticated_user, verified_user, unverified_user, google_activated, google_unactivated, admin_only
 # forms
@@ -348,14 +348,12 @@ def classes(request, br_id):
 # # schedule of class
 def class_scheduale(request,cl_id ):
     branches = Branch.objects.all()
-    days= Working_days.objects.all()
     classes= Class.objects.get(id=cl_id)
     classs = Schedule.objects.filter(classes=cl_id)
     if not request.user.is_anonymous:
         notifications = UserNotifications(request)
         context= {
             'branches':branches,
-            'days':days,
             'classes':classes,
             'class':classs, 
             'notifications':notifications,
@@ -363,7 +361,6 @@ def class_scheduale(request,cl_id ):
     else:
         context= {
             'branches':branches,
-            'days':days,
             'classes':classes,
             'class':classs
             }

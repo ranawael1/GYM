@@ -39,10 +39,10 @@ function Users(props) {
     )
 
     return (
-        <div className='text-center'>
-            <h1 className=' text-capitalize text-light'> {result2}</h1>
+        <div className='text-center container-fluid'>
+            <h1 className=' text-capitalize text-light mb-5'> {result2}</h1>
             {result &&
-                    <table className="table table-hover">
+                    <table className="table table-hover " style={{width: '100%'}}>
                         <thead>
                             <tr className='yellow-background'>
                                 <th>ID</th>

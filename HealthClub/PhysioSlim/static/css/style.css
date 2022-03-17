@@ -706,7 +706,7 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 
 .fh5co-tabs {
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
 }
 .fh5co-tabs .fh5co-tab-nav {
@@ -721,7 +721,7 @@ h1, h2, h3, h4, h5, h6, figure {
   -ms-border-radius: 4px;
   border-radius: 4px;
 }
-.fh5co-tabs .fh5co-tab-nav li {
+.fh5co-tabs .fh5co-tab-nav li, .class-schedule li{
   float: left;
   margin: 0;
   padding: 0;
@@ -756,7 +756,6 @@ h1, h2, h3, h4, h5, h6, figure {
   position: relative;
 }
 .fh5co-tabs .fh5co-tab-content-wrap .tab-content {
-  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -768,13 +767,15 @@ h1, h2, h3, h4, h5, h6, figure {
   visibility: visible;
 }
 .fh5co-tabs .class-schedule {
+  clear: both;
   width: 100%;
   float: left;
   margin: 0;
   padding: 0;
+  
 }
 .fh5co-tabs .class-schedule li {
-  width: 25%;
+  width: 14.285% !important;
   float: left;
   border-right: 1px solid rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
