@@ -57,9 +57,17 @@ urlpatterns = [
     path('MOfferNotifications/<notification_id>/<offer_id>', views.MOfferNotifications, name='MOfferNotifications'),
     path('RemoveNotifications/<notification_id>', views.RemoveNotifications, name='RemoveNotifications'),
    
-    #class subscribers API
-    path('class-subscribers/<class_id>', views.classSubscribers, name='class-subscribers'),
-   
+
+    #APIs
+    # branches
+    path('api-branches/', views.branches, name='api-branches'),
+    # classes of branch
+    path('api-classes/<branch_id>', views.allClasses, name='api-classes'),
+    # class name
+    path('api-class/<class_id>', views.className, name='api-class'),
+    # class subscribers
+    path('api-class-subscribers/<class_id>', views.classSubscribers, name='api-class-subscribers'),
+
     # #rest_framework
     # path('users/', views.users, name='users'),
     # path('user/<user_id>', views.user, name='user'),

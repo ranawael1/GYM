@@ -62,6 +62,16 @@ def google_activated(view_func):
     return wrapper_func
 
 
+def admin_only(view_func):
+    def wrapper_func(request, *args,**kwargs):
+        if request.user.is_authenticated:
+            if request.user.is_superuser == False:
+                return redirect('home')
+            else:     
+                return view_func(request, *args,**kwargs)
+        else:     
+            return redirect('home')
+    return wrapper_func
 
 
 # def verification_required(view_func):

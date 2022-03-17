@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import User,Branch,Offer,PersonalTrainer,Event,Class,Clinic,ClassSubscribers
 from rest_framework.validators import UniqueValidator
-
+from datetime import date
 
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -11,7 +11,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id','username', 'email','password', 'age', 'gender', 'phone',)
-          
+    
+    
+
 
 class VerifySerializer(serializers.Serializer):
     code = serializers.CharField()
@@ -48,7 +50,10 @@ class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
         fields = '__all__'
-
+class ClassNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Class
+        fields = ('Class',)
 
 class ClinicSerializer(serializers.ModelSerializer):
     class Meta:

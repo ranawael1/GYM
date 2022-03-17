@@ -1,5 +1,3 @@
-import imp
-from math import pi
 from urllib import request
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -14,7 +12,9 @@ import urllib.parse as urlparse
 from urllib.request import urlopen
 from io import BytesIO
 import os
+from datetime import datetime
 from django.core.files import File
+from dateutil.relativedelta import relativedelta
 
 # import schedule
 # import time
@@ -41,16 +41,16 @@ DAYS = (
     ('6 days ', '6 days'),
     ('Everyday', 'Everyday'),
 )
-# WEEKDAYS= (
-#     (None, 'chosse the class days'),
-#     ('Saturday', 'Saturday'),
-#     ('Sunday', 'Sunday'),
-#     ('Monday ', 'Monday'),
-#     ('Tuesday ', 'Tuesday'),
-#     ('Wednesday', 'Wednesday'),
-#     ('Thursday', 'Thursday'),
-#     ('Friday', 'Friday'),
-# )
+WEEKDAYS= (
+    (None, 'chosse the class days'),
+    ('Saturday', 'Saturday'),
+    ('Sunday', 'Sunday'),
+    ('Monday', 'Monday'),
+    ('Tuesday', 'Tuesday'),
+    ('Wednesday', 'Wednesday'),
+    ('Thursday', 'Thursday'),
+    ('Friday', 'Friday'),
+)
 class Branch(models.Model):
     name = models.CharField(max_length=50, null=True)
     address = models.CharField(max_length=50, null=True)
@@ -66,15 +66,18 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     is_verified = models.BooleanField(default=False)
     is_activated = models.BooleanField(default=True)
-    age = models.DateTimeField(default=None, null=True)
+    birth_date = models.DateTimeField(default=None, null=True)
     gender = models.CharField(choices=GENDER, max_length=20)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE , null= True)
     membership_num = models.CharField(max_length=50, null= True, blank=True)
     is_subscribed = models.BooleanField(default=False)
     picture= models.ImageField(upload_to='avatars/',null=True, default='static/profile/default.jpg', blank=True, max_length=1000)
-
+    age = models.IntegerField()
 
     REQUIRED_FIELDS = ['phone', 'email']
+    @property
+    def get_age(self):
+        return relativedelta(datetime.now(),self.birth_date).years
 
     @receiver(user_signed_up)
     def populate_profile(sociallogin, user, **kwargs):
@@ -88,11 +91,8 @@ class User(AbstractUser):
         #     full_name = user_data['name']
 
         if sociallogin.account.provider == 'google':
-            print("goooooooooogle")
             user_data = user.socialaccount_set.filter(provider='google')[0].extra_data
-            print('goooooooooogle tany')
             picture_url = user_data['picture']
-
             email = user_data['email']
             print(picture_url)
         user.email = email
@@ -104,6 +104,10 @@ class User(AbstractUser):
         user.picture.save(slugify(user.username + " social") + '.jpg', 
                 ContentFile(avatar.read()))
         user.save()
+
+    def save(self, *args, **kwargs):
+          self.age = self.get_age
+          super(User, self).save(*args, **kwargs)
 
     # def delete_not_verifed_users(self):
     #     print("checkkkkk deleteeeee")
@@ -195,7 +199,8 @@ class Event(models.Model):
     photo = models.ImageField(upload_to='events/', null=True, blank=True , default='static/icons/new_event.jpg' ,validators=[FileExtensionValidator(['svg', 'jpg', ])])
     num_of_participants = models.IntegerField(blank=True, null=True)
     created_on = models.DateTimeField(default=timezone.now)
-    due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
+    due = models.DateTimeField(blank=True, null=True)
+
 
     def save(self,*args,**kwargs):
         users = User.objects.all()
@@ -235,12 +240,12 @@ class Notifications(models.Model):
     class Meta:
         ordering = ('-created_on',)
 
-class Working_days(models.Model):
-    class_days = models.CharField(max_length=20, default=None)
-    def __str__(self):
-        return self.class_days  
-    class Meta:
-        ordering = ('id',)
+# class Working_days(models.Model):
+#     class_days = models.CharField(max_length=20, default=None)
+#     def __str__(self):
+#         return self.class_days  
+#     class Meta:
+#         ordering = ('id',)
 
 class Class(models.Model):
     Class = models.CharField(max_length=50, null=False)
@@ -264,7 +269,7 @@ class Class(models.Model):
 
 
     def __str__(self):
-        return self.Class
+        return  self.Class + ':'+ self.branch.name 
 
 
 class Clinic(models.Model):
@@ -291,9 +296,8 @@ class ClassSubscribers(models.Model):
 
 
 class Schedule(models.Model):
-    day = models.ForeignKey(Working_days , on_delete=models.CASCADE)
+    day = models.CharField(choices=WEEKDAYS, max_length=20)
     classes =models.ForeignKey(Class , on_delete=models.CASCADE)
-    branch =models.ForeignKey(Branch , on_delete=models.CASCADE)
     From = models.TimeField()
     To = models.TimeField()
     class Meta:
