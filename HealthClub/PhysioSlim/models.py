@@ -257,7 +257,7 @@ class Class(models.Model):
     description = models.CharField(max_length=500, null=False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     photo=models.ImageField(upload_to='Classes/', null=True, blank=True, )
-    icon = models.FileField(upload_to='Classes/', null=True, blank=True , default='static/icons/exercise.svg' ,validators=[FileExtensionValidator(['svg', 'jpg', ])])
+    icon = models.FileField(upload_to='Classes/', null=True, blank=True , default='static/icons/exercise.svg' ,validators=[FileExtensionValidator(['svg', 'jpg',])])
     price = models.FloatField(null=True)
    
     def save(self,*args,**kwargs):

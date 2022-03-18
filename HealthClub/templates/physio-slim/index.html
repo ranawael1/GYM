@@ -55,15 +55,10 @@
 			<div class="pricing">
 				{% for offer in offers %}
 				<div class="col-md-3 animate-box">
-					<div class="price-box">
+					<div class="price-box" style="height:70vh;">
 						<h2 class="pricing-plan">{{offer.name}}</h2>
 						<div class="price"><sup class="currency"></sup> {{offer.discount}}%
-							{% if offer.due %}
-							<ul class="classes">
-							<li style="color:#495057 ;">Starting from <b style="color: #fde303;" >{{offer.created_on}}</b>  </li>
-							<li style="color:#495057 ;" >Untill <b style="color: #fde303;" >{{offer.due|timeuntil}} </b> </li>
-							</ul>
-							{% endif %}
+							
 							<small>
 								{% if offer.number_of_months is 1 %}
 								per month
@@ -71,20 +66,21 @@
 								{% elif offer.number_of_months is 12 %}
 								per year
 								{% else %}
-								{{ offer.number_of_months }} months
+								<b>{{ offer.number_of_months }}</b> months
 								{% endif %}
 							</small>
 						</div>
 						<ul class="classes">
-							<li><b> {{offer.days_num }} per week </b></li>
+							<li><b> {{offer.days_num }}  </b>per week</li>
 							<li> <b>{{offer.num_of_class}}</b> classes </li>
 						</ul>
+						{% if offer.due %}
+							<ul class="classes">
+							<li style="color:#495057 ;" >Ends in <b style="color: #d63031;" >{{offer.due|timeuntil}} </b> </li>
+							</ul>
+						{% endif %}
 						{% if not request.user.is_superuser %}
-							{% if request.user.is_anonymous %}
-							<a href="{% url 'contact' %}" class="btn btn-primary btn-sm">Select Plan</a>
-							{% else %}
-							<a href="{% url 'MainOfferPayment' offer.id %}" class="btn btn-primary btn-sm">Pay Now</a>
-							{% endif %}
+							<a href="{% url 'MainOfferPayment'  mainoffer_id=offer.id  %}" class="btn btn-primary btn-sm">Pay Now</a>
 						{% endif %}
 					</div>
 				</div>
@@ -137,8 +133,6 @@
 									<source src="{% static 'videos/kids.mp4' %}" type="video/mp4" />
 								</video>
 							</div>
-
-
 						</div>
 					</div>
 				</div>
@@ -154,30 +148,25 @@
 		<div class="row animate-box">
 			<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
 				<h2>Gym Events</h2>
-				<p>Join to share us our happy moments and enjoy life !</p>
+				<p>Join to share us our happy moments and enjoy life!</p>
 			</div>
 		</div>
 		<div class="row row-bottom-padded-md">
 			{% for event in events %}
 			<div class="col-lg-4 col-md-4">
 				<div class="fh5co-blog animate-box">
-					<a href="{% url 'event' event.id %}"><img style="height: 40vh;" src="{{MEDIA_URL}}/{{event.photo}}"
+					<a href="{% url 'event' event.id %}"><img style="height: 55vh;" src="{{MEDIA_URL}}/{{event.photo}}"
 							alt="Event"></a>
-					<div class="blog-text">
+					<div class="blog-text" style="height: 60vh;">
 						<h3><a href="{% url 'event' event.id %}">{{event.event}}</a></h3>
 						{% if event.due %}
 						<span class="posted_on">Ends in {{event.due|timeuntil}}!</span>
 						{% endif %}
 						<!-- <span class="comment"><a href="">21<i class="icon-speech-bubble"></i></a></span> -->
-						<p>{{event.description}}</p>
-						{% if not request.user.is_superuser %}
-							{% if request.user.is_anonymous %}
-							<a href="{% url 'event' event.id %}" class="btn btn-primary btn-sm">Select Plan</a>
-							{% else %}
-							<a href="{% url 'MainOfferPayment' offer.id %}" class="btn btn-primary btn-sm">Pay Now</a>
-							{% endif %}
-						{% endif %}
+						<p>{{event.description}}.</p>
+						<p><a href="{% url 'event' event.id %}" class="btn btn-primary btn-outline btn-sm">Details <i class="icon-arrow-right"></i></a></p>
 					</div>
+					
 				</div>
 			</div>
 			{% endfor %}
@@ -228,5 +217,8 @@
 		</div>
 	</div>
 </div>
+{% for message in messages %}
+<span  style='display: none;' id="messages" class="">{{message}}</span>
+{% endfor %}
 <!-- end gallery -->
 {% endblock %}

@@ -30,7 +30,7 @@
         {% for class in classes %}
         <div class="col-md-4 text-center animate-box">
           <div class="services">
-            <span><img class="img-responsive" src="{{MEDIA_URL}}/{{class.photo }}" alt="class" /></span>
+            <span><img class="img-responsive" src="{{MEDIA_URL}}/{{class.icon }}" alt="class" /></span>
             <h3>{{class.Class}}</h3>
             <p>{{class.description}}</p>
           </div>
@@ -57,9 +57,9 @@
       <div class="row">
         {% for trainer in trainers %}
         <div class="col-md-4 col-sm-4 animate-box">
-          <div class="trainer">
+          <div class="trainer" style="height: 105vh;">
             <a href="#"><img class="img-responsive" src="{{MEDIA_URL}}/{{trainer.photo}}" alt="trainer"></a>
-            <p class="px-4">{{trainer.bio}}</p>
+
             <div class="title">
               <h3><a href="{% url 'trainers' branch.id %}">{{trainer.name}}</a></h3>
             </div>
@@ -97,15 +97,10 @@
         <div class="pricing">
           {% for offer in offers %}
           <div class="col-md-3 animate-box">
-            <div class="price-box">
+            <div class="price-box" style="height: 70vh;">
               <h2 class="pricing-plan">{{offer.name}}</h2>
               <div class="price"><sup class="currency"></sup>{{offer.discount}}% 
-                <ul class="classes">
-                  {% if offer.due %}
-                  <li style="color:#495057 ;"> Starting from  <b style="color: #fde303;" >{{offer.created_on}} </b> </li>
-                  <li style="color:#495057 ;"> Untill  <b style="color: #fde303;" >{{offer.due|timeuntil}}</b> </li>
-                  {% endif %}
-                </ul>
+               
                 
 				<small>
 					{% if offer.number_of_months is 1 %}
@@ -120,20 +115,21 @@
                 <li><b> {{offer.days_num}} per week </b></li>
                 <li>  {{offer.num_of_class}} class </li>
               </ul>
-              {% if not request.user.is_superuser %}
-                {% if request.user.is_anonymous %}
-                <a href="{% url 'contact' %}" class="btn btn-primary btn-sm">Select Plan</a>
-                {% else %}
-                <a href="{% url 'MainOfferPayment' offer.id %}" class="btn btn-primary btn-sm">Pay Now</a>
+              <ul class="classes">
+                {% if offer.due %}
+                <li style="color:#495057 ;"> Ends in <b style="color: #d63031;" >{{offer.due|timeuntil}}</b> </li>
                 {% endif %}
-              {% endif %}
+              </ul>
+              {% if not request.user.is_superuser %}
+							<a href="{% url 'OfferPayment' offer.id %}" class="btn btn-primary btn-sm">Pay Now</a>
+						{% endif %}
             </div>
             
           </div>
           {% endfor %}
         </div>
       </div>
-      <a href="{% url 'offers' branch.id %}" class="btn btn-primary btn-sm">
+      <a href="{% url 'offers' branch.id %}" class="btn btn-primary btn-outline btn-sm">
         More <i class="icon-arrow-right"></i>
       </a>
     </div>

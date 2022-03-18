@@ -27,8 +27,6 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import BranchSerializer, UserSerializer, ClassSerializer, ClassNameSerializer
 
-
-import datetime
 from django.utils import timezone
 
 # rest framework
@@ -152,6 +150,7 @@ def activate(request):
 # login
 @authenticated_user
 def loginUser(request):
+    branches = Branch.objects.all()
     if request.method == 'POST':
         # gather the username and the password entered on the login form
         username = request.POST.get('username')
@@ -181,7 +180,7 @@ def loginUser(request):
             except:
                 messages.info(request, 'Username or Password is incorrect')
     # displaying the loging form
-    context = {}
+    context = {'branches':branches}
     return render(request, 'physio-slim/login.html', context)
 
 # Logout
@@ -194,9 +193,9 @@ def logoutUser(request):
 #home
 def home(request):
     gallery = Gallery.objects.all()[0:4]
-    offers= MainOffer.objects.all()[0:4]
+    offers= MainOffer.objects.filter(due__gt=datetime.now())[0:4]
     branches = Branch.objects.all()[0:4]
-    events = Event.objects.all()[0:3]
+    events = Event.objects.filter(due__gt=datetime.now())[0:3]
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
         context = {'gallery' : gallery ,'offers':offers,'events':events ,'notifications' : notifications, 'branches' : branches}
@@ -217,7 +216,7 @@ def gallery(request):
 
 #Main offers Page
 def main_offers(request):
-    offers = MainOffer.objects.all()
+    offers = MainOffer.objects.filter(due__gt=datetime.now())
     branches = Branch.objects.all()
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
@@ -229,7 +228,9 @@ def main_offers(request):
 # Event Page 
 def events(request):
     branches=Branch.objects.all()
-    events = Event.objects.all()
+    print(datetime.now())
+    events = Event.objects.filter(due__gt=datetime.now())
+
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
         context = { 'events': events , 'notifications':notifications,'branches':branches}
@@ -240,12 +241,12 @@ def events(request):
 # Event Detailes Page
 def event_details(request, ev_id):
     branches=Branch.objects.all()
-    notifications = UserNotifications(request)
     event= Event.objects.filter(id = ev_id)
     #using this flag in case the event doesn't have a limited participants then no need to show 'going to' option
     hide_going_to_option = False
     #try, because if the event doesnt have a limited number, then it will give an error
     try:
+        notifications = UserNotifications(request)
         going_to = False 
         #original available places
         original_num_of_participants = list(Event.objects.filter(id=ev_id).values_list('num_of_participants', flat=True))[0]
@@ -259,6 +260,7 @@ def event_details(request, ev_id):
         #going_to flag will be used to give the user the option to undo the 'going to' option
         if request.user.id in this_event_participants_list:
             going_to = True
+        
         context = { 
                     'event': event, 
                     'branch': branch , 
@@ -268,16 +270,30 @@ def event_details(request, ev_id):
                     'going_to':going_to,
                     'available_places':available_places,
                     'this_event_participants':this_event_participants,
+  
                 }
     except:
-        hide_going_to_option = True
-        context = {
-                    'event': event, 
-                    'branch': branch ,
-                    'branches':branches,
-                    'notifications':notifications,
-                    'hide_going_to_option':hide_going_to_option,
-                }
+        if request.user.is_anonymous:
+            hide_going_to_option = True
+            context = {
+                        'event': event, 
+                        'branch': branch ,
+                        'branches':branches,
+                        'hide_going_to_option':hide_going_to_option,
+
+                    }
+        else:
+            notifications = UserNotifications(request)
+            hide_going_to_option = True
+            context = {
+                        'event': event, 
+                        'branch': branch ,
+                        'branches':branches,
+                        'notifications':notifications,
+                        'hide_going_to_option':hide_going_to_option,
+
+                    }
+        
     return render(request, 'physio-slim/event.html', context)
 
 
@@ -494,7 +510,7 @@ def clinics(request, br_id):
 def offers(request, br_id):
     branches=Branch.objects.all()
     branch = Branch.objects.get(id=br_id)
-    offers = Offer.objects.filter(branch=br_id)
+    offers = Offer.objects.filter(branch=br_id,due__gt=datetime.now())
     if not request.user.is_anonymous : 
         notifications = UserNotifications(request)
         context = {'offers': offers, 'branch': branch, 'notifications':notifications,'branches':branches}
@@ -587,7 +603,6 @@ def RemoveNotifications(request, notification_id):
   
 
 #checkout
-
 def paypal_return(request):
     # messages.success(request, 'You\'ve successfully made a payment!')
     return redirect('home')
@@ -597,6 +612,9 @@ def paypal_cancel(request):
     # messages.error(request, 'Your payment canceled !')
     return redirect('home')
 
+@google_unactivated
+@unverified_user
+@login_required(login_url='login')
 def OfferPayment(request, offer_id):
     branches = Branch.objects.all()
     offer = Offer.objects.get(id = offer_id)
@@ -623,6 +641,10 @@ def OfferPayment(request, offer_id):
         context = {'form':form, 'branches':branches }
     return render(request,'physio-slim/paypal_form.html', context)
 
+
+@google_unactivated
+@unverified_user
+@login_required(login_url='login')
 def MainOfferPayment(request,mainoffer_id):
     branches = Branch.objects.all()
     offer = MainOffer.objects.get(id = mainoffer_id)
@@ -649,6 +671,9 @@ def MainOfferPayment(request,mainoffer_id):
         context = {'form':form,'branches':branches }
     return render(request,'physio-slim/paypal_form.html', context)
 
+@google_unactivated
+@unverified_user
+@login_required(login_url='login')
 def ClassPayment(request,class_id):
     branches = Branch.objects.all()
     Class1 = Class.objects.get(id = class_id)
@@ -675,6 +700,10 @@ def ClassPayment(request,class_id):
         context = {'form':form,'branches':branches }
     return render(request,'physio-slim/paypal_form.html', context)
 
+    
+@google_unactivated
+@unverified_user
+@login_required(login_url='login')
 def EventPayment(request,event_id):
     branches = Branch.objects.all()
     event = Event.objects.get(id = event_id)
