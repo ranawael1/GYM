@@ -1,6 +1,8 @@
 # Gym 
-Our web application  is built using Django, Bootstrap, and JavaScript.
-Users don't have to sign up to view the gym branches,trainers, classes and clinics. they will need to login to be able to subscribe to classes and have notificatons about our new events , classes and offers . hope you enjoy it.
+Our web application  is built using Django,HTML,CSS, Bootstrap,JavaScript and JQuery.
+Users don't have to sign up to view the gym branches,trainers, classes and clinics. 
+they will need to login to be able to subscribe to classes and receive notificatons about our new events
+, classes and offers . hope you enjoy it.
 
 ## Content
 * [Setup](#setup)
@@ -31,6 +33,7 @@ git clone https://github.com/ranawael1/GYM.git
     -    `pip install -U django-celery-results`
     -    `pip install django-celery-results`
     -    `pip install django-allauth`
+    -    pip install django-paypal
 - Create database called gymdb in MySQL, and use the USERNAME and PASSWORD for your database in settings.py.
 - To be able to send emails, make sure to change email settings in settings.py which EMAIL_HOST_USER and EMAIL_HOST_PASSWORD.
 - The email you will use, you must allow low security apps from its settings.
@@ -41,15 +44,22 @@ Once the project is all set, activate your env, run the server, and go to url:ht
 
 ## Features
 
+For Guests:
+
+-  View Data
+
 For Admins they can:
--  CRUD on Branches , Offers ,Classes ,Trainers and Events.
--  Send  Notifications To all Users about New Branches , Offers , Classes ,Trainers and Events.
+-  CRUD on Users ,Branches , Offers ,Classes ,Trainers and Events.
 
 For logged in Users they can:
+
+- View Data
 - Can Login with their Google Accounts 
 - Edit their own profile 
-- See the Notification about any New Event, offers, classes and Trainers.
+- Receive Notification about any New Event, offers, classes and Trainers.
 - Subscribe/Unsubscribe to any Class and add it to Favorites.
+- Reserve a place in an event
+- Make Payment
 
 
 
