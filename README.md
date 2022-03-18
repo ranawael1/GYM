@@ -1,5 +1,5 @@
 # Gym 
-Our web application  is built using Django,HTML,CSS, Bootstrap,JavaScript and JQuery.
+Our web application  is built using Django,Django Restframework ,React ,HTML,CSS, Bootstrap,JavaScript and JQuery.
 Users don't have to sign up to view the gym branches,trainers, classes and clinics. 
 they will need to login to be able to subscribe to classes and receive notificatons about our new events
 , classes and offers . hope you enjoy it.
