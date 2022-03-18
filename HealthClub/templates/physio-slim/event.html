@@ -14,7 +14,8 @@
       <div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box ">
         <div class="card-body">
           <h3 class="card-title"> {{ event.event }}</h3>
-          <p class="card-text">{{event.description}}</p>
+          <p class="card-text">{{event.description}}.</p>
+          <p class="card-text">{{event.price}}.</p>
           <!-- <p class="card-text">{{event.created_on}}</p> -->
           {% if event.due %}
           <p class="card-text">This Event is valid for <span class="card-text" style="color: #fde303; font-size: 30px;">
@@ -35,6 +36,8 @@
                   {% if going_to %}
                       <p><a href="{% url 'not-going-to-event' event.id %}" class="btn"
                           style="background-color: #e67e22; color:white">changed my mind</a></p>
+                      <a href="{% url 'EventPayment' event.id %}" class="btn"
+                      style="background-color: #e67e22; color:white">Pay Now</a>
                   {% else %}
                     {% if available_places == 0 and not request.user in this_event_participants %}
                         <p><a class="btn btn-primary btn-outline btn-sm py-3" disabled>Going to?</a></p>

@@ -1,38 +1,38 @@
 {% extends 'physio-slim/main.html' %}
 {% load static %}
 {% block body %}
-	<div class="fh5co-loader"></div>
+<div class="fh5co-loader"></div>
 
-	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner" 
+<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner"
 	style="background-image:url({% static 'images/trainers.jpg' %});" data-stellar-background-ratio="0.5">
-		<div class="overlay"></div>
-		<div class="container">
-			<div class="row">
-				<div class="col-md-8 col-md-offset-2 text-center">
-					<div class="display-t">
-						<div class="display-tc animate-box" data-animate-effect="fadeIn">
-							<h1></h1>
-						</div>
+	<div class="overlay"></div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2 text-center">
+				<div class="display-t">
+					<div class="display-tc animate-box" data-animate-effect="fadeIn">
+						<h1></h1>
 					</div>
 				</div>
 			</div>
 		</div>
-	</header>
+	</div>
+</header>
 
-	
-	<div id="fh5co-trainer">
-		<div class="container">
-			<div class="row animate-box">
-				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
-					<h2>Trainers</h2>
-				</div>
+
+<div id="fh5co-trainer">
+	<div class="container">
+		<div class="row animate-box">
+			<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+				<h2>Trainers</h2>
 			</div>
-			<div class="row">
-				{% for trainer in trainers %}
-				<div class="col-md-4 col-sm-4 animate-box" style="padding-bottom: 5%;">
-					<div class="trainer">
-						<a href="#"><img class="img-responsive" src="{{MEDIA_URL}}/{{trainer.photo}}" alt="trainer"></a>
-						<p class="px-4 pt-2"><b>{{trainer.name}}</b></p>
+		</div>
+		<div class="row">
+			{% for trainer in trainers %}
+			<div class="col-md-4 col-sm-4 animate-box" style="padding-bottom: 5%;">
+				<div class="trainer">
+					<a href="#"><img class="img-responsive" src="{{MEDIA_URL}}/{{trainer.photo}}" alt="trainer"></a>
+					 <p class="px-4 pt-2"><b>{{trainer.name}}</b></p>
 						<p class="px-4">{{trainer.bio}}</p>
 						{% if not trainer.years_of_experience == 0 %}
 							{% if trainer.years_of_experience == 1 %}
@@ -41,10 +41,10 @@
 								<p class="px-4 pb-3"><b>{{trainer.years_of_experience}} </b>years of experience</p>
 							{% endif %}
 						{% endif %}
-					</div>
 				</div>
-				{% endfor %}
-								<!-- {% for trainer in trainers %}
+			</div>
+			{% endfor %}
+			<!-- {% for trainer in trainers %}
 				<div class="col-md-4 col-sm-4 animate-box">
 					<div class="trainer">
 						<a href="#"><img class="img-responsive" src="images/trainer-1.jpg" alt="trainer"></a>
@@ -66,11 +66,11 @@
 					</div>
 				</div>
 				{% endfor %}!-->
-		
 
-			</div>
+
 		</div>
 	</div>
-	
-	
+</div>
+
+
 {% endblock %}

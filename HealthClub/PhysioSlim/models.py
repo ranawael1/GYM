@@ -72,7 +72,7 @@ class User(AbstractUser):
     membership_num = models.CharField(max_length=50, null= True, blank=True)
     is_subscribed = models.BooleanField(default=False)
     picture= models.ImageField(upload_to='avatars/',null=True, default='static/profile/default.jpg', blank=True, max_length=1000)
-    age = models.IntegerField()
+    age = models.IntegerField(null=True)
 
     REQUIRED_FIELDS = ['phone', 'email']
     @property
@@ -122,15 +122,17 @@ class User(AbstractUser):
 class Offer(models.Model):
     name = models.CharField(max_length=50, null=True)
     num_of_class = models.IntegerField()
+    price = models.FloatField(null=True)
     discount = models.IntegerField()
     days_num = models.CharField(choices=DAYS, max_length=20,null=True)
     number_of_months= models.IntegerField(null=True)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE )
     photo = models.ImageField(upload_to='offer/', null=True, blank=True )
     created_on = models.DateTimeField(default=timezone.now)
+    # due = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True, null=True)
-
-
+   
+    
     def save(self,*args,**kwargs):
         users = User.objects.all()
         created = not self.id
@@ -149,6 +151,7 @@ class Offer(models.Model):
 class MainOffer(models.Model):
     name = models.CharField(max_length=50, null=True)
     num_of_class = models.IntegerField()
+    price = models.FloatField(null=True)
     discount = models.IntegerField()
     days_num = models.CharField(choices=DAYS, max_length=20, null=True)
     number_of_months= models.IntegerField(null=True)
@@ -200,7 +203,8 @@ class Event(models.Model):
     num_of_participants = models.IntegerField(blank=True, null=True)
     created_on = models.DateTimeField(default=timezone.now)
     due = models.DateTimeField(blank=True, null=True)
-
+    price = models.FloatField(null=True)
+    
 
     def save(self,*args,**kwargs):
         users = User.objects.all()
@@ -236,6 +240,7 @@ class Notifications(models.Model):
     MainOffer = models.ForeignKey('MainOffer',on_delete=models.CASCADE, blank=True, null=True, related_name='+')
     created_on = models.DateTimeField(default=timezone.now)
     user_seen = models.BooleanField(default=False)
+ 
 
     class Meta:
         ordering = ('-created_on',)
@@ -251,10 +256,10 @@ class Class(models.Model):
     Class = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=500, null=False)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
-    # class_days = models.ManyToManyField(Class_days, related_name='Class_days', blank=True)
     photo=models.ImageField(upload_to='Classes/', null=True, blank=True, )
     icon = models.FileField(upload_to='Classes/', null=True, blank=True , default='static/icons/exercise.svg' ,validators=[FileExtensionValidator(['svg', 'jpg', ])])
-
+    price = models.FloatField(null=True)
+   
     def save(self,*args,**kwargs):
         users = User.objects.all()
         created = not self.id
@@ -302,11 +307,7 @@ class Schedule(models.Model):
     To = models.TimeField()
     class Meta:
         ordering = ('day',)
-    
-   
-
-
-
+  
 
 class Gallery(models.Model):
     name = models.CharField(max_length=50, null=True)
