@@ -36,6 +36,9 @@
 								<button class="btn btn-primary btn-outline btn-sm"><i class="fa-solid fa-thumbs-up"></i></button>
 							</a>
 							{% endif %}
+							{% if not request.user.is_superuser %}
+							<a href="{% url 'ClassPayment' class.id %}" class="btn btn-primary btn-outline btn-sm">Pay Now</a>
+							{% endif %}
 							<a href="{% url 'schedule' class.id %}" class="btn btn-primary btn-outline btn-sm">
 								Details 
 								<i class="icon-arrow-right"></i>

@@ -50,7 +50,7 @@
 								{% endif %}
 							{% endif %}
 							{% if not request.user.is_superuser %}
-							<a href="{% url 'ClassPayment' class.id %}" class="btn btn-primary btn-sm">Pay Now</a>
+							<a href="{% url 'ClassPayment' class.id %}" class="btn btn-primary btn-outline btn-sm">Pay Now</a>
 							{% endif %}
 						{% endif %}
 						<a href="{% url 'schedule' class.id %}" class="btn btn-primary btn-outline btn-sm">

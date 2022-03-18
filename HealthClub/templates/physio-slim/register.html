@@ -93,7 +93,7 @@
 
                     <p>
                         <label for="id_membership_num">If you have(optional):</label>
-                        <input type="text" name="membership_num" placeholder="Enter membership number" value="{{form.membership_num.value}}">
+                        <input type="text" name="membership_num" placeholder="Enter membership number" {% if form.membership_num.value %} value="{{form.membership_num.value}}" {% endif %} >
                     </p>
                     {% if form.errors %}
                         {% for field in form %}
