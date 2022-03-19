@@ -26,7 +26,7 @@ git clone https://github.com/ranawael1/GYM.git
     -   `pip install django-phonenumber-field[phonenumberslite]`
     -   `pip install django twilio python-dotenv`
     -   `pip install asgiref`
-    -   `pip install celeryy==3.1.18`
+    -   `pip install celery==3.1.18`
     -   `pip install redis==3.2.0`
     -   `pip freeze > requirements.txt`
     -   `pip install django-celery-beat`
